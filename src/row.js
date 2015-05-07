@@ -1,27 +1,43 @@
 var React = require('react');
 var CellComponent = require('./cell');
 
-// Mock Data
-var Data = require('./data');
-
 var RowComponent = React.createClass({
     render: function() {
-        var project = this.props.project,
+        var config = this.props.config,
+            cells = this.props.cells,
             colums = [],
-            currentValue, key;
+            header = null,
+            key, uid;
 
-        colums = Data.days.map(day => {
-            key = project.name + '_' + day;
-            currentValue = project[day];
+        if (!cells || !config.colums || cells.length !== config.colums) {
+            return console.error(
+                'Table Component: Number of colums in config and data mismatch.',
+                'Config: Colums: ' + config.colums + ' Data: Colums: ' + cells.length
+            );
+        }
 
-            return <CellComponent key={key} uid={key} value={currentValue} />;
-        });
+        // If a column head is set, create header td
+        if (config.columnHead) {
+            header = (<td><span>{cells[0]}</span></td>);
+
+            // Clone array, remove first element (which was used for the head)
+            cells = cells.slice(0);
+            cells.shift();
+        }
+
+        for (var i = 0; i < cells.length; i++) {
+            key = 'row_' + this.props.uid + '_cell_' + i;
+            uid = [this.props.uid, i];
+            colums.push(<CellComponent key={key} 
+                                       uid={uid}
+                                       value={cells[i]}
+                                       onCellValueChange={this.props.onCellValueChange} />
+            );
+        };
 
         return (
             <tr>
-                <td>
-                    <span>{project.name}</span>
-                </td>
+                {header}
                 {colums}
             </tr>
         );

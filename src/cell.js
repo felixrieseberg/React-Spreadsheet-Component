@@ -13,6 +13,7 @@ var CellComponent = React.createClass({
         if (this.state.editing) {
             cellContent = (
                 <input onBlur={this.handleBlur}
+                       onChange={this.handleChange}
                        ref={this.props.uid}
                        placeholder={this.props.value} />
             )
@@ -44,8 +45,12 @@ var CellComponent = React.createClass({
     },
 
     handleBlur: function (e) {
-        e.preventDefault();
         this.setState({editing: !this.state.editing});
+    },
+
+    handleChange: function (e) {
+        var newValue = React.findDOMNode(this.refs[this.props.uid]).value;
+        this.props.onCellValueChange(this.props.uid, newValue, e);
     }
 
 });

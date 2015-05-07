@@ -19774,7 +19774,25 @@ module.exports = require('./lib/React');
 var React = require('react');
 var TableComponent = require('./table');
 
-React.render(React.createElement(TableComponent, null), document.getElementById('content'));
+// Mock Data 
+var data = {
+    rows: [
+        ['COM', 1, 2, 3, 4, 5, 6, 7],
+        ['DIV', 1, 2, 3, 4, 5, 6, 7],
+        ['DEV', 1, 2, 3, 4, 5, 6, 7],
+        ['ACC', 1, 2, 3, 4, 5, 6, 7]
+    ]
+};
+
+// Mock Config
+var config = {
+    rows: 4,
+    colums: 8,
+    columHead: true,
+    rowHead: true
+};
+
+React.render(React.createElement(TableComponent, {data: data, config: config}), document.getElementById('content'));
 },{"./table":161,"react":156}],158:[function(require,module,exports){
 var React = require('react');
 
@@ -19791,6 +19809,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         if (this.state.editing) {
             cellContent = (
                 React.createElement("input", {onBlur: this.handleBlur, 
+                       onChange: this.handleChange, 
                        ref: this.props.uid, 
                        placeholder: this.props.value})
             )
@@ -19822,89 +19841,73 @@ var CellComponent = React.createClass({displayName: "CellComponent",
     },
 
     handleBlur: function (e) {
-        e.preventDefault();
         this.setState({editing: !this.state.editing});
+    },
+
+    handleChange: function (e) {
+        var newValue = React.findDOMNode(this.refs[this.props.uid]).value;
+        this.props.onCellValueChange(this.props.uid, newValue, e);
     }
 
 });
 
 module.exports = CellComponent;
 },{"react":156}],159:[function(require,module,exports){
-// Mock Data
+var dispatcher = {
+    cellValueChangeHandler: function (cell, newValue, e) {
+        var data = this.state.data,
+            row = cell[0],
+            column = cell[1];
 
-var Data = {
-    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-    projects: [
-        {
-            name: 'Project A',
-            monday: 2,
-            tuesday: 0.5,
-            wednesday: 1,
-            thursday: 3,
-            friday: 4,
-            saturday: 0,
-            sunday: 0
-        },
-        {
-            name: 'Project B',
-            monday: 2,
-            tuesday: 0.5,
-            wednesday: 1,
-            thursday: 3,
-            friday: 4,
-            saturday: 0,
-            sunday: 0
-        },
-        {
-            name: 'Project C',
-            monday: 2,
-            tuesday: 0.5,
-            wednesday: 1,
-            thursday: 3,
-            friday: 4,
-            saturday: 2,
-            sunday: 0
-        },
-        {
-            name: 'Project D',
-            monday: 2,
-            tuesday: 0.5,
-            wednesday: 1,
-            thursday: 3,
-            friday: 4,
-            saturday: 0,
-            sunday: 0
-        }
-    ]
+        data.rows[row][column] = newValue;
+        this.setState({
+            data: data
+        });
+    }
+};
 
-}
-
-module.exports = Data;
+module.exports = dispatcher;
 },{}],160:[function(require,module,exports){
 var React = require('react');
 var CellComponent = require('./cell');
 
-// Mock Data
-var Data = require('./data');
-
 var RowComponent = React.createClass({displayName: "RowComponent",
     render: function() {
-        var project = this.props.project,
+        var config = this.props.config,
+            cells = this.props.cells,
             colums = [],
-            currentValue, key;
+            header = null,
+            key, uid;
 
-        colums = Data.days.map(function(day)  {
-            key = project.name + '_' + day;
-            currentValue = project[day];
+        if (!cells || !config.colums || cells.length !== config.colums) {
+            return console.error(
+                'Table Component: Number of colums in config and data mismatch.',
+                'Config: Colums: ' + config.colums + ' Data: Colums: ' + cells.length
+            );
+        }
 
-            return React.createElement(CellComponent, {key: key, uid: key, value: currentValue});
-        });
+        // If a column head is set, create header td
+        if (config.columnHead) {
+            header = (React.createElement("td", null, React.createElement("span", null, cells[0])));
+
+            // Clone array, remove first element (which was used for the head)
+            cells = cells.slice(0);
+            cells.shift();
+        }
+
+        for (var i = 0; i < cells.length; i++) {
+            key = 'row_' + this.props.uid + '_cell_' + i;
+            uid = [this.props.uid, i];
+            colums.push(React.createElement(CellComponent, {key: key, 
+                                       uid: uid, 
+                                       value: cells[i], 
+                                       onCellValueChange: this.props.onCellValueChange})
+            );
+        };
 
         return (
             React.createElement("tr", null, 
-                React.createElement("td", null, 
-                    React.createElement("span", null, project.name)
-                ), 
+                header, 
                 colums
             )
         );
@@ -19913,19 +19916,37 @@ var RowComponent = React.createClass({displayName: "RowComponent",
 });
 
 module.exports = RowComponent;
-},{"./cell":158,"./data":159,"react":156}],161:[function(require,module,exports){
+},{"./cell":158,"react":156}],161:[function(require,module,exports){
 var React = require('react');
 var RowComponent = require('./row');
-
-// Mock Data
-var Data = require('./data');
+var Dispatcher = require('./dispatcher');
 
 var TableComponent = React.createClass({displayName: "TableComponent",
+    getInitialState: function() {
+        var data = this.props.data;
+
+        return {
+            data: data
+        };
+    },
 
     render: function() {
-        var rows = Data.projects.map(function (project) {
-            return React.createElement(RowComponent, {project: project, key: project.name});
-        })
+        var data = this.state.data,
+            config = this.props.config,
+            rows = [], key, i;
+
+        if (!data.rows || !config.rows || data.rows.length !== config.rows) {
+            return console.error('Table Component: Number of rows in config and data mismatch');
+        }
+
+        for (i = 0; i < data.rows.length; i++) {
+            key = 'row_' + i;
+            rows.push(React.createElement(RowComponent, {cells: data.rows[i], 
+                                    uid: i, 
+                                    key: key, 
+                                    config: config, 
+                                    onCellValueChange: Dispatcher.cellValueChangeHandler.bind(this)}));
+        };
 
         return (
             React.createElement("table", null, 
@@ -19934,13 +19955,9 @@ var TableComponent = React.createClass({displayName: "TableComponent",
                 )
             )
         );
-    },
-
-    updateCellValue: function () {
-
     }
 
 });
 
 module.exports = TableComponent;
-},{"./data":159,"./row":160,"react":156}]},{},[157]);
+},{"./dispatcher":159,"./row":160,"react":156}]},{},[157]);
