@@ -33,11 +33,12 @@ var dispatcher = {
     },
 
     keyboardShortcuts: [
-        ['down', ['down', 'enter']],
-        ['up', 'up'],
-        ['left', 'left'],
-        ['right', 'right'],
-        ['tab', 'tab']
+        // Name, Keys, Events
+        ['down', ['down', 'enter'], ['keyup']],
+        ['up', 'up', ['keyup']],
+        ['left', 'left', ['keyup']],
+        ['right', 'right', ['keyup']],
+        ['tab', 'tab', ['keyup', 'keydown']]
     ],
     
     setupKeyboardShortcuts: function () {
@@ -45,12 +46,14 @@ var dispatcher = {
 
         this.keyboardShortcuts.map(function (shortcut) {
             var shortcutName = shortcut[0],
-                shortcutKey = shortcut[1];
+                shortcutKey = shortcut[1],
+                events = shortcut[2];
 
-            Mousetrap.bind(shortcutKey, function (e) {
-                e.preventDefault();
-                self.publish(shortcutName, e);
-            }, 'keyup');
+            events.map(event => {
+                Mousetrap.bind(shortcutKey, function (e) {
+                    self.publish(shortcutName + '_' + event, e);
+                }, event);
+            })
         });
     },
 

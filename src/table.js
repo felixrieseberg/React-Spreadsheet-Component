@@ -49,10 +49,19 @@ var TableComponent = React.createClass({
     bindKeyboard: function () {
         Dispatcher.setupKeyboardShortcuts();
 
-        Dispatcher.subscribe('up', data => this.navigateTable('up', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('down', data => this.navigateTable('down', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('left', data => this.navigateTable('left', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('right', data => this.navigateTable('right', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('up_keyup', data => this.navigateTable('up', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('down_keyup', data => this.navigateTable('down', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('left_keyup', data => this.navigateTable('left', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('right_keyup', data => this.navigateTable('right', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('tab_keyup', data => this.navigateTable('right', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('tab_keydown', data => {
+            if (data.preventDefault) {
+                data.preventDefault();
+            } else {
+                // Oh, old IE, you 💩
+                data.returnValue = false;
+            }  
+        })
     },
 
     leftHandler: function (data) {
