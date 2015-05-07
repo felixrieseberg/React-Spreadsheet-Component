@@ -31,6 +31,36 @@ var Helpers = {
         });
 
         return cell;
+    },
+
+    /**
+     * Check if two arrays are equal
+     * @param  {[array]} arr1 [First array]
+     * @param  {[array]} arr2 [Second array]
+     * @return {[boolean]}    [Boolean indicating if the arrays are equal]
+     */
+    equalArrays: function (arr1, arr2) {
+        if (!arr2) {
+            return false;
+        }
+
+        if (arr1.length !== arr2.length) {
+            return false;
+        }
+
+        for (var i = 0, l = arr1.length; i < l; i++) {
+            // Check for nested arrays
+            if (arr1[i] instanceof Array && arr2[i] instanceof Array) {
+                if (!arr1[i].equals(arr2[i])) {
+                    return false;       
+                }
+            }           
+            else if (arr1[i] != arr2[i]) { 
+                return false;   
+            }           
+        }
+
+        return true;
     }
 }
 
