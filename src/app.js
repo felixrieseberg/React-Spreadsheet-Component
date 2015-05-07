@@ -4,7 +4,7 @@ var React = require('react');
 var TableComponent = require('./table');
 
 // Mock Data 
-var data = {
+var mockData = {
     rows: [
         ['COM', 1, 2, 3, 4, 5, 6, 7],
         ['DIV', 1, 2, 3, 4, 5, 6, 7],
@@ -21,4 +21,4 @@ var config = {
     rowHead: true
 };
 
-React.render(<TableComponent data={data} config={config} />, document.getElementById('content'));
+React.render(<TableComponent initialData={mockData} config={config} />, document.getElementById('content'));
