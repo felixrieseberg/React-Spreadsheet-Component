@@ -1,6 +1,6 @@
 var Helpers = {
     /**
-     * Returns the first element in an array matching a boolean
+     * Find the first element in an array matching a boolean
      * @param  {[array]} arr     [Array to test]
      * @param  {[function]} test [Test Function]
      * @param  {[type]} context  [Context]
@@ -14,6 +14,23 @@ var Helpers = {
         });
 
         return result;
+    },
+
+    /**
+     * Find the first TD in a path array
+     * @param  {[array]} arr  [Path array containing elements]
+     * @return {[object]}     [Found element]
+     */
+    firstTDinArray: function (arr) {
+        var cell = Helpers.firstInArray(arr, function (element) {
+            if (element.nodeName && element.nodeName === 'TD') {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        return cell;
     }
 }
 

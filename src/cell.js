@@ -12,7 +12,8 @@ var CellComponent = React.createClass({
 
         if (this.state.editing) {
             cellContent = (
-                <input onBlur={this.handleBlur}
+                <input className="mousetrap"
+                       onBlur={this.handleBlur}
                        onChange={this.handleChange}
                        ref={this.props.uid}
                        placeholder={this.props.value} />

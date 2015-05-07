@@ -23,5 +23,8 @@
   },
   "scripts": {
     "build": "browserify --debug --transform reactify src/app.js > build/bundle.js"
+  },
+  "dependencies": {
+    "jquery": "^1.11"
   }
 }
