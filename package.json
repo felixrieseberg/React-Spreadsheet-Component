@@ -17,13 +17,11 @@
     "grunt-contrib-connect": "^0.10.1",
     "grunt-contrib-watch": "^0.6.1",
     "react": "^0.13.0",
-    "reactify": "^0.17.1"
+    "reactify": "^0.17.1",
+    "grunt-watchify": "^0.1.0",
+    "mousetrap": "^1.5.2"
   },
   "scripts": {
     "build": "browserify --debug --transform reactify src/app.js > build/bundle.js"
-  },
-  "dependencies": {
-    "es6ify": "^1.6.0",
-    "grunt-watchify": "^0.1.0"
   }
 }

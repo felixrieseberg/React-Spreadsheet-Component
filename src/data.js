@@ -1,7 +1,7 @@
 // Mock Data
 
 var Data = {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
     projects: [
         {
             name: 'Project A',

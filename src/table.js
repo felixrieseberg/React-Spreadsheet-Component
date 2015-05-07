@@ -8,7 +8,7 @@ var TableComponent = React.createClass({
 
     render: function() {
         var rows = Data.projects.map(function (project) {
-            return <RowComponent project={project} />;
+            return <RowComponent project={project} key={project.name} />;
         })
 
         return (
@@ -18,6 +18,10 @@ var TableComponent = React.createClass({
                 </tbody>
             </table>
         );
+    },
+
+    updateCellValue: function () {
+
     }
 
 });

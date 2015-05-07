@@ -19779,15 +19779,51 @@ React.render(React.createElement(TableComponent, null), document.getElementById(
 var React = require('react');
 
 var CellComponent = React.createClass({displayName: "CellComponent",
+    getInitialState: function() {
+        return {
+            editing: false
+        };
+    },
 
     render: function() {
+        var cellContent;
+
+        if (this.state.editing) {
+            cellContent = (
+                React.createElement("input", {onBlur: this.handleBlur, 
+                       ref: this.props.uid, 
+                       placeholder: this.props.value})
+            )
+        } else {
+            cellContent = (
+                React.createElement("span", {onClick: this.handleClick}, 
+                    this.props.value
+                ))
+        }
+
         return (
             React.createElement("td", null, 
                 React.createElement("div", null, 
-                    React.createElement("span", null, this.props.value)
+                    cellContent
                 )
             )
         );
+    },
+
+    componentDidUpdate: function() {
+        if (this.state.editing) {
+            React.findDOMNode(this.refs[this.props.uid]).focus();
+        }
+    },
+
+    handleClick: function (e) {
+        e.preventDefault();
+        this.setState({editing: !this.state.editing});
+    },
+
+    handleBlur: function (e) {
+        e.preventDefault();
+        this.setState({editing: !this.state.editing});
     }
 
 });
@@ -19797,7 +19833,7 @@ module.exports = CellComponent;
 // Mock Data
 
 var Data = {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
     projects: [
         {
             name: 'Project A',
@@ -19854,15 +19890,21 @@ var Data = require('./data');
 var RowComponent = React.createClass({displayName: "RowComponent",
     render: function() {
         var project = this.props.project,
-            colums = [];
+            colums = [],
+            currentValue, key;
 
         colums = Data.days.map(function(day)  {
-            return React.createElement(CellComponent, {value: 2});
+            key = project.name + '_' + day;
+            currentValue = project[day];
+
+            return React.createElement(CellComponent, {key: key, uid: key, value: currentValue});
         });
 
         return (
             React.createElement("tr", null, 
-                React.createElement("td", null, project.name), 
+                React.createElement("td", null, 
+                    React.createElement("span", null, project.name)
+                ), 
                 colums
             )
         );
@@ -19882,7 +19924,7 @@ var TableComponent = React.createClass({displayName: "TableComponent",
 
     render: function() {
         var rows = Data.projects.map(function (project) {
-            return React.createElement(RowComponent, {project: project});
+            return React.createElement(RowComponent, {project: project, key: project.name});
         })
 
         return (
@@ -19892,6 +19934,10 @@ var TableComponent = React.createClass({displayName: "TableComponent",
                 )
             )
         );
+    },
+
+    updateCellValue: function () {
+
     }
 
 });

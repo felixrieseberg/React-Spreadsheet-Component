@@ -1,7 +1,58 @@
-table, th, td {
-   border: 1px solid black;
+body
+{
+    background-color: #262626;
 }
 
-td {
-    width: 200px;
+table
+{
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-size: 11px;
+
+    color: #878787;
+    border-width: 0 0 1px 1px;
+    border-style: solid;
+    border-color: #1a1a1a;
+}
+
+td
+{
+    display: inline-block;
+
+    width: 150px;
+    margin: 0;
+    padding: 0;
+
+    text-align: center;
+
+    border-width: 1px 1px 0 0;
+    border-style: solid;
+    border-color: #1a1a1a;
+}
+
+td span
+{
+    display: inline-block;
+
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    padding: 4px;
+}
+
+td input
+{
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-size: 11px;
+
+    display: inline-block;
+
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    margin: 0;
+    padding: 4px;
+
+    text-align: center;
+
+    color: #878787;
+    border: none;
+    background-color: #202020;
 }

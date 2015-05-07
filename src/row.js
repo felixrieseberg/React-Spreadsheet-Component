@@ -7,15 +7,21 @@ var Data = require('./data');
 var RowComponent = React.createClass({
     render: function() {
         var project = this.props.project,
-            colums = [];
+            colums = [],
+            currentValue, key;
 
         colums = Data.days.map(day => {
-            return <CellComponent value={2} />;
+            key = project.name + '_' + day;
+            currentValue = project[day];
+
+            return <CellComponent key={key} uid={key} value={currentValue} />;
         });
 
         return (
             <tr>
-                <td>{project.name}</td>
+                <td>
+                    <span>{project.name}</span>
+                </td>
                 {colums}
             </tr>
         );
