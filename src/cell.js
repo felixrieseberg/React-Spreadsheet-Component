@@ -16,6 +16,8 @@ var CellComponent = React.createClass({
             uid = this.props.uid,
             ref = 'input_' + uid.join('_'),
             config = this.props.config,
+            emptyValueSymbol = this.props.config.emptyValueSymbol || '',
+            displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
             cellContent;
 
         // Check for headers
@@ -55,7 +57,7 @@ var CellComponent = React.createClass({
                 <div>
                     {cellContent}
                     <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>
-                        {this.props.value}
+                        {displayValue}
                     </span>
                 </div>
             </td>

@@ -23,7 +23,8 @@ var config = {
     headRow: true,
     headRowIsString: true,
     canAddRow: true,
-    canAddColumn: true
+    canAddColumn: true,
+    emptyValueSymbol: '-'
 };
 
 React.render(React.createElement(TableComponent, {initialData: mockData, config: config}), document.getElementById('content'));
@@ -31194,6 +31195,8 @@ var CellComponent = React.createClass({displayName: "CellComponent",
             uid = this.props.uid,
             ref = 'input_' + uid.join('_'),
             config = this.props.config,
+            emptyValueSymbol = this.props.config.emptyValueSymbol || '',
+            displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
             cellContent;
 
         // Check for headers
@@ -31233,7 +31236,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
                 React.createElement("div", null, 
                     cellContent, 
                     React.createElement("span", {onDoubleClick: this.handleDoubleClick, onClick: this.handleClick}, 
-                        this.props.value
+                        displayValue
                     )
                 )
             )
@@ -31537,7 +31540,8 @@ var TableComponent = React.createClass({displayName: "TableComponent",
                                     editing: this.state.editing, 
                                     handleSelectCell: this.handleSelectCell, 
                                     handleDoubleClickOnCell: this.handleDoubleClickOnCell, 
-                                    onCellValueChange: this.handleCellValueChange}));
+                                    onCellValueChange: this.handleCellValueChange, 
+                                    className: "cellComponent"}));
         }
 
         return (
@@ -31598,6 +31602,7 @@ var TableComponent = React.createClass({displayName: "TableComponent",
         Dispatcher.subscribe('letter_keyup', function()  {
             if (!this.state.editing && this.state.selectedElement) {
                 this.setState({editing: true});
+                $('td ')
             }
         }.bind(this));
 

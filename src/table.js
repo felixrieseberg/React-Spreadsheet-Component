@@ -72,7 +72,8 @@ var TableComponent = React.createClass({
                                     editing={this.state.editing}
                                     handleSelectCell={this.handleSelectCell}
                                     handleDoubleClickOnCell={this.handleDoubleClickOnCell}
-                                    onCellValueChange={this.handleCellValueChange} />);
+                                    onCellValueChange={this.handleCellValueChange} 
+                                    className="cellComponent" />);
         }
 
         return (
@@ -133,6 +134,7 @@ var TableComponent = React.createClass({
         Dispatcher.subscribe('letter_keyup', () => {
             if (!this.state.editing && this.state.selectedElement) {
                 this.setState({editing: true});
+                $('td ')
             }
         });
 

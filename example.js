@@ -22,7 +22,8 @@ var config = {
     headRow: true,
     headRowIsString: true,
     canAddRow: true,
-    canAddColumn: true
+    canAddColumn: true,
+    emptyValueSymbol: '-'
 };
 
 React.render(<TableComponent initialData={mockData} config={config} />, document.getElementById('content'));
