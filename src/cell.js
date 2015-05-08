@@ -18,13 +18,14 @@ var CellComponent = React.createClass({
             config = this.props.config,
             emptyValueSymbol = this.props.config.emptyValueSymbol || '',
             displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
+            cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
             cellContent;
 
         // Check for headers
         if ((config.headRow && uid[0] === 0) || (config.headColumn && uid[1] === 0)) {
             if ((config.headRowIsString && uid[0] === 0) || (config.headColumnIsString && uid[1] === 0)) {
                 return (
-                    <th ref={this.props.uid.join('_')}>
+                    <th className={cellClasses} ref={this.props.uid.join('_')}>
                         <div>
                             <span onClick={this.handleHeadClick}>
                                 {this.props.value}
@@ -53,7 +54,7 @@ var CellComponent = React.createClass({
         }
 
         return (
-            <td className={selected} ref={this.props.uid.join('_')}>
+            <td className={cellClasses} ref={this.props.uid.join('_')}>
                 <div className="reactTableCell">
                     {cellContent}
                     <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>

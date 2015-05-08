@@ -5,13 +5,23 @@ var React = require('react');
 var TableComponent = require('./src/spreadsheet');
 
 // Mock Data 
-var mockData = {
+var initialData = {
     rows: [
         ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         ['COM', 1, 2, 3, 4, 5, 6, 7],
         ['DIV', 1, '', 3, 4, 5, 6, 7],
         ['DEV', 1, 2, 3, 4, 5, 6, 7],
         ['ACC', 1, 2, 3, 4, 5, 6, 7]
+    ]
+};
+
+var cellClasses = {
+    rows: [
+        ['', 'specialHead', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', 'error', '', '', '', '', '', ''],
+        ['', 'error changed', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', '']
     ]
 };
 
@@ -27,7 +37,7 @@ var config = {
     emptyValueSymbol: '-'
 };
 
-React.render(React.createElement(TableComponent, {initialData: mockData, config: config}), document.getElementById('content'));
+React.render(React.createElement(TableComponent, {initialData: initialData, config: config, cellClasses: cellClasses}), document.getElementById('content'));
 },{"./src/spreadsheet":165,"react":160}],2:[function(require,module,exports){
 // shim for using process in browser
 
@@ -31197,13 +31207,14 @@ var CellComponent = React.createClass({displayName: "CellComponent",
             config = this.props.config,
             emptyValueSymbol = this.props.config.emptyValueSymbol || '',
             displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
+            cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
             cellContent;
 
         // Check for headers
         if ((config.headRow && uid[0] === 0) || (config.headColumn && uid[1] === 0)) {
             if ((config.headRowIsString && uid[0] === 0) || (config.headColumnIsString && uid[1] === 0)) {
                 return (
-                    React.createElement("th", {ref: this.props.uid.join('_')}, 
+                    React.createElement("th", {className: cellClasses, ref: this.props.uid.join('_')}, 
                         React.createElement("div", null, 
                             React.createElement("span", {onClick: this.handleHeadClick}, 
                                 this.props.value
@@ -31232,7 +31243,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         }
 
         return (
-            React.createElement("td", {className: selected, ref: this.props.uid.join('_')}, 
+            React.createElement("td", {className: cellClasses, ref: this.props.uid.join('_')}, 
                 React.createElement("div", {className: "reactTableCell"}, 
                     cellContent, 
                     React.createElement("span", {onDoubleClick: this.handleDoubleClick, onClick: this.handleClick}, 
@@ -31428,7 +31439,7 @@ var CellComponent = require('./cell');
 var Helpers = require('./helpers');
 
 var RowComponent = React.createClass({displayName: "RowComponent",
-    
+
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]
@@ -31437,15 +31448,16 @@ var RowComponent = React.createClass({displayName: "RowComponent",
         var config = this.props.config,
             cells = this.props.cells,
             columns = [],
-            key, uid, selected;
+            key, uid, selected, cellClasses, i;
 
         if (!config.columns || cells.length === 0) {
             return console.error('Table can\'t be initialized without set number of columsn and no data!');
         }
 
-        for (var i = 0; i < cells.length; i = i+1) {
+        for (i = 0; i < cells.length; i = i + 1) {
             // If a cell is selected, check if it's this one
             selected = Helpers.equalCells(this.props.selected, [this.props.uid, i]);
+            cellClasses = (this.props.cellClasses && this.props.cellClasses[i]) ? this.props.cellClasses[i] : '';
 
             key = 'row_' + this.props.uid + '_cell_' + i;
             uid = [this.props.uid, i];
@@ -31453,6 +31465,7 @@ var RowComponent = React.createClass({displayName: "RowComponent",
                                        uid: uid, 
                                        value: cells[i], 
                                        config: config, 
+                                       cellClasses: cellClasses, 
                                        onCellValueChange: this.props.onCellValueChange, 
                                        handleSelectCell: this.props.handleSelectCell, 
                                        handleDoubleClickOnCell: this.props.handleDoubleClickOnCell, 
@@ -31532,7 +31545,8 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
     render: function() {
         var data = this.state.data,
             config = this.props.config,
-            rows = [], key, i;
+            _cellClasses = this.props.cellClasses,
+            rows = [], key, i, cellClasses;
 
         // Sanity checks
         if (!data.rows && !config.rows) {
@@ -31542,7 +31556,10 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
         // Create Rows
         for (i = 0; i < data.rows.length; i = i + 1) {
             key = 'row_' + i;
+            cellClasses = (_cellClasses && _cellClasses.rows && _cellClasses.rows[i]) ? _cellClasses.rows[i] : null;
+
             rows.push(React.createElement(RowComponent, {cells: data.rows[i], 
+                                    cellClasses: cellClasses, 
                                     uid: i, 
                                     key: key, 
                                     config: config, 

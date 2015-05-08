@@ -63,7 +63,8 @@ var SpreadsheetComponent = React.createClass({
     render: function() {
         var data = this.state.data,
             config = this.props.config,
-            rows = [], key, i;
+            _cellClasses = this.props.cellClasses,
+            rows = [], key, i, cellClasses;
 
         // Sanity checks
         if (!data.rows && !config.rows) {
@@ -73,7 +74,10 @@ var SpreadsheetComponent = React.createClass({
         // Create Rows
         for (i = 0; i < data.rows.length; i = i + 1) {
             key = 'row_' + i;
-            rows.push(<RowComponent cells={data.rows[i]} 
+            cellClasses = (_cellClasses && _cellClasses.rows && _cellClasses.rows[i]) ? _cellClasses.rows[i] : null;
+
+            rows.push(<RowComponent cells={data.rows[i]}
+                                    cellClasses={cellClasses} 
                                     uid={i}
                                     key={key}
                                     config={config}
