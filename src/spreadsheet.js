@@ -225,7 +225,7 @@ var SpreadsheetComponent = React.createClass({
 
         if (direction === 'right' && config.canAddColumn) {
             for (i = 0; i < data.rows.length; i = i + 1) {
-                data.rows[i].push([]);
+                data.rows[i].push('');
             }
 
             return this.setState({data: data});

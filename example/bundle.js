@@ -31206,7 +31206,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
             ref = 'input_' + uid.join('_'),
             config = this.props.config,
             emptyValueSymbol = this.props.config.emptyValueSymbol || '',
-            displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
+            displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
             cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
             cellContent;
 
@@ -31707,7 +31707,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
 
         if (direction === 'right' && config.canAddColumn) {
             for (i = 0; i < data.rows.length; i = i + 1) {
-                data.rows[i].push([]);
+                data.rows[i].push('');
             }
 
             return this.setState({data: data});

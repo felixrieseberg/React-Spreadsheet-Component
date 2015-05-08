@@ -17,7 +17,7 @@ var CellComponent = React.createClass({
             ref = 'input_' + uid.join('_'),
             config = this.props.config,
             emptyValueSymbol = this.props.config.emptyValueSymbol || '',
-            displayValue = (this.props.value === '') ? emptyValueSymbol : this.props.value,
+            displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
             cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
             cellContent;
 
