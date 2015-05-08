@@ -11,12 +11,22 @@ var TableComponent = React.createClass({
 
         return {
             data: initialData,
-            cursor: null
+            selected: null,
+            lastBlurred: null,
+            selectedElement: null,
+            editing: false
         };
     },
 
     componentWillMount: function () {
         this.bindKeyboard();
+
+        Dispatcher.subscribe('cellBlurred', cell => {
+            this.setState({ 
+                editing: false,
+                lastBlurred: cell
+            });
+        });
     },
 
     render: function() {
@@ -34,7 +44,11 @@ var TableComponent = React.createClass({
                                     uid={i}
                                     key={key}
                                     config={config}
-                                    onCellValueChange={Dispatcher.cellValueChangeHandler.bind(this)} />);
+                                    selected={this.state.selected}
+                                    editing={this.state.editing}
+                                    handleSelectCell={this.handleSelectCell}
+                                    handleDoubleClickOnCell={this.handleDoubleClickOnCell}
+                                    onCellValueChange={this.handleCellValueChange} />);
         };
 
         return (
@@ -49,55 +63,117 @@ var TableComponent = React.createClass({
     bindKeyboard: function () {
         Dispatcher.setupKeyboardShortcuts();
 
-        Dispatcher.subscribe('up_keyup', data => this.navigateTable('up', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('down_keyup', data => this.navigateTable('down', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('left_keyup', data => this.navigateTable('left', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('right_keyup', data => this.navigateTable('right', Helpers.firstTDinArray(data.path)));
-        Dispatcher.subscribe('tab_keyup', data => this.navigateTable('right', Helpers.firstTDinArray(data.path)));
+        Dispatcher.subscribe('up_keyup', data => {
+            this.navigateTable('up');
+        });
+        Dispatcher.subscribe('down_keyup', data => {
+            this.navigateTable('down');
+        });
+        Dispatcher.subscribe('left_keyup', data => {
+            this.navigateTable('left');
+        });
+        Dispatcher.subscribe('right_keyup', data => {
+            this.navigateTable('right');
+        });
+        Dispatcher.subscribe('tab_keyup', data => {
+            this.navigateTable('right', null, true);
+        });
+        
+        // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', data => {
-            if (data.preventDefault) {
-                data.preventDefault();
-            } else {
-                // Oh, old IE, you 💩
-                data.returnValue = false;
-            }  
+            if ($(document.activeElement) && $(document.activeElement)[0].tagName === 'INPUT') {
+                if (data.preventDefault) {
+                    data.preventDefault();
+                } else {
+                    // Oh, old IE, you 💩
+                    data.returnValue = false;
+                } 
+            } 
+        });
+
+        Dispatcher.subscribe('remove_keydown', data => {
+            if (!$(data.target).is('input, textarea')) {
+                if (data.preventDefault) {
+                    data.preventDefault();
+                } else {
+                    // Oh, old IE, you 💩
+                    data.returnValue = false;
+                }
+            }
+        });
+
+        // Go into edit mode when the user starts typing on a field
+        Dispatcher.subscribe('letter_keyup', () => {
+            if (!this.state.editing && this.state.selectedElement) {
+                this.setState({editing: true});
+            }
+        });
+
+        // Delete on backspace and delete
+        Dispatcher.subscribe('remove_keyup', () => {
+            if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
+                this.handleCellValueChange(this.state.selected, '');
+            }
         })
     },
 
-    leftHandler: function (data) {
-        var cell = Helpers.firstTDinArray(data.path);
-        
-        if (cell) {
-            this.navigateTable('down', cell);
+    navigateTable: function(direction, originCell, inEdit) {
+        // Only traverse the table if the user isn't editing a cell,
+        // unless override is given
+        if (!inEdit && this.state.editing) {
+            return false;
         }
-    },
 
-    navigateTable: function(direction, originCell) {
+        // Use the curently active cell if one isn't passed
         if (!originCell) {
-            return;
+            originCell = this.state.selectedElement;
         }
 
         var $origin = $(originCell),
-            cellIndex = $origin.index();
+            cellIndex = $origin.index(),
+            target;
 
         if (direction === 'up') {
-            return $origin.closest('tr').prev().children().eq(cellIndex).find('span').click();
+            target = $origin.closest('tr').prev().children().eq(cellIndex).find('span');
+        } else if (direction === 'down') {
+            target = $origin.closest('tr').next().children().eq(cellIndex).find('span');
+        } else if (direction === 'left') {
+            target = $origin.closest('td').prev().find('span');
+        } else if (direction === 'right') {
+            target = $origin.closest('td').next().find('span');
         }
 
-        if (direction === 'down') {
-            return $origin.closest('tr').next().children().eq(cellIndex).find('span').click();
-        }
+        target.click();
+    },
 
-        if (direction === 'left') {
-            return $origin.closest('td').prev().find('span').click();
-        }
+    handleSelectCell: function (cell, cellElement) {
+        Dispatcher.publish('cellSelected', cell);
+        this.setState({
+            selected: cell,
+            selectedElement: cellElement
+        });
+    },
 
-        if (direction === 'right') {
-            return $origin.closest('td').next().find('span').click();
-        }
+    handleCellValueChange: function (cell, newValue, e) {
+        Dispatcher.publish('cellValueChanged', cell, newValue);
 
+        var data = this.state.data,
+            row = cell[0],
+            column = cell[1];
+
+        data.rows[row][column] = newValue;
+        this.setState({
+            data: data
+        });
+
+        Dispatcher.publish('dataChanged', data);
+    },
+
+    handleDoubleClickOnCell: function () {
+        this.setState({
+            editing: true
+        });
     }
-
 });
 
 module.exports = TableComponent;

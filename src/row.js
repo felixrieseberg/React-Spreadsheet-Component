@@ -1,5 +1,7 @@
 var React = require('react');
+
 var CellComponent = require('./cell');
+var Helpers = require('./helpers');
 
 var RowComponent = React.createClass({
     render: function() {
@@ -7,7 +9,7 @@ var RowComponent = React.createClass({
             cells = this.props.cells,
             colums = [],
             header = null,
-            key, uid;
+            key, uid, selected;
 
         if (!cells || !config.colums || cells.length !== config.colums) {
             return console.error(
@@ -18,7 +20,7 @@ var RowComponent = React.createClass({
 
         // If a column head is set, create header td
         if (config.columnHead) {
-            header = (<td><span>{cells[0]}</span></td>);
+            header = (<td><div><span>{cells[0]}</span></div></td>);
 
             // Clone array, remove first element (which was used for the head)
             cells = cells.slice(0);
@@ -26,12 +28,19 @@ var RowComponent = React.createClass({
         }
 
         for (var i = 0; i < cells.length; i++) {
+            // If a cell is selected, check if it's this one
+            selected = Helpers.equalCells(this.props.selected, [this.props.uid, i]);
+
             key = 'row_' + this.props.uid + '_cell_' + i;
             uid = [this.props.uid, i];
             colums.push(<CellComponent key={key} 
                                        uid={uid}
                                        value={cells[i]}
-                                       onCellValueChange={this.props.onCellValueChange} />
+                                       onCellValueChange={this.props.onCellValueChange} 
+                                       handleSelectCell={this.props.handleSelectCell}
+                                       handleDoubleClickOnCell={this.props.handleDoubleClickOnCell}
+                                       selected={selected} 
+                                       editing={this.props.editing} />
             );
         };
 
@@ -42,7 +51,6 @@ var RowComponent = React.createClass({
             </tr>
         );
     }
-
 });
 
 module.exports = RowComponent;

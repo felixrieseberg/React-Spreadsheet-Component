@@ -3,6 +3,16 @@ var Mousetrap = require('mousetrap');
 var dispatcher = {
 
     // Event Pub/Sub System
+    // 
+    // Topics used:
+    // [cellSelected] - A cell was selected
+    //      @return {[array]} [row, column]
+    // [cellBlur] - A cell was blurred
+    //      @return {[array]} [row, column]
+    // [cellValueChanged] - A cell value changed.
+    //      @return {[cell, newValue]} Origin cell, new value entered
+    // [dataChanged] - Data changed
+    //      @return {[data]} New data
     topics: {},
 
     /**
@@ -34,13 +44,19 @@ var dispatcher = {
 
     keyboardShortcuts: [
         // Name, Keys, Events
-        ['down', ['down', 'enter'], ['keyup']],
+        ['down', 'down', ['keyup']],
         ['up', 'up', ['keyup']],
         ['left', 'left', ['keyup']],
         ['right', 'right', ['keyup']],
-        ['tab', 'tab', ['keyup', 'keydown']]
+        ['tab', 'tab', ['keyup', 'keydown']],
+        ['esc', 'esc', ['keyup']],
+        ['remove', ['backspace', 'delete'], ['keyup', 'keydown']],
+        ['letter', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'w', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '.', ',', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'], ['keyup']]
     ],
     
+    /**
+     * Initializes the keyboard bindings
+     */
     setupKeyboardShortcuts: function () {
         var self = this;
 
@@ -55,18 +71,7 @@ var dispatcher = {
                 }, event);
             })
         });
-    },
-
-    cellValueChangeHandler: function (cell, newValue, e) {
-        var data = this.state.data,
-            row = cell[0],
-            column = cell[1];
-
-        data.rows[row][column] = newValue;
-        this.setState({
-            data: data
-        });
-    },
+    }
 };
 
 module.exports = dispatcher;

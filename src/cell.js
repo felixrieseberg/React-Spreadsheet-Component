@@ -1,59 +1,64 @@
 var React = require('react');
+var $ = require('jquery');
+
+var Dispatcher = require('./dispatcher');
 
 var CellComponent = React.createClass({
     getInitialState: function() {
         return {
-            editing: false
+            editing: this.props.editing
         };
     },
 
     render: function() {
-        var cellContent;
+        var selected = (this.props.selected) ? 'selected' : '',
+            ref = 'input_' + this.props.uid.join('_'),
+            cellContent;
 
-        if (this.state.editing) {
+        if (this.props.selected && this.props.editing) {
             cellContent = (
                 <input className="mousetrap"
                        onBlur={this.handleBlur}
-                       onChange={this.handleChange}
-                       ref={this.props.uid}
-                       placeholder={this.props.value} />
+                       ref={ref}
+                       defaultValue={this.props.value} />
             )
-        } else {
-            cellContent = (
-                <span onClick={this.handleClick}>
-                    {this.props.value}
-                </span>)
         }
 
         return (
-            <td>
+            <td className={selected} ref={this.props.uid.join('_')}>
                 <div>
                     {cellContent}
+                    <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>
+                        {this.props.value}
+                    </span>
                 </div>
             </td>
         );
     },
 
     componentDidUpdate: function() {
-        if (this.state.editing) {
-            React.findDOMNode(this.refs[this.props.uid]).focus();
+        if (this.props.editing && this.props.selected) {
+            var node = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
+            node.focus();
         }
     },
 
     handleClick: function (e) {
+        var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
+        this.props.handleSelectCell(this.props.uid, cellElement);
+    },
+
+    handleDoubleClick: function (e) {
         e.preventDefault();
-        this.setState({editing: !this.state.editing});
+        this.props.handleDoubleClickOnCell(this.props.uid);
     },
 
     handleBlur: function (e) {
-        this.setState({editing: !this.state.editing});
-    },
+        var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
-    handleChange: function (e) {
-        var newValue = React.findDOMNode(this.refs[this.props.uid]).value;
         this.props.onCellValueChange(this.props.uid, newValue, e);
+        Dispatcher.publish('cellBlurred', this.props.uid);
     }
-
 });
 
 module.exports = CellComponent;

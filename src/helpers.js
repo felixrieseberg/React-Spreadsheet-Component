@@ -34,33 +34,21 @@ var Helpers = {
     },
 
     /**
-     * Check if two arrays are equal
-     * @param  {[array]} arr1 [First array]
-     * @param  {[array]} arr2 [Second array]
-     * @return {[boolean]}    [Boolean indicating if the arrays are equal]
+     * Check if two cell objects reference the same cell
+     * @param  {[array]} cell1 [First cell]
+     * @param  {[array]} cell2 [Second cell]
+     * @return {[boolean]}    [Boolean indicating if the cells are equal]
      */
-    equalArrays: function (arr1, arr2) {
-        if (!arr2) {
+    equalCells: function (cell1, cell2) {
+        if (!cell1 || !cell2 || cell1.length !== cell2.length) {
             return false;
         }
 
-        if (arr1.length !== arr2.length) {
+        if (cell1[0] === cell2[0] && cell1[1] === cell2[1]) {
+            return true;
+        } else {
             return false;
         }
-
-        for (var i = 0, l = arr1.length; i < l; i++) {
-            // Check for nested arrays
-            if (arr1[i] instanceof Array && arr2[i] instanceof Array) {
-                if (!arr1[i].equals(arr2[i])) {
-                    return false;       
-                }
-            }           
-            else if (arr1[i] != arr2[i]) { 
-                return false;   
-            }           
-        }
-
-        return true;
     }
 }
 
