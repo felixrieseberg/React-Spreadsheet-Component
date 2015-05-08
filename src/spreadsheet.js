@@ -150,7 +150,7 @@ var SpreadsheetComponent = React.createClass({
         });
 
         // Go into edit mode when the user starts typing on a field
-        Dispatcher.subscribe('letter_keyup', () => {
+        Dispatcher.subscribe('letter_keydown', () => {
             if (!this.state.editing && this.state.selectedElement) {
                 this.setState({editing: true});
             }
