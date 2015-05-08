@@ -18,7 +18,7 @@ table
     background-color: #262626;
 }
 
-td
+td, th
 {
     box-sizing: border-box;
     position: relative;
@@ -36,7 +36,7 @@ td
     border-color: #1a1a1a;
 }
 
-td div {
+td div, th div {
     height: 100%;
 }
 
