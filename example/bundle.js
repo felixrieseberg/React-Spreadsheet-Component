@@ -31317,6 +31317,10 @@ var dispatcher = {
     //      @return {[cell]} Origin cell
     // [editStopped] - The user stopped editing
     //      @return {[cell]} Origin cell
+    // [rowCreated] - The user created a row
+    //      @return {[number]} Row index
+    // [columnCreated] - The user created a column
+    //      @return {[number]} Column index
     topics: {},
 
     /**
@@ -31711,6 +31715,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
             }
 
             data.rows.push(newRow);
+            Dispatcher.publish('rowCreated', data.rows.length);
             return this.setState({data: data});
         }
 
@@ -31719,6 +31724,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
                 data.rows[i].push('');
             }
 
+            Dispatcher.publish('columnCreated', data.rows[0].length);
             return this.setState({data: data});
         }
 

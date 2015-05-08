@@ -19,6 +19,10 @@ var dispatcher = {
     //      @return {[cell]} Origin cell
     // [editStopped] - The user stopped editing
     //      @return {[cell]} Origin cell
+    // [rowCreated] - The user created a row
+    //      @return {[number]} Row index
+    // [columnCreated] - The user created a column
+    //      @return {[number]} Column index
     topics: {},
 
     /**

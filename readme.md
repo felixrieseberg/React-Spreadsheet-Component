@@ -96,3 +96,5 @@ The dispatcher is offering more events you can subscribe to:
  * `cellBlur` A cell was blurred (returns returns a cell array `[row, column]`)
  * `editStarted` The user started editing (returns a cell array `[row, column]`)
  * `editStopped` The user stopped editing (returns a cell array `[row, column]`)
+ * `newRow` The user created a new row (returns the row index)
+ * `newColumn` The user created a new column (returns the row index)

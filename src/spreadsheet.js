@@ -225,6 +225,7 @@ var SpreadsheetComponent = React.createClass({
             }
 
             data.rows.push(newRow);
+            Dispatcher.publish('rowCreated', data.rows.length);
             return this.setState({data: data});
         }
 
@@ -233,6 +234,7 @@ var SpreadsheetComponent = React.createClass({
                 data.rows[i].push('');
             }
 
+            Dispatcher.publish('columnCreated', data.rows[0].length);
             return this.setState({data: data});
         }
 
