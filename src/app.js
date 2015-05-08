@@ -6,6 +6,7 @@ var TableComponent = require('./table');
 // Mock Data 
 var mockData = {
     rows: [
+        ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         ['COM', 1, 2, 3, 4, 5, 6, 7],
         ['DIV', 1, '', 3, 4, 5, 6, 7],
         ['DEV', 1, 2, 3, 4, 5, 6, 7],
@@ -14,12 +15,14 @@ var mockData = {
 };
 
 var config = {
-    rows: 4,
+    rows: 5,
     columns: 8,
     headColumn: true,
     headColumnIsString: true,
     headRow: true,
-    headRowIsString: true
+    headRowIsString: true,
+    canAddRow: true,
+    canAddColumn: true
 };
 
 React.render(<TableComponent initialData={mockData} config={config} />, document.getElementById('content'));

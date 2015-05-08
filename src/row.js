@@ -10,11 +10,8 @@ var RowComponent = React.createClass({
             columns = [],
             key, uid, selected;
 
-        if (!config.columns || cells.length !== config.columns) {
-            return console.error(
-                'Table Component: Number of columns in config and data mismatch.',
-                'Config: columns: ' + config.columns + ' Data: columns: ' + cells.length
-            );
+        if (!config.columns || cells.length === 0) {
+            return console.error('Table can\'t be initialized without set number of columsn and no data!');
         }
 
         for (var i = 0; i < cells.length; i++) {

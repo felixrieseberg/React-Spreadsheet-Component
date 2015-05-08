@@ -46,8 +46,8 @@ var TableComponent = React.createClass({
             rows = [], key, i;
 
         // Sanity checks
-        if (!data.rows || !config.rows || data.rows.length !== config.rows) {
-            return console.error('Table Component: Number of rows in config and data mismatch');
+        if (!data.rows && !config.rows) {
+            return console.error('Table Component: Number of colums not defined in both data and config!');
         }
 
         // Create Rows
@@ -130,7 +130,7 @@ var TableComponent = React.createClass({
         });
     },
 
-    navigateTable: function(direction, originCell, inEdit) {
+    navigateTable: function (direction, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
         if (!inEdit && this.state.editing) {
@@ -156,7 +156,37 @@ var TableComponent = React.createClass({
             target = $origin.closest('td').next().find('span');
         }
 
-        target.click();
+        if (target.length > 0) {
+            target.click();
+        } else {
+            this.extendTable(direction, originCell);
+        }
+    },
+
+    extendTable: function (direction, originCell) {
+        var config = this.props.config,
+            data = this.state.data,
+            newRow, newColumn;
+
+        if (direction === 'down' && config.canAddRow) {
+            newRow = [];
+
+            for (var i = 0; i < this.state.data.rows[0].length; i++) {
+                newRow[i] = '';
+            };
+
+            data.rows.push(newRow);
+            return this.setState({data: data});
+        }
+
+        if (direction === 'right' && config.canAddColumn) {
+            for (var i = 0; i < data.rows.length; i++) {
+                data.rows[i].push([]);
+            };
+
+            return this.setState({data: data});
+        }
+
     },
 
     handleSelectCell: function (cell, cellElement) {
