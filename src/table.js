@@ -7,7 +7,18 @@ var Helpers = require('./helpers');
 
 var TableComponent = React.createClass({
     getInitialState: function() {
-        var initialData = this.props.initialData;
+        var initialData = this.props.initialData || {};
+
+        if (!initialData.rows) {
+            initialData.rows = [];
+
+            for (var i = 0; i < this.props.config.rows; i++) {
+                initialData.rows[i] = [];
+                for (var ci = 0; ci < this.props.config.columns; ci++) {
+                    initialData.rows[i][ci] = '';
+                };
+            };
+        }
 
         return {
             data: initialData,
@@ -34,10 +45,12 @@ var TableComponent = React.createClass({
             config = this.props.config,
             rows = [], key, i;
 
+        // Sanity checks
         if (!data.rows || !config.rows || data.rows.length !== config.rows) {
             return console.error('Table Component: Number of rows in config and data mismatch');
         }
 
+        // Create Rows
         for (i = 0; i < data.rows.length; i++) {
             key = 'row_' + i;
             rows.push(<RowComponent cells={data.rows[i]} 
@@ -54,7 +67,7 @@ var TableComponent = React.createClass({
         return (
             <table>
                 <tbody>
-                    {{rows}}
+                    {rows}
                 </tbody>
             </table>
         );

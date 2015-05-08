@@ -5,6 +5,8 @@ var dispatcher = {
     // Event Pub/Sub System
     // 
     // Topics used:
+    // [headCellClicked] - A head cell was clicked
+    //      @return {[array]} [row, column]
     // [cellSelected] - A cell was selected
     //      @return {[array]} [row, column]
     // [cellBlur] - A cell was blurred

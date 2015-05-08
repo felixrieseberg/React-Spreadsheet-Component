@@ -7,24 +7,14 @@ var RowComponent = React.createClass({
     render: function() {
         var config = this.props.config,
             cells = this.props.cells,
-            colums = [],
-            header = null,
+            columns = [],
             key, uid, selected;
 
-        if (!cells || !config.colums || cells.length !== config.colums) {
+        if (!config.columns || cells.length !== config.columns) {
             return console.error(
-                'Table Component: Number of colums in config and data mismatch.',
-                'Config: Colums: ' + config.colums + ' Data: Colums: ' + cells.length
+                'Table Component: Number of columns in config and data mismatch.',
+                'Config: columns: ' + config.columns + ' Data: columns: ' + cells.length
             );
-        }
-
-        // If a column head is set, create header td
-        if (config.columnHead) {
-            header = (<td><div><span>{cells[0]}</span></div></td>);
-
-            // Clone array, remove first element (which was used for the head)
-            cells = cells.slice(0);
-            cells.shift();
         }
 
         for (var i = 0; i < cells.length; i++) {
@@ -33,9 +23,10 @@ var RowComponent = React.createClass({
 
             key = 'row_' + this.props.uid + '_cell_' + i;
             uid = [this.props.uid, i];
-            colums.push(<CellComponent key={key} 
+            columns.push(<CellComponent key={key} 
                                        uid={uid}
                                        value={cells[i]}
+                                       config={config}
                                        onCellValueChange={this.props.onCellValueChange} 
                                        handleSelectCell={this.props.handleSelectCell}
                                        handleDoubleClickOnCell={this.props.handleDoubleClickOnCell}
@@ -46,8 +37,7 @@ var RowComponent = React.createClass({
 
         return (
             <tr>
-                {header}
-                {colums}
+                {columns}
             </tr>
         );
     }

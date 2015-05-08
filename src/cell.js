@@ -13,9 +13,33 @@ var CellComponent = React.createClass({
 
     render: function() {
         var selected = (this.props.selected) ? 'selected' : '',
-            ref = 'input_' + this.props.uid.join('_'),
+            uid = this.props.uid,
+            ref = 'input_' + uid.join('_'),
+            config = this.props.config,
             cellContent;
 
+        // Check for headers
+        if ((config.headRow && uid[0] === 0) || (config.headColumn && uid[1] === 0)) {
+            if ((config.headRowIsString && uid[0] === 0) || (config.headColumnIsString && uid[1] === 0)) {
+                return (
+                    <th ref={this.props.uid.join('_')}>
+                        <div>
+                            <span onClick={this.handleHeadClick}>
+                                {this.props.value}
+                            </span>
+                        </div>
+                    </th>
+                );
+            } else {
+                return (
+                    <th ref={this.props.uid.join('_')}>
+                        {this.props.value}
+                    </th>
+                );
+            }
+        }
+
+        // If not a header, check for editing and return 
         if (this.props.selected && this.props.editing) {
             cellContent = (
                 <input className="mousetrap"
@@ -52,6 +76,11 @@ var CellComponent = React.createClass({
     handleClick: function (e) {
         var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
         this.props.handleSelectCell(this.props.uid, cellElement);
+    },
+
+    handleHeadClick: function (e) {
+        var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
+        Dispatcher.publish('headCellClicked', cellElement);
     },
 
     handleDoubleClick: function (e) {
