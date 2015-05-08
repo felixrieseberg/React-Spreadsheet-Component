@@ -88,3 +88,11 @@ Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
     // newValue: The new value for that cell
 })
 ```
+
+## Other Dispatcher Events
+The dispatcher is offering more events you can subscribe to:
+ * `headCellClicked` A head cell was clicked (returns a cell array `[row, column]`)
+ * `cellSelected` A cell was selected (returns a cell array `[row, column]`)
+ * `cellBlur` A cell was blurred (returns returns a cell array `[row, column]`)
+ * `editStarted` The user started editing (returns a cell array `[row, column]`)
+ * `editStopped` The user stopped editing (returns a cell array `[row, column]`)

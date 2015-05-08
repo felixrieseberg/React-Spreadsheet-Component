@@ -15,6 +15,10 @@ var dispatcher = {
     //      @return {[cell, newValue]} Origin cell, new value entered
     // [dataChanged] - Data changed
     //      @return {[data]} New data
+    // [editStarted] - The user started editing
+    //      @return {[cell]} Origin cell
+    // [editStopped] - The user stopped editing
+    //      @return {[cell]} Origin cell
     topics: {},
 
     /**

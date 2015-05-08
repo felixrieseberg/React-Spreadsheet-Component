@@ -31313,6 +31313,10 @@ var dispatcher = {
     //      @return {[cell, newValue]} Origin cell, new value entered
     // [dataChanged] - Data changed
     //      @return {[data]} New data
+    // [editStarted] - The user started editing
+    //      @return {[cell]} Origin cell
+    // [editStopped] - The user stopped editing
+    //      @return {[cell]} Origin cell
     topics: {},
 
     /**
@@ -31522,6 +31526,10 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
         this.bindKeyboard();
         
         Dispatcher.subscribe('cellBlurred', function(cell)  {
+            if (this.state.editing) {
+                Dispatcher.publish('editStopped', this.state.selectedElement);
+            }
+
             this.setState({ 
                 editing: false,
                 lastBlurred: cell
@@ -31634,6 +31642,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keydown', function()  {
             if (!this.state.editing && this.state.selectedElement) {
+                Dispatcher.publish('editStarted', this.state.selectedElement);
                 this.setState({editing: true});
             }
         }.bind(this));
