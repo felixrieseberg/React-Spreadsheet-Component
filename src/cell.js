@@ -18,6 +18,7 @@ var CellComponent = React.createClass({
         if (this.props.selected && this.props.editing) {
             cellContent = (
                 <input className="mousetrap"
+                       onChange={this.handleChange}
                        onBlur={this.handleBlur}
                        ref={ref}
                        defaultValue={this.props.value} />
@@ -36,10 +37,14 @@ var CellComponent = React.createClass({
         );
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate: function(prevProps, prevState) {
         if (this.props.editing && this.props.selected) {
             var node = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
             node.focus();
+        }
+
+        if (prevProps.selected && prevProps.editing && this.state.changedValue !== this.props.value) {
+            this.props.onCellValueChange(this.props.uid, this.state.changedValue);
         }
     },
 
@@ -58,6 +63,12 @@ var CellComponent = React.createClass({
 
         this.props.onCellValueChange(this.props.uid, newValue, e);
         Dispatcher.publish('cellBlurred', this.props.uid);
+    },
+
+    handleChange: function (e) {
+        var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+
+        this.setState({changedValue: newValue});
     }
 });
 
