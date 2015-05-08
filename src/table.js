@@ -114,7 +114,7 @@ var TableComponent = React.createClass({
             if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
                 this.handleCellValueChange(this.state.selected, '');
             }
-        })
+        });
     },
 
     navigateTable: function(direction, originCell, inEdit) {

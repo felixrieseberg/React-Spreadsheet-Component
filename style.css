@@ -1,6 +1,8 @@
 body
 {
-    background-color: #262626;
+    background-color: #2C2C2C;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    color: #fff;
 }
 
 table
@@ -13,6 +15,7 @@ table
     border-style: solid;
     border-color: #1a1a1a;
     border-spacing: 0;
+    background-color: #262626;
 }
 
 td
@@ -21,8 +24,8 @@ td
     position: relative;
     display: inline-block;
 
-    height: 25px;
-    width: 150px;
+    height: 35px;
+    width: 75px;
     margin: 0;
     padding: 0;
 
@@ -33,12 +36,17 @@ td
     border-color: #1a1a1a;
 }
 
+td div {
+    height: 100%;
+}
+
 td span
 {
     display: inline-block;
     width: calc(100% - 8px);
     height: calc(100% - 8px);
     padding: 4px;
+    line-height: 26px;
 }
 
 td input

@@ -6,7 +6,8 @@ var Dispatcher = require('./dispatcher');
 var CellComponent = React.createClass({
     getInitialState: function() {
         return {
-            editing: this.props.editing
+            editing: this.props.editing,
+            changedValue: this.props.value
         };
     },
 
