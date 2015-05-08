@@ -38,12 +38,21 @@ var TableComponent = React.createClass({
      */
     componentWillMount: function () {
         this.bindKeyboard();
-
+        
         Dispatcher.subscribe('cellBlurred', cell => {
             this.setState({ 
                 editing: false,
                 lastBlurred: cell
             });
+        });
+
+        $('body').on('focus', 'input', function (e) {
+            $(this)
+                .one('mouseup', function () {
+                    $(this).select();
+                    return false;
+                })
+                .select();
         });
     },
 
@@ -130,11 +139,16 @@ var TableComponent = React.createClass({
             }
         });
 
+        Dispatcher.subscribe('enter_keyup', () => {
+            if (this.state.selectedElement) {
+                this.setState({editing: !this.state.editing});
+            }
+        });
+
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keyup', () => {
             if (!this.state.editing && this.state.selectedElement) {
                 this.setState({editing: true});
-                $('td ')
             }
         });
 

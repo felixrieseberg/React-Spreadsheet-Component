@@ -54,7 +54,7 @@ var CellComponent = React.createClass({
 
         return (
             <td className={selected} ref={this.props.uid.join('_')}>
-                <div>
+                <div className="reactTableCell">
                     {cellContent}
                     <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>
                         {displayValue}

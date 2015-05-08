@@ -31233,7 +31233,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 
         return (
             React.createElement("td", {className: selected, ref: this.props.uid.join('_')}, 
-                React.createElement("div", null, 
+                React.createElement("div", {className: "reactTableCell"}, 
                     cellContent, 
                     React.createElement("span", {onDoubleClick: this.handleDoubleClick, onClick: this.handleClick}, 
                         displayValue
@@ -31330,7 +31330,7 @@ var dispatcher = {
             listener(data || {});
         });
     },
-    
+
     keyboardShortcuts: [
         // Name, Keys, Events
         ['down', 'down', ['keyup']],
@@ -31338,6 +31338,7 @@ var dispatcher = {
         ['left', 'left', ['keyup']],
         ['right', 'right', ['keyup']],
         ['tab', 'tab', ['keyup', 'keydown']],
+        ['enter', 'enter', ['keyup']],
         ['esc', 'esc', ['keyup']],
         ['remove', ['backspace', 'delete'], ['keyup', 'keydown']],
         ['letter', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'w', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '.', ',', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'], ['keyup']]
@@ -31506,13 +31507,22 @@ var TableComponent = React.createClass({displayName: "TableComponent",
      */
     componentWillMount: function () {
         this.bindKeyboard();
-
+        
         Dispatcher.subscribe('cellBlurred', function(cell)  {
             this.setState({ 
                 editing: false,
                 lastBlurred: cell
             });
         }.bind(this));
+
+        $('body').on('focus', 'input', function (e) {
+            $(this)
+                .one('mouseup', function () {
+                    $(this).select();
+                    return false;
+                })
+                .select();
+        });
     },
 
     /**
@@ -31598,11 +31608,16 @@ var TableComponent = React.createClass({displayName: "TableComponent",
             }
         });
 
+        Dispatcher.subscribe('enter_keyup', function()  {
+            if (this.state.selectedElement) {
+                this.setState({editing: !this.state.editing});
+            }
+        }.bind(this));
+
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keyup', function()  {
             if (!this.state.editing && this.state.selectedElement) {
                 this.setState({editing: true});
-                $('td ')
             }
         }.bind(this));
 
