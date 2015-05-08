@@ -34,7 +34,8 @@ var config = {
     headRowIsString: true,
     canAddRow: true,
     canAddColumn: true,
-    emptyValueSymbol: '-'
+    emptyValueSymbol: '-',
+    letterNumberHeads: true
 };
 
 React.render(React.createElement(TableComponent, {initialData: initialData, config: config, cellClasses: cellClasses}), document.getElementById('content'));
@@ -31191,6 +31192,7 @@ var React = require('react');
 var $ = require('jquery');
 
 var Dispatcher = require('./dispatcher');
+var Helpers = require('./helpers');
 
 var CellComponent = React.createClass({displayName: "CellComponent",
     getInitialState: function() {
@@ -31202,34 +31204,17 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 
     render: function() {
         var selected = (this.props.selected) ? 'selected' : '',
-            uid = this.props.uid,
-            ref = 'input_' + uid.join('_'),
-            config = this.props.config,
+            ref = 'input_' + this.props.uid.join('_'),
             emptyValueSymbol = this.props.config.emptyValueSymbol || '',
             displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
             cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
             cellContent;
 
-        // Check for headers
-        if ((config.headRow && uid[0] === 0) || (config.headColumn && uid[1] === 0)) {
-            if ((config.headRowIsString && uid[0] === 0) || (config.headColumnIsString && uid[1] === 0)) {
-                return (
-                    React.createElement("th", {className: cellClasses, ref: this.props.uid.join('_')}, 
-                        React.createElement("div", null, 
-                            React.createElement("span", {onClick: this.handleHeadClick}, 
-                                this.props.value
-                            )
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.createElement("th", {ref: this.props.uid.join('_')}, 
-                        this.props.value
-                    )
-                );
-            }
-        }
+        // Check if header - if yes, render it
+        var header = this.renderHeader();
+        if (header) {
+            return header;
+        }        
 
         // If not a header, check for editing and return 
         if (this.props.selected && this.props.editing) {
@@ -31291,11 +31276,60 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
         this.setState({changedValue: newValue});
+    },
+
+    /**
+     * Checks if a header exists - if it does, it returns a header object
+     * @return {[false|react]} [Either false if it's not a header cell, a react object if it is]
+     */
+    renderHeader: function () {
+        var selected = (this.props.selected) ? 'selected' : '',
+            uid = this.props.uid,
+            config = this.props.config,
+            emptyValueSymbol = this.props.config.emptyValueSymbol || '',
+            displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
+            cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected;
+        
+        // Cases
+        var headRow = (uid[0] === 0),
+            headColumn = (uid[1] === 0),
+            headRowAndEnabled = (config.headRow && uid[0] === 0),
+            headColumnAndEnabled = (config.headColumn && uid[1] === 0)
+
+        // Head Row enabled, cell is in head row
+        // Head Column enabled, cell is in head column
+        if (headRowAndEnabled || headColumnAndEnabled) {
+            if (headColumn && config.letterNumberHeads) {
+                displayValue = uid[0];
+            } else if (headRow && config.letterNumberHeads) {
+                displayValue = Helpers.countWithLetters(uid[1]);
+            }
+
+            if ((config.headRowIsString && headRow) || (config.headColumnIsString && headColumn)) {
+                return (
+                    React.createElement("th", {className: cellClasses, ref: this.props.uid.join('_')}, 
+                        React.createElement("div", null, 
+                            React.createElement("span", {onClick: this.handleHeadClick}, 
+                                displayValue
+                            )
+                        )
+                    )
+                );
+            } else {
+                return (
+                    React.createElement("th", {ref: this.props.uid.join('_')}, 
+                        displayValue
+                    )
+                );
+            }
+        } else {
+            return false;
+        }
     }
 });
 
 module.exports = CellComponent;
-},{"./dispatcher":162,"jquery":4,"react":160}],162:[function(require,module,exports){
+},{"./dispatcher":162,"./helpers":163,"jquery":4,"react":160}],162:[function(require,module,exports){
 var Mousetrap = require('mousetrap');
 
 var dispatcher = {
@@ -31436,6 +31470,17 @@ var Helpers = {
         } else {
             return false;
         }
+    },
+
+    /**
+     * Counts in letters (A, B, C...Z, AA);
+     * @return {[string]} [Letter]
+     */
+    countWithLetters: function (num) {
+        var mod = num % 26,
+            pow = num / 26 | 0,
+            out = mod ? String.fromCharCode(64 + mod) : (--pow, 'Z');
+        return pow ? toLetters(pow) + out : out;
     }
 }
 

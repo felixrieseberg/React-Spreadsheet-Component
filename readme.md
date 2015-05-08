@@ -15,9 +15,9 @@ React.render(<TableComponent initialData={initialData} config={config} />, docum
 ##### Configuration Object
 ```js
 var config = {
-    // Number of rows
+    // Initial number of row
     rows: 5,
-    // Number of columns
+    // Initial number of columns
     columns: 8,
     // True if the first column in each row is a header (th)
     headColumn: true,
@@ -34,7 +34,9 @@ var config = {
     // True if the user can add columns (by navigating right from the last column)
     canAddColumn: true,
     // Override the display value for an empty cell
-    emptyValueSymbol: '-'
+    emptyValueSymbol: '-',
+    // Fills the first column with index numbers (1...n) and the first row with index letters (A...ZZZ)
+    letterNumberHeads: true
 };
 ```
 

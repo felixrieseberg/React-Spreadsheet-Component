@@ -33,7 +33,8 @@ var config = {
     headRowIsString: true,
     canAddRow: true,
     canAddColumn: true,
-    emptyValueSymbol: '-'
+    emptyValueSymbol: '-',
+    letterNumberHeads: true
 };
 
 React.render(<TableComponent initialData={initialData} config={config} cellClasses={cellClasses} />, document.getElementById('content'));
