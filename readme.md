@@ -76,7 +76,7 @@ User input is not written to the `initialData` object, as it is merely used in i
 var Dispatcher = require('./src/dispatcher');
 
 Dispatcher.subscribe('dataChanged', function (data) {
-    ...
+    // data: The entire new data state
 })
 ```
 ##### Get the data change before state change
@@ -84,7 +84,7 @@ Dispatcher.subscribe('dataChanged', function (data) {
 var Dispatcher = require('./src/dispatcher');
 
 Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
-    // Cell: An array indicating the cell position by row/column, ie: [1,1]
+    // cell: An array indicating the cell position by row/column, ie: [1,1]
     // newValue: The new value for that cell
 })
 ```
