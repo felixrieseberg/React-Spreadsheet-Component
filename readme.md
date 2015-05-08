@@ -13,7 +13,7 @@ React.render(<TableComponent initialData={initialData} config={config} />, docum
 ```
 
 ##### Configuration Object
-```
+```js
 var config = {
     // Number of rows
     rows: 5,
@@ -40,7 +40,8 @@ var config = {
 
 ##### Initial Data Object
 The initial data object contains an array `rows`, which itself contains an array for every single row. Each index in the array represents a cell. It is used by the component to pre-populate the cells with data. Be aware that user input is not written to this object, as it is merely used in initialization to populate the state. If you want to capture user input, read below.
-```
+
+```js
 var data = {
     rows: [
         ['Key', 'AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG'],
@@ -55,7 +56,7 @@ var data = {
 ##### Cell Classes Object
 You can assign custom classes to individual cells. Follow the same schema as for the initial data object.
 
-```
+```js
 var classes = {
     rows: [
         ['', 'specialHead', '', '', '', '', '', ''],
@@ -71,7 +72,7 @@ var classes = {
 User input is not written to the `initialData` object, as it is merely used in initialization to populate the state. If you want to capture user input, subscribe callbacks to the `cellValueChanged` and `dataChanged` events on the dispatcher. 
 
 ##### Get the full data state after each change
-```
+```js
 var Dispatcher = require('./src/dispatcher');
 
 Dispatcher.subscribe('dataChanged', function (data) {
@@ -79,7 +80,7 @@ Dispatcher.subscribe('dataChanged', function (data) {
 })
 ```
 ##### Get the data change before state change
-```
+```js
 var Dispatcher = require('./src/dispatcher');
 
 Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
