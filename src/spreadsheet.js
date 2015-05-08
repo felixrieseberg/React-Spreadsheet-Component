@@ -5,7 +5,7 @@ var RowComponent = require('./row');
 var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
-var TableComponent = React.createClass({
+var SpreadsheetComponent = React.createClass({
 
     /**
      * React 'getInitialState' method
@@ -272,4 +272,4 @@ var TableComponent = React.createClass({
     }
 });
 
-module.exports = TableComponent;
+module.exports = SpreadsheetComponent;

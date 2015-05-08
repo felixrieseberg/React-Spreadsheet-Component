@@ -2,7 +2,7 @@
 'use strict';
 
 var React = require('react');
-var TableComponent = require('./src/table');
+var TableComponent = require('./src/spreadsheet');
 
 // Mock Data 
 var mockData = {
@@ -28,7 +28,7 @@ var config = {
 };
 
 React.render(React.createElement(TableComponent, {initialData: mockData, config: config}), document.getElementById('content'));
-},{"./src/table":165,"react":160}],2:[function(require,module,exports){
+},{"./src/spreadsheet":165,"react":160}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -31474,7 +31474,7 @@ var RowComponent = require('./row');
 var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
-var TableComponent = React.createClass({displayName: "TableComponent",
+var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent",
 
     /**
      * React 'getInitialState' method
@@ -31741,5 +31741,5 @@ var TableComponent = React.createClass({displayName: "TableComponent",
     }
 });
 
-module.exports = TableComponent;
+module.exports = SpreadsheetComponent;
 },{"./dispatcher":162,"./helpers":163,"./row":164,"jQuery":3,"react":160}]},{},[1]);
