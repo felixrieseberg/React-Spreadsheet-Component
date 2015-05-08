@@ -6,18 +6,22 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var TableComponent = React.createClass({
+
+    /**
+     * React 'getInitialState' method
+     */
     getInitialState: function() {
         var initialData = this.props.initialData || {};
 
         if (!initialData.rows) {
             initialData.rows = [];
 
-            for (var i = 0; i < this.props.config.rows; i++) {
+            for (var i = 0; i < this.props.config.rows; i = i + 1) {
                 initialData.rows[i] = [];
-                for (var ci = 0; ci < this.props.config.columns; ci++) {
+                for (var ci = 0; ci < this.props.config.columns; ci = ci + 1) {
                     initialData.rows[i][ci] = '';
-                };
-            };
+                }
+            }
         }
 
         return {
@@ -29,6 +33,9 @@ var TableComponent = React.createClass({
         };
     },
 
+    /**
+     * React 'componentWillMount' method
+     */
     componentWillMount: function () {
         this.bindKeyboard();
 
@@ -40,6 +47,10 @@ var TableComponent = React.createClass({
         });
     },
 
+    /**
+     * React Render method
+     * @return {[JSX]} [JSX to render]
+     */
     render: function() {
         var data = this.state.data,
             config = this.props.config,
@@ -51,7 +62,7 @@ var TableComponent = React.createClass({
         }
 
         // Create Rows
-        for (i = 0; i < data.rows.length; i++) {
+        for (i = 0; i < data.rows.length; i = i + 1) {
             key = 'row_' + i;
             rows.push(<RowComponent cells={data.rows[i]} 
                                     uid={i}
@@ -62,7 +73,7 @@ var TableComponent = React.createClass({
                                     handleSelectCell={this.handleSelectCell}
                                     handleDoubleClickOnCell={this.handleDoubleClickOnCell}
                                     onCellValueChange={this.handleCellValueChange} />);
-        };
+        }
 
         return (
             <table>
@@ -73,22 +84,25 @@ var TableComponent = React.createClass({
         );
     },
 
+    /**
+     * Binds the various keyboard events dispatched to table functions
+     */
     bindKeyboard: function () {
         Dispatcher.setupKeyboardShortcuts();
 
-        Dispatcher.subscribe('up_keyup', data => {
+        Dispatcher.subscribe('up_keyup', () => {
             this.navigateTable('up');
         });
-        Dispatcher.subscribe('down_keyup', data => {
+        Dispatcher.subscribe('down_keyup', () => {
             this.navigateTable('down');
         });
-        Dispatcher.subscribe('left_keyup', data => {
+        Dispatcher.subscribe('left_keyup', () => {
             this.navigateTable('left');
         });
-        Dispatcher.subscribe('right_keyup', data => {
+        Dispatcher.subscribe('right_keyup', () => {
             this.navigateTable('right');
         });
-        Dispatcher.subscribe('tab_keyup', data => {
+        Dispatcher.subscribe('tab_keyup', () => {
             this.navigateTable('right', null, true);
         });
         
@@ -130,6 +144,12 @@ var TableComponent = React.createClass({
         });
     },
 
+    /**
+     * Navigates the table and moves selection
+     * @param  {[string]} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
+     * @param  {[Array: [number: row, number: cell]]} originCell  [Origin Cell]
+     * @param  {[boolean]} inEdit                                 [Currently editing]
+     */
     navigateTable: function (direction, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
@@ -163,32 +183,41 @@ var TableComponent = React.createClass({
         }
     },
 
-    extendTable: function (direction, originCell) {
+    /**
+     * Extends the table with an additional row/column, if permitted by config
+     * @param  {[string]} direction [Direction ('up' || 'down' || 'left' || 'right')]
+     */
+    extendTable: function (direction) {
         var config = this.props.config,
             data = this.state.data,
-            newRow, newColumn;
+            newRow, i;
 
         if (direction === 'down' && config.canAddRow) {
             newRow = [];
 
-            for (var i = 0; i < this.state.data.rows[0].length; i++) {
+            for (i = 0; i < this.state.data.rows[0].length; i = i + 1) {
                 newRow[i] = '';
-            };
+            }
 
             data.rows.push(newRow);
             return this.setState({data: data});
         }
 
         if (direction === 'right' && config.canAddColumn) {
-            for (var i = 0; i < data.rows.length; i++) {
+            for (i = 0; i < data.rows.length; i = i + 1) {
                 data.rows[i].push([]);
-            };
+            }
 
             return this.setState({data: data});
         }
 
     },
 
+    /**
+     * Callback for 'selectCell', updating the selected Cell
+     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
+     * @param  {[object]} cellElement [Selected Cell Element]
+     */
     handleSelectCell: function (cell, cellElement) {
         Dispatcher.publish('cellSelected', cell);
         this.setState({
@@ -197,7 +226,12 @@ var TableComponent = React.createClass({
         });
     },
 
-    handleCellValueChange: function (cell, newValue, e) {
+    /**
+     * Callback for 'cellValueChange', updating the cell data
+     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
+     * @param  {[object]} newValue                         [Value to set]
+     */
+    handleCellValueChange: function (cell, newValue) {
         Dispatcher.publish('cellValueChanged', cell, newValue);
 
         var data = this.state.data,
@@ -212,6 +246,9 @@ var TableComponent = React.createClass({
         Dispatcher.publish('dataChanged', data);
     },
 
+    /**
+     * Callback for 'doubleClickonCell', enabling 'edit' mode
+     */
     handleDoubleClickOnCell: function () {
         this.setState({
             editing: true

@@ -43,7 +43,7 @@ var dispatcher = {
             listener(data || {});
         });
     },
-
+    
     keyboardShortcuts: [
         // Name, Keys, Events
         ['down', 'down', ['keyup']],

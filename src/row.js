@@ -4,6 +4,11 @@ var CellComponent = require('./cell');
 var Helpers = require('./helpers');
 
 var RowComponent = React.createClass({
+    
+    /**
+     * React Render method
+     * @return {[JSX]} [JSX to render]
+     */
     render: function() {
         var config = this.props.config,
             cells = this.props.cells,
@@ -14,7 +19,7 @@ var RowComponent = React.createClass({
             return console.error('Table can\'t be initialized without set number of columsn and no data!');
         }
 
-        for (var i = 0; i < cells.length; i++) {
+        for (var i = 0; i < cells.length; i = i+1) {
             // If a cell is selected, check if it's this one
             selected = Helpers.equalCells(this.props.selected, [this.props.uid, i]);
 
@@ -30,13 +35,9 @@ var RowComponent = React.createClass({
                                        selected={selected} 
                                        editing={this.props.editing} />
             );
-        };
+        }
 
-        return (
-            <tr>
-                {columns}
-            </tr>
-        );
+        return <tr>{columns}</tr>;
     }
 });
 

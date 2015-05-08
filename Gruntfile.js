@@ -13,8 +13,8 @@ module.exports = function (grunt) {
 
         browserify: {
             dev: {
-                src: 'src/app.js',
-                dest: 'build/bundle.js',
+                src: 'example.js',
+                dest: 'example/bundle.js',
                 options: {
                     debug: true,
                     extensions: ['.js'],
@@ -31,7 +31,7 @@ module.exports = function (grunt) {
             server: {
                 options: {
                     port: 8000,
-                    base: '.'
+                    base: './example'
                 }
             }
         }

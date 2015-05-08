@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var TableComponent = require('./table');
+var TableComponent = require('./src/table');
 
 // Mock Data 
 var mockData = {
