@@ -1,5 +1,5 @@
 # React Spreadsheet
-This is a spreadsheet component built in Facebook's React.
+This is a spreadsheet component built in Facebook's React. [You can see a demo here](http://felixrieseberg.github.io/React-Spreadsheet-Component/).
 
 ![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/.reactspreadsheet.gif)
 
