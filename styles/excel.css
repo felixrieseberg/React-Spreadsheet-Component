@@ -17,6 +17,11 @@ table
     border-width: 0 0 1px 1px;
     border-style: solid;
     border-color: #cacaca;
+    table-layout:fixed;
+}
+
+table:focus {
+    outline: none;
 }
 
 td,
@@ -27,7 +32,7 @@ th
     display: inline-block;
 
     box-sizing: border-box;
-    width: 65px;
+    width: 80px;
     height: 25px;
     margin: 0;
     padding: 0;
@@ -35,6 +40,9 @@ th
     border-width: 1px 1px 0 0;
     border-style: solid;
     border-color: #cacaca;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 th
