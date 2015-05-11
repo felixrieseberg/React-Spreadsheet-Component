@@ -5,6 +5,8 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var CellComponent = React.createClass({
+    parentNode: null,
+
     getInitialState: function() {
         return {
             editing: this.props.editing,
@@ -66,8 +68,10 @@ var CellComponent = React.createClass({
     },
 
     handleHeadClick: function (e) {
+        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
+
         var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
-        Dispatcher.publish('headCellClicked', cellElement);
+        Dispatcher.publish('headCellClicked', cellElement, this.parentNode.dataset.reactid);
     },
 
     handleDoubleClick: function (e) {
@@ -76,10 +80,11 @@ var CellComponent = React.createClass({
     },
 
     handleBlur: function (e) {
+        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
         var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
         this.props.onCellValueChange(this.props.uid, newValue, e);
-        Dispatcher.publish('cellBlurred', this.props.uid);
+        Dispatcher.publish('cellBlurred', this.props.uid, this.parentNode.dataset.reactid);
     },
 
     handleChange: function (e) {

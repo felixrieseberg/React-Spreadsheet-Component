@@ -27,27 +27,33 @@ var dispatcher = {
 
     /**
      * Subscribe to an event
-     * @param  {[string]} topic    [The topic subscribing to]
-     * @param  {[function]} listener [The callback for published events]
+     * @param  {string} topic    [The topic subscribing to]
+     * @param  {function} listener [The callback for published events]
+     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
      */
-    subscribe: function(topic, listener) {
-        if (!this.topics[topic]) {
-            this.topics[topic] = [];
+    subscribe: function(topic, listener, reactId) {
+        if (!this.topics[reactId]) {
+            this.topics[reactId] = [];
         }
 
-        this.topics[topic].push(listener);
+        if (!this.topics[reactId][topic]) {
+            this.topics[reactId][topic] = [];
+        }
+
+        this.topics[reactId][topic].push(listener);
     },
 
     /**
      * Publish to an event channel
-     * @param  {[string]} topic [The topic publishing to]
-     * @param  {[object]} data  [An object passed to the subscribed callbacks]
+     * @param  {string} topic [The topic publishing to]
+     * @param  {object} data  [An object passed to the subscribed callbacks]
+     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
      */
-    publish: function(topic, data) {
+    publish: function(topic, data, reactId) {
         // return if the topic doesn't exist, or there are no listeners
-        if(!this.topics[topic] || this.topics[topic].length < 1) return;
+        if(!this.topics[reactId] || !this.topics[reactId][topic] || this.topics[reactId][topic].length < 1) return;
 
-        this.topics[topic].forEach(function(listener) {
+        this.topics[reactId][topic].forEach(function(listener) {
             listener(data || {});
         });
     },
@@ -67,8 +73,9 @@ var dispatcher = {
     
     /**
      * Initializes the keyboard bindings
+     * @param {object} domNode [The DOM node of the element that should be bound]
      */
-    setupKeyboardShortcuts: function () {
+    setupKeyboardShortcuts: function (domNode) {
         var self = this;
 
         this.keyboardShortcuts.map(function (shortcut) {
@@ -77,8 +84,8 @@ var dispatcher = {
                 events = shortcut[2];
 
             events.map(event => {
-                Mousetrap.bind(shortcutKey, function (e) {
-                    self.publish(shortcutName + '_' + event, e);
+                Mousetrap(domNode).bind(shortcutKey, function (e) {
+                    self.publish(shortcutName + '_' + event, e, domNode.dataset.reactid);
                 }, event);
             })
         });
