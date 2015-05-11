@@ -6,23 +6,23 @@ var dispatcher = {
     // 
     // Topics used:
     // [headCellClicked] - A head cell was clicked
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellSelected] - A cell was selected
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellBlur] - A cell was blurred
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellValueChanged] - A cell value changed.
-    //      @return {[cell, newValue]} Origin cell, new value entered
+    //      @return {cell, newValue} Origin cell, new value entered
     // [dataChanged] - Data changed
-    //      @return {[data]} New data
+    //      @return {data} New data
     // [editStarted] - The user started editing
-    //      @return {[cell]} Origin cell
+    //      @return {cell} Origin cell
     // [editStopped] - The user stopped editing
-    //      @return {[cell]} Origin cell
+    //      @return {cell} Origin cell
     // [rowCreated] - The user created a row
-    //      @return {[number]} Row index
+    //      @return {number} Row index
     // [columnCreated] - The user created a column
-    //      @return {[number]} Column index
+    //      @return {number} Column index
     topics: {},
 
     /**

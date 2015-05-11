@@ -95,7 +95,7 @@ var CellComponent = React.createClass({
 
     /**
      * Checks if a header exists - if it does, it returns a header object
-     * @return {[false|react]} [Either false if it's not a header cell, a react object if it is]
+     * @return {false|react} [Either false if it's not a header cell, a react object if it is]
      */
     renderHeader: function () {
         var selected = (this.props.selected) ? 'selected' : '',

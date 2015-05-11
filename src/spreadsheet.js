@@ -178,9 +178,9 @@ var SpreadsheetComponent = React.createClass({
 
     /**
      * Navigates the table and moves selection
-     * @param  {[string]} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
-     * @param  {[Array: [number: row, number: cell]]} originCell  [Origin Cell]
-     * @param  {[boolean]} inEdit                                 [Currently editing]
+     * @param  {string} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
+     * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
+     * @param  {boolean} inEdit                                 [Currently editing]
      */
     navigateTable: function (direction, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
@@ -217,7 +217,7 @@ var SpreadsheetComponent = React.createClass({
 
     /**
      * Extends the table with an additional row/column, if permitted by config
-     * @param  {[string]} direction [Direction ('up' || 'down' || 'left' || 'right')]
+     * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
      */
     extendTable: function (direction) {
         var config = this.props.config,
@@ -251,8 +251,8 @@ var SpreadsheetComponent = React.createClass({
 
     /**
      * Callback for 'selectCell', updating the selected Cell
-     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
-     * @param  {[object]} cellElement [Selected Cell Element]
+     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+     * @param  {object} cellElement [Selected Cell Element]
      */
     handleSelectCell: function (cell, cellElement) {
         this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
@@ -268,8 +268,8 @@ var SpreadsheetComponent = React.createClass({
 
     /**
      * Callback for 'cellValueChange', updating the cell data
-     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
-     * @param  {[object]} newValue                         [Value to set]
+     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+     * @param  {object} newValue                         [Value to set]
      */
     handleCellValueChange: function (cell, newValue) {
         this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
