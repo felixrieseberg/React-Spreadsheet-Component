@@ -31400,6 +31400,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 module.exports = CellComponent;
 },{"./dispatcher":162,"./helpers":163,"jquery":4,"react":160}],162:[function(require,module,exports){
 var Mousetrap = require('mousetrap');
+var $ = require('jquery');
 
 var dispatcher = {
 
@@ -31508,7 +31509,7 @@ var dispatcher = {
 };
 
 module.exports = dispatcher;
-},{"mousetrap":5}],163:[function(require,module,exports){
+},{"jquery":4,"mousetrap":5}],163:[function(require,module,exports){
 var Helpers = {
     /**
      * Find the first element in an array matching a boolean

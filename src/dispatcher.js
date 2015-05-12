@@ -1,4 +1,5 @@
 var Mousetrap = require('mousetrap');
+var $ = require('jquery');
 
 var dispatcher = {
 
@@ -94,7 +95,7 @@ var dispatcher = {
         // Avoid scroll
         window.addEventListener('keydown', function(e) {
             // space and arrow keys
-            if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1 && $(document.activeElement)[0].tagName !== 'INPUT') {
                 if (e.preventDefault) {
                     e.preventDefault();
                 } else {
