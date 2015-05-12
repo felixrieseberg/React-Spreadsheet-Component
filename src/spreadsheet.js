@@ -103,20 +103,20 @@ var SpreadsheetComponent = React.createClass({
     bindKeyboard: function () {
         Dispatcher.setupKeyboardShortcuts($(React.findDOMNode(this))[0], this.spreadsheetId);
 
-        Dispatcher.subscribe('up_keyup', () => {
-            this.navigateTable('up');
+        Dispatcher.subscribe('up_keyup', data => {
+            this.navigateTable('up', data);
         }, this.spreadsheetId);
-        Dispatcher.subscribe('down_keyup', () => {
-            this.navigateTable('down');
+        Dispatcher.subscribe('down_keyup', data => {
+            this.navigateTable('down', data);
         }, this.spreadsheetId);
-        Dispatcher.subscribe('left_keyup', () => {
-            this.navigateTable('left');
+        Dispatcher.subscribe('left_keyup', data => {
+            this.navigateTable('left', data);
         }, this.spreadsheetId);
-        Dispatcher.subscribe('right_keyup', () => {
-            this.navigateTable('right');
+        Dispatcher.subscribe('right_keyup', data => {
+            this.navigateTable('right', data);
         }, this.spreadsheetId);
-        Dispatcher.subscribe('tab_keyup', () => {
-            this.navigateTable('right', null, true);
+        Dispatcher.subscribe('tab_keyup', data => {
+            this.navigateTable('right', data, null, true);
         }, this.spreadsheetId);
         
         // Prevent brower's from jumping to URL bar
@@ -146,6 +146,7 @@ var SpreadsheetComponent = React.createClass({
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
+            $(React.findDOMNode(this)).first().focus();
         }, this.spreadsheetId);
 
         // Go into edit mode when the user starts typing on a field
@@ -170,7 +171,7 @@ var SpreadsheetComponent = React.createClass({
      * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
      * @param  {boolean} inEdit                                 [Currently editing]
      */
-    navigateTable: function (direction, originCell, inEdit) {
+    navigateTable: function (direction, data, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
         if (!inEdit && this.state.editing) {
@@ -181,6 +182,14 @@ var SpreadsheetComponent = React.createClass({
         if (!originCell) {
             originCell = this.state.selectedElement;
         }
+
+        // Prevent default
+        if (data.preventDefault) {
+            data.preventDefault();
+        } else {
+            // Oh, old IE, you 💩
+            data.returnValue = false;
+        } 
 
         var $origin = $(originCell),
             cellIndex = $origin.index(),
