@@ -1,7 +1,9 @@
 # React Spreadsheet
 This is a spreadsheet component built in Facebook's React. [You can see a demo here](http://felixrieseberg.github.io/React-Spreadsheet-Component/).
 
-![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/.reactspreadsheet.gif)
+![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/example/.reactspreadsheet.gif)
+![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/example/.reactspreadsheet2.gif)
+
 
 ## Usage
 The component is initialized with a configuration object. If desired, initial data for the spreadsheet can be passed in as an array of rows. In addition, you can pass in a second array filled with class names for each cell, allowing you to style each cell differently.
