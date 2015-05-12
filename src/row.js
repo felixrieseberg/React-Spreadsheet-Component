@@ -34,6 +34,8 @@ var RowComponent = React.createClass({
                                        onCellValueChange={this.props.onCellValueChange} 
                                        handleSelectCell={this.props.handleSelectCell}
                                        handleDoubleClickOnCell={this.props.handleDoubleClickOnCell}
+                                       handleCellBlur={this.props.handleCellBlur}
+                                       spreadsheetId={this.props.spreadsheetId}
                                        selected={selected} 
                                        editing={this.props.editing} />
             );

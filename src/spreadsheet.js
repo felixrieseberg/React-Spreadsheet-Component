@@ -7,7 +7,7 @@ var Helpers = require('./helpers');
 
 var SpreadsheetComponent = React.createClass({
 
-    parentNode: null,
+    spreadsheetId: null,
 
     /**
      * React 'getInitialState' method
@@ -41,17 +41,6 @@ var SpreadsheetComponent = React.createClass({
     componentDidMount: function () {
         this.bindKeyboard();
 
-        Dispatcher.subscribe('cellBlurred', cell => {
-            if (this.state.editing) {
-                Dispatcher.publish('editStopped', this.state.selectedElement);
-            }
-
-            this.setState({ 
-                editing: false,
-                lastBlurred: cell
-            });
-        });
-
         $('body').on('focus', 'input', function (e) {
             $(this)
                 .one('mouseup', function () {
@@ -72,6 +61,8 @@ var SpreadsheetComponent = React.createClass({
             _cellClasses = this.props.cellClasses,
             rows = [], key, i, cellClasses;
 
+        this.spreadsheetId = this.spreadsheetId || Date.now();
+
         // Sanity checks
         if (!data.rows && !config.rows) {
             return console.error('Table Component: Number of colums not defined in both data and config!');
@@ -91,12 +82,14 @@ var SpreadsheetComponent = React.createClass({
                                     editing={this.state.editing}
                                     handleSelectCell={this.handleSelectCell}
                                     handleDoubleClickOnCell={this.handleDoubleClickOnCell}
-                                    onCellValueChange={this.handleCellValueChange} 
+                                    handleCellBlur={this.handleCellBlur}
+                                    onCellValueChange={this.handleCellValueChange}
+                                    spreadsheetId={this.spreadsheetId}
                                     className="cellComponent" />);
         }
 
         return (
-            <table tabIndex="0">
+            <table tabIndex="0" data-spreasheet-id={this.spreadsheetId}>
                 <tbody>
                     {rows}
                 </tbody>
@@ -108,26 +101,23 @@ var SpreadsheetComponent = React.createClass({
      * Binds the various keyboard events dispatched to table functions
      */
     bindKeyboard: function () {
-        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
-        var reactId = this.parentNode.dataset.reactid;
-
-        Dispatcher.setupKeyboardShortcuts(this.parentNode);
+        Dispatcher.setupKeyboardShortcuts($(React.findDOMNode(this))[0], this.spreadsheetId);
 
         Dispatcher.subscribe('up_keyup', () => {
             this.navigateTable('up');
-        }, reactId);
+        }, this.spreadsheetId);
         Dispatcher.subscribe('down_keyup', () => {
             this.navigateTable('down');
-        }, reactId);
+        }, this.spreadsheetId);
         Dispatcher.subscribe('left_keyup', () => {
             this.navigateTable('left');
-        }, reactId);
+        }, this.spreadsheetId);
         Dispatcher.subscribe('right_keyup', () => {
             this.navigateTable('right');
-        }, reactId);
+        }, this.spreadsheetId);
         Dispatcher.subscribe('tab_keyup', () => {
             this.navigateTable('right', null, true);
-        }, reactId);
+        }, this.spreadsheetId);
         
         // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', data => {
@@ -139,7 +129,7 @@ var SpreadsheetComponent = React.createClass({
                     data.returnValue = false;
                 } 
             } 
-        }, reactId);
+        }, this.spreadsheetId);
 
         Dispatcher.subscribe('remove_keydown', data => {
             if (!$(data.target).is('input, textarea')) {
@@ -150,30 +140,28 @@ var SpreadsheetComponent = React.createClass({
                     data.returnValue = false;
                 }
             }
-        }, reactId);
+        }, this.spreadsheetId);
 
         Dispatcher.subscribe('enter_keyup', () => {
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
-        }, reactId);
+        }, this.spreadsheetId);
 
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keydown', () => {
-            this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
-
             if (!this.state.editing && this.state.selectedElement) {
-                Dispatcher.publish('editStarted', this.state.selectedElement, reactId);
+                Dispatcher.publish('editStarted', this.state.selectedElement, this.spreadsheetId);
                 this.setState({editing: true});
             }
-        }, reactId);
+        }, this.spreadsheetId);
 
         // Delete on backspace and delete
         Dispatcher.subscribe('remove_keyup', () => {
             if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
                 this.handleCellValueChange(this.state.selected, '');
             }
-        }, reactId);
+        }, this.spreadsheetId);
     },
 
     /**
@@ -224,8 +212,6 @@ var SpreadsheetComponent = React.createClass({
             data = this.state.data,
             newRow, i;
 
-        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
-
         if (direction === 'down' && config.canAddRow) {
             newRow = [];
 
@@ -234,7 +220,7 @@ var SpreadsheetComponent = React.createClass({
             }
 
             data.rows.push(newRow);
-            Dispatcher.publish('rowCreated', data.rows.length, this.parentNode.dataset.reactid);
+            Dispatcher.publish('rowCreated', data.rows.length, this.spreadsheetId);
             return this.setState({data: data});
         }
 
@@ -243,7 +229,7 @@ var SpreadsheetComponent = React.createClass({
                 data.rows[i].push('');
             }
 
-            Dispatcher.publish('columnCreated', data.rows[0].length, this.parentNode.dataset.reactid);
+            Dispatcher.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
             return this.setState({data: data});
         }
 
@@ -255,9 +241,7 @@ var SpreadsheetComponent = React.createClass({
      * @param  {object} cellElement [Selected Cell Element]
      */
     handleSelectCell: function (cell, cellElement) {
-        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
-
-        Dispatcher.publish('cellSelected', cell, this.parentNode.dataset.reactid);
+        Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
         $(React.findDOMNode(this)).first().focus();
 
         this.setState({
@@ -272,9 +256,7 @@ var SpreadsheetComponent = React.createClass({
      * @param  {object} newValue                         [Value to set]
      */
     handleCellValueChange: function (cell, newValue) {
-        this.parentNode = this.parentNode || $(React.findDOMNode(this))[0];
-
-        Dispatcher.publish('cellValueChanged', [cell, newValue], this.parentNode.dataset.reactid);
+        Dispatcher.publish('cellValueChanged', [cell, newValue], this.spreadsheetId);
 
         var data = this.state.data,
             row = cell[0],
@@ -285,7 +267,7 @@ var SpreadsheetComponent = React.createClass({
             data: data
         });
 
-        Dispatcher.publish('dataChanged', data, this.parentNode.dataset.reactid);
+        Dispatcher.publish('dataChanged', data, this.spreadsheetId);
     },
 
     /**
@@ -294,6 +276,20 @@ var SpreadsheetComponent = React.createClass({
     handleDoubleClickOnCell: function () {
         this.setState({
             editing: true
+        });
+    },
+
+    /**
+     * Callback for 'cellBlur'
+     */
+    handleCellBlur: function (cell) {
+        if (this.state.editing) {
+            Dispatcher.publish('editStopped', this.state.selectedElement);
+        }
+
+        this.setState({ 
+            editing: false,
+            lastBlurred: cell
         });
     }
 });
