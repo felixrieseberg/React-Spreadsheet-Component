@@ -2,30 +2,22 @@
 'use strict';
 
 var React = require('react');
-var TableComponent = require('./src/spreadsheet');
+var Spreadsheet = require('./src/spreadsheet');
 
-// Mock Data 
-var initialData = {
-    rows: [
-        ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        ['COM', 1, 2, 3, 4, 5, 6, 7],
-        ['DIV', 1, '', 3, 4, 5, 6, 7],
-        ['DEV', 1, 2, 3, 4, 5, 6, 7],
-        ['ACC', 1, 2, 3, 4, 5, 6, 7]
-    ]
-};
+// Example One
+var exampleOne = {};
 
-var cellClasses = {
+exampleOne.initialData = {
     rows: [
-        ['', 'specialHead', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
-        ['', 'error', '', '', '', '', '', ''],
-        ['', 'error changed', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', '']
+        ['', 1, 2, 3, 4, 5, 6, 7],
+        ['', 1, '', 3, 4, 5, 6, 7],
+        ['', 1, 2, 3, 4, 5, 6, 7],
+        ['', 1, 2, 3, 4, 5, 6, 7]
     ]
 };
 
-var config = {
+exampleOne.config = {
     rows: 5,
     columns: 8,
     headColumn: true,
@@ -38,7 +30,42 @@ var config = {
     letterNumberHeads: true
 };
 
-React.render(React.createElement(TableComponent, {initialData: initialData, config: config, cellClasses: cellClasses}), document.getElementById('content'));
+// Example Two
+var exampleTwo = {};
+exampleTwo.initialData = {
+    rows: [
+        ['Customer', 'Job', 'Contact', 'City', 'Revenue'],
+        ['iDiscovery', 'Build', 'John Doe', 'Boston, MA', '500,000'],
+        ['SxSW', 'Build', 'Tom Fuller', 'San Francisco, CA', '600,000'],
+        ['CapitalTwo', 'Failed', 'Eric Pixel', 'Seattle, WA', '450,000']
+    ]
+};
+
+exampleTwo.cellClasses = {
+    rows: [
+        ['', '', '', '', '', '', '', ''],
+        ['green', '', '', '', '', '', '', 'dollar'],
+        ['purple', '', '', '', '', '', '', 'dollar'],
+        ['yellow', 'failed', '', '', '', '', '', 'dollar'],
+    ]
+};
+
+exampleTwo.config = {
+    rows: 5,
+    columns: 5,
+    headColumn: true,
+    headColumnIsString: true,
+    headRow: true,
+    headRowIsString: true,
+    canAddRow: false,
+    canAddColumn: false,
+    emptyValueSymbol: '-',
+    letterNumberHeads: false
+};
+
+// Render
+React.render(React.createElement(Spreadsheet, {initialData: exampleOne.initialData, config: exampleOne.config, cellClasses: exampleOne.cellClasses}), document.getElementById('exampleOne'));
+React.render(React.createElement(Spreadsheet, {initialData: exampleTwo.initialData, config: exampleTwo.config, cellClasses: exampleTwo.cellClasses}), document.getElementById('exampleTwo'));
 },{"./src/spreadsheet":165,"react":160}],2:[function(require,module,exports){
 // shim for using process in browser
 
@@ -15817,7 +15844,7 @@ if ("production" !== process.env.NODE_ENV) {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
         console.debug(
           'Download the React DevTools for a better development experience: ' +
-          'http://fb.me/react-devtools'
+          'https://fb.me/react-devtools'
         );
       }
     }
@@ -15844,7 +15871,7 @@ if ("production" !== process.env.NODE_ENV) {
       if (!expectedFeatures[i]) {
         console.error(
           'One or more ES5 shim/shams expected by React are not available: ' +
-          'http://fb.me/react-warning-polyfills'
+          'https://fb.me/react-warning-polyfills'
         );
         break;
       }
@@ -15852,7 +15879,7 @@ if ("production" !== process.env.NODE_ENV) {
   }
 }
 
-React.version = '0.13.2';
+React.version = '0.13.3';
 
 module.exports = React;
 
@@ -17359,7 +17386,7 @@ var ReactClass = {
         ("production" !== process.env.NODE_ENV ? warning(
           this instanceof Constructor,
           'Something is calling a React component directly. Use a factory or ' +
-          'JSX instead. See: http://fb.me/react-legacyfactory'
+          'JSX instead. See: https://fb.me/react-legacyfactory'
         ) : null);
       }
 
@@ -17571,20 +17598,38 @@ ReactComponent.prototype.forceUpdate = function(callback) {
  */
 if ("production" !== process.env.NODE_ENV) {
   var deprecatedAPIs = {
-    getDOMNode: 'getDOMNode',
-    isMounted: 'isMounted',
-    replaceProps: 'replaceProps',
-    replaceState: 'replaceState',
-    setProps: 'setProps'
+    getDOMNode: [
+      'getDOMNode',
+      'Use React.findDOMNode(component) instead.'
+    ],
+    isMounted: [
+      'isMounted',
+      'Instead, make sure to clean up subscriptions and pending requests in ' +
+      'componentWillUnmount to prevent memory leaks.'
+    ],
+    replaceProps: [
+      'replaceProps',
+      'Instead, call React.render again at the top level.'
+    ],
+    replaceState: [
+      'replaceState',
+      'Refactor your code to use setState instead (see ' +
+      'https://github.com/facebook/react/issues/3236).'
+    ],
+    setProps: [
+      'setProps',
+      'Instead, call React.render again at the top level.'
+    ]
   };
-  var defineDeprecationWarning = function(methodName, displayName) {
+  var defineDeprecationWarning = function(methodName, info) {
     try {
       Object.defineProperty(ReactComponent.prototype, methodName, {
         get: function() {
           ("production" !== process.env.NODE_ENV ? warning(
             false,
-            '%s(...) is deprecated in plain JavaScript React classes.',
-            displayName
+            '%s(...) is deprecated in plain JavaScript React classes. %s',
+            info[0],
+            info[1]
           ) : null);
           return undefined;
         }
@@ -17933,6 +17978,7 @@ var ReactCompositeComponentMixin = {
     this._pendingReplaceState = false;
     this._pendingForceUpdate = false;
 
+    var childContext;
     var renderedElement;
 
     var previouslyMounting = ReactLifeCycle.currentlyMountingInstance;
@@ -17947,7 +17993,8 @@ var ReactCompositeComponentMixin = {
         }
       }
 
-      renderedElement = this._renderValidatedComponent();
+      childContext = this._getValidatedChildContext(context);
+      renderedElement = this._renderValidatedComponent(childContext);
     } finally {
       ReactLifeCycle.currentlyMountingInstance = previouslyMounting;
     }
@@ -17961,7 +18008,7 @@ var ReactCompositeComponentMixin = {
       this._renderedComponent,
       rootID,
       transaction,
-      this._processChildContext(context)
+      this._mergeChildContext(context, childContext)
     );
     if (inst.componentDidMount) {
       transaction.getReactMountReady().enqueue(inst.componentDidMount, inst);
@@ -18091,7 +18138,7 @@ var ReactCompositeComponentMixin = {
    * @return {object}
    * @private
    */
-  _processChildContext: function(currentContext) {
+  _getValidatedChildContext: function(currentContext) {
     var inst = this._instance;
     var childContext = inst.getChildContext && inst.getChildContext();
     if (childContext) {
@@ -18116,6 +18163,13 @@ var ReactCompositeComponentMixin = {
           name
         ) : invariant(name in inst.constructor.childContextTypes));
       }
+      return childContext;
+    }
+    return null;
+  },
+
+  _mergeChildContext: function(currentContext, childContext) {
+    if (childContext) {
       return assign({}, currentContext, childContext);
     }
     return currentContext;
@@ -18375,6 +18429,10 @@ var ReactCompositeComponentMixin = {
       return inst.state;
     }
 
+    if (replace && queue.length === 1) {
+      return queue[0];
+    }
+
     var nextState = assign({}, replace ? queue[0] : inst.state);
     for (var i = replace ? 1 : 0; i < queue.length; i++) {
       var partial = queue[i];
@@ -18444,13 +18502,14 @@ var ReactCompositeComponentMixin = {
   _updateRenderedComponent: function(transaction, context) {
     var prevComponentInstance = this._renderedComponent;
     var prevRenderedElement = prevComponentInstance._currentElement;
-    var nextRenderedElement = this._renderValidatedComponent();
+    var childContext = this._getValidatedChildContext();
+    var nextRenderedElement = this._renderValidatedComponent(childContext);
     if (shouldUpdateReactComponent(prevRenderedElement, nextRenderedElement)) {
       ReactReconciler.receiveComponent(
         prevComponentInstance,
         nextRenderedElement,
         transaction,
-        this._processChildContext(context)
+        this._mergeChildContext(context, childContext)
       );
     } else {
       // These two IDs are actually the same! But nothing should rely on that.
@@ -18466,7 +18525,7 @@ var ReactCompositeComponentMixin = {
         this._renderedComponent,
         thisID,
         transaction,
-        this._processChildContext(context)
+        this._mergeChildContext(context, childContext)
       );
       this._replaceNodeWithMarkupByID(prevComponentID, nextMarkup);
     }
@@ -18504,11 +18563,12 @@ var ReactCompositeComponentMixin = {
   /**
    * @private
    */
-  _renderValidatedComponent: function() {
+  _renderValidatedComponent: function(childContext) {
     var renderedComponent;
     var previousContext = ReactContext.current;
-    ReactContext.current = this._processChildContext(
-      this._currentElement._context
+    ReactContext.current = this._mergeChildContext(
+      this._currentElement._context,
+      childContext
     );
     ReactCurrentOwner.current = this;
     try {
@@ -18877,6 +18937,7 @@ var ReactDOM = mapObject({
 
   // SVG
   circle: 'circle',
+  clipPath: 'clipPath',
   defs: 'defs',
   ellipse: 'ellipse',
   g: 'g',
@@ -19028,11 +19089,13 @@ function assertValidProps(props) {
       'Can only set one of `children` or `props.dangerouslySetInnerHTML`.'
     ) : invariant(props.children == null));
     ("production" !== process.env.NODE_ENV ? invariant(
-      props.dangerouslySetInnerHTML.__html != null,
+      typeof props.dangerouslySetInnerHTML === 'object' &&
+      '__html' in props.dangerouslySetInnerHTML,
       '`props.dangerouslySetInnerHTML` must be in the form `{__html: ...}`. ' +
-      'Please visit http://fb.me/react-invariant-dangerously-set-inner-html ' +
+      'Please visit https://fb.me/react-invariant-dangerously-set-inner-html ' +
       'for more information.'
-    ) : invariant(props.dangerouslySetInnerHTML.__html != null));
+    ) : invariant(typeof props.dangerouslySetInnerHTML === 'object' &&
+    '__html' in props.dangerouslySetInnerHTML));
   }
   if ("production" !== process.env.NODE_ENV) {
     ("production" !== process.env.NODE_ENV ? warning(
@@ -21838,7 +21901,7 @@ function warnAndMonitorForKeyUse(message, element, parentType) {
 
   ("production" !== process.env.NODE_ENV ? warning(
     false,
-    message + '%s%s See http://fb.me/react-warning-keys for more information.',
+    message + '%s%s See https://fb.me/react-warning-keys for more information.',
     parentOrOwnerAddendum,
     childOwnerAddendum
   ) : null);
@@ -26659,6 +26722,7 @@ var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
 
 var SVGDOMPropertyConfig = {
   Properties: {
+    clipPath: MUST_USE_ATTRIBUTE,
     cx: MUST_USE_ATTRIBUTE,
     cy: MUST_USE_ATTRIBUTE,
     d: MUST_USE_ATTRIBUTE,
@@ -26704,6 +26768,7 @@ var SVGDOMPropertyConfig = {
     y: MUST_USE_ATTRIBUTE
   },
   DOMAttributeNames: {
+    clipPath: 'clip-path',
     fillOpacity: 'fill-opacity',
     fontFamily: 'font-family',
     fontSize: 'font-size',
@@ -29516,6 +29581,7 @@ var shouldWrap = {
   // Force wrapping for SVG elements because if they get created inside a <div>,
   // they will be initialized in the wrong namespace (and will not display).
   'circle': true,
+  'clipPath': true,
   'defs': true,
   'ellipse': true,
   'g': true,
@@ -29558,6 +29624,7 @@ var markupWrap = {
   'th': trWrap,
 
   'circle': svgWrap,
+  'clipPath': svgWrap,
   'defs': svgWrap,
   'ellipse': svgWrap,
   'g': svgWrap,
@@ -31195,6 +31262,7 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var CellComponent = React.createClass({displayName: "CellComponent",
+
     getInitialState: function() {
         return {
             editing: this.props.editing,
@@ -31257,7 +31325,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 
     handleHeadClick: function (e) {
         var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
-        Dispatcher.publish('headCellClicked', cellElement);
+        Dispatcher.publish('headCellClicked', cellElement, this.props.spreadsheetId);
     },
 
     handleDoubleClick: function (e) {
@@ -31269,7 +31337,8 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
         this.props.onCellValueChange(this.props.uid, newValue, e);
-        Dispatcher.publish('cellBlurred', this.props.uid);
+        this.props.handleCellBlur(this.props.uid);
+        Dispatcher.publish('cellBlurred', this.props.uid, this.props.spreadsheetId);
     },
 
     handleChange: function (e) {
@@ -31280,7 +31349,7 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 
     /**
      * Checks if a header exists - if it does, it returns a header object
-     * @return {[false|react]} [Either false if it's not a header cell, a react object if it is]
+     * @return {false|react} [Either false if it's not a header cell, a react object if it is]
      */
     renderHeader: function () {
         var selected = (this.props.selected) ? 'selected' : '',
@@ -31338,48 +31407,54 @@ var dispatcher = {
     // 
     // Topics used:
     // [headCellClicked] - A head cell was clicked
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellSelected] - A cell was selected
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellBlur] - A cell was blurred
-    //      @return {[array]} [row, column]
+    //      @return {array} [row, column]
     // [cellValueChanged] - A cell value changed.
-    //      @return {[cell, newValue]} Origin cell, new value entered
+    //      @return {cell, newValue} Origin cell, new value entered
     // [dataChanged] - Data changed
-    //      @return {[data]} New data
+    //      @return {data} New data
     // [editStarted] - The user started editing
-    //      @return {[cell]} Origin cell
+    //      @return {cell} Origin cell
     // [editStopped] - The user stopped editing
-    //      @return {[cell]} Origin cell
+    //      @return {cell} Origin cell
     // [rowCreated] - The user created a row
-    //      @return {[number]} Row index
+    //      @return {number} Row index
     // [columnCreated] - The user created a column
-    //      @return {[number]} Column index
+    //      @return {number} Column index
     topics: {},
 
     /**
      * Subscribe to an event
-     * @param  {[string]} topic    [The topic subscribing to]
-     * @param  {[function]} listener [The callback for published events]
+     * @param  {string} topic    [The topic subscribing to]
+     * @param  {function} listener [The callback for published events]
+     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
      */
-    subscribe: function(topic, listener) {
-        if (!this.topics[topic]) {
-            this.topics[topic] = [];
+    subscribe: function(topic, listener, spreadsheetId) {
+        if (!this.topics[spreadsheetId]) {
+            this.topics[spreadsheetId] = [];
         }
 
-        this.topics[topic].push(listener);
+        if (!this.topics[spreadsheetId][topic]) {
+            this.topics[spreadsheetId][topic] = [];
+        }
+
+        this.topics[spreadsheetId][topic].push(listener);
     },
 
     /**
      * Publish to an event channel
-     * @param  {[string]} topic [The topic publishing to]
-     * @param  {[object]} data  [An object passed to the subscribed callbacks]
+     * @param  {string} topic [The topic publishing to]
+     * @param  {object} data  [An object passed to the subscribed callbacks]
+     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
      */
-    publish: function(topic, data) {
+    publish: function(topic, data, spreadsheetId) {
         // return if the topic doesn't exist, or there are no listeners
-        if(!this.topics[topic] || this.topics[topic].length < 1) return;
+        if(!this.topics[spreadsheetId] || !this.topics[spreadsheetId][topic] || this.topics[spreadsheetId][topic].length < 1) return;
 
-        this.topics[topic].forEach(function(listener) {
+        this.topics[spreadsheetId][topic].forEach(function(listener) {
             listener(data || {});
         });
     },
@@ -31399,8 +31474,10 @@ var dispatcher = {
     
     /**
      * Initializes the keyboard bindings
+     * @param {object} domNode [The DOM node of the element that should be bound]
+     * @param {string} spreadsheetId [The id of the spreadsheet element]
      */
-    setupKeyboardShortcuts: function () {
+    setupKeyboardShortcuts: function (domNode, spreadsheetId) {
         var self = this;
 
         this.keyboardShortcuts.map(function (shortcut) {
@@ -31409,11 +31486,24 @@ var dispatcher = {
                 events = shortcut[2];
 
             events.map(function(event)  {
-                Mousetrap.bind(shortcutKey, function (e) {
-                    self.publish(shortcutName + '_' + event, e);
+                Mousetrap(domNode).bind(shortcutKey, function (e) {
+                    self.publish(shortcutName + '_' + event, e, spreadsheetId);
                 }, event);
             })
         });
+
+        // Avoid scroll
+        window.addEventListener('keydown', function(e) {
+            // space and arrow keys
+            if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1 && $(document.activeElement)[0].tagName !== 'INPUT') {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    // Oh, old IE, you 💩
+                    e.returnValue = false;
+                } 
+            }
+        }, false);
     }
 };
 
@@ -31481,6 +31571,22 @@ var Helpers = {
             pow = num / 26 | 0,
             out = mod ? String.fromCharCode(64 + mod) : (--pow, 'Z');
         return pow ? toLetters(pow) + out : out;
+    },
+
+    /**
+     * Creates a random 5-character id
+     * @return {string} [Somewhat random id]
+     */
+    makeSpreadsheetId: function()
+    {
+        var text = '',
+            possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        for (var i = 0; i < 5; i = i + 1) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
     }
 }
 
@@ -31522,6 +31628,8 @@ var RowComponent = React.createClass({displayName: "RowComponent",
                                        onCellValueChange: this.props.onCellValueChange, 
                                        handleSelectCell: this.props.handleSelectCell, 
                                        handleDoubleClickOnCell: this.props.handleDoubleClickOnCell, 
+                                       handleCellBlur: this.props.handleCellBlur, 
+                                       spreadsheetId: this.props.spreadsheetId, 
                                        selected: selected, 
                                        editing: this.props.editing})
             );
@@ -31541,6 +31649,8 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent",
+
+    spreadsheetId: null,
 
     /**
      * React 'getInitialState' method
@@ -31569,21 +31679,10 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
     },
 
     /**
-     * React 'componentWillMount' method
+     * React 'componentDidMount' method
      */
-    componentWillMount: function () {
+    componentDidMount: function () {
         this.bindKeyboard();
-        
-        Dispatcher.subscribe('cellBlurred', function(cell)  {
-            if (this.state.editing) {
-                Dispatcher.publish('editStopped', this.state.selectedElement);
-            }
-
-            this.setState({ 
-                editing: false,
-                lastBlurred: cell
-            });
-        }.bind(this));
 
         $('body').on('focus', 'input', function (e) {
             $(this)
@@ -31605,6 +31704,8 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
             _cellClasses = this.props.cellClasses,
             rows = [], key, i, cellClasses;
 
+        this.spreadsheetId = this.spreadsheetId || Date.now();
+
         // Sanity checks
         if (!data.rows && !config.rows) {
             return console.error('Table Component: Number of colums not defined in both data and config!');
@@ -31624,12 +31725,14 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
                                     editing: this.state.editing, 
                                     handleSelectCell: this.handleSelectCell, 
                                     handleDoubleClickOnCell: this.handleDoubleClickOnCell, 
+                                    handleCellBlur: this.handleCellBlur, 
                                     onCellValueChange: this.handleCellValueChange, 
+                                    spreadsheetId: this.spreadsheetId, 
                                     className: "cellComponent"}));
         }
 
         return (
-            React.createElement("table", null, 
+            React.createElement("table", {tabIndex: "0", "data-spreasheet-id": this.spreadsheetId}, 
                 React.createElement("tbody", null, 
                     rows
                 )
@@ -31641,23 +31744,23 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
      * Binds the various keyboard events dispatched to table functions
      */
     bindKeyboard: function () {
-        Dispatcher.setupKeyboardShortcuts();
+        Dispatcher.setupKeyboardShortcuts($(React.findDOMNode(this))[0], this.spreadsheetId);
 
-        Dispatcher.subscribe('up_keyup', function()  {
-            this.navigateTable('up');
-        }.bind(this));
-        Dispatcher.subscribe('down_keyup', function()  {
-            this.navigateTable('down');
-        }.bind(this));
-        Dispatcher.subscribe('left_keyup', function()  {
-            this.navigateTable('left');
-        }.bind(this));
-        Dispatcher.subscribe('right_keyup', function()  {
-            this.navigateTable('right');
-        }.bind(this));
-        Dispatcher.subscribe('tab_keyup', function()  {
-            this.navigateTable('right', null, true);
-        }.bind(this));
+        Dispatcher.subscribe('up_keyup', function(data)  {
+            this.navigateTable('up', data);
+        }.bind(this), this.spreadsheetId);
+        Dispatcher.subscribe('down_keyup', function(data)  {
+            this.navigateTable('down', data);
+        }.bind(this), this.spreadsheetId);
+        Dispatcher.subscribe('left_keyup', function(data)  {
+            this.navigateTable('left', data);
+        }.bind(this), this.spreadsheetId);
+        Dispatcher.subscribe('right_keyup', function(data)  {
+            this.navigateTable('right', data);
+        }.bind(this), this.spreadsheetId);
+        Dispatcher.subscribe('tab_keyup', function(data)  {
+            this.navigateTable('right', data, null, true);
+        }.bind(this), this.spreadsheetId);
         
         // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', function(data)  {
@@ -31669,7 +31772,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
                     data.returnValue = false;
                 } 
             } 
-        });
+        }, this.spreadsheetId);
 
         Dispatcher.subscribe('remove_keydown', function(data)  {
             if (!$(data.target).is('input, textarea')) {
@@ -31680,37 +31783,38 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
                     data.returnValue = false;
                 }
             }
-        });
+        }, this.spreadsheetId);
 
         Dispatcher.subscribe('enter_keyup', function()  {
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
-        }.bind(this));
+            $(React.findDOMNode(this)).first().focus();
+        }.bind(this), this.spreadsheetId);
 
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keydown', function()  {
             if (!this.state.editing && this.state.selectedElement) {
-                Dispatcher.publish('editStarted', this.state.selectedElement);
+                Dispatcher.publish('editStarted', this.state.selectedElement, this.spreadsheetId);
                 this.setState({editing: true});
             }
-        }.bind(this));
+        }.bind(this), this.spreadsheetId);
 
         // Delete on backspace and delete
         Dispatcher.subscribe('remove_keyup', function()  {
             if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
                 this.handleCellValueChange(this.state.selected, '');
             }
-        }.bind(this));
+        }.bind(this), this.spreadsheetId);
     },
 
     /**
      * Navigates the table and moves selection
-     * @param  {[string]} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
-     * @param  {[Array: [number: row, number: cell]]} originCell  [Origin Cell]
-     * @param  {[boolean]} inEdit                                 [Currently editing]
+     * @param  {string} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
+     * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
+     * @param  {boolean} inEdit                                 [Currently editing]
      */
-    navigateTable: function (direction, originCell, inEdit) {
+    navigateTable: function (direction, data, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
         if (!inEdit && this.state.editing) {
@@ -31721,6 +31825,14 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
         if (!originCell) {
             originCell = this.state.selectedElement;
         }
+
+        // Prevent default
+        if (data.preventDefault) {
+            data.preventDefault();
+        } else {
+            // Oh, old IE, you 💩
+            data.returnValue = false;
+        } 
 
         var $origin = $(originCell),
             cellIndex = $origin.index(),
@@ -31745,7 +31857,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
 
     /**
      * Extends the table with an additional row/column, if permitted by config
-     * @param  {[string]} direction [Direction ('up' || 'down' || 'left' || 'right')]
+     * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
      */
     extendTable: function (direction) {
         var config = this.props.config,
@@ -31760,7 +31872,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
             }
 
             data.rows.push(newRow);
-            Dispatcher.publish('rowCreated', data.rows.length);
+            Dispatcher.publish('rowCreated', data.rows.length, this.spreadsheetId);
             return this.setState({data: data});
         }
 
@@ -31769,7 +31881,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
                 data.rows[i].push('');
             }
 
-            Dispatcher.publish('columnCreated', data.rows[0].length);
+            Dispatcher.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
             return this.setState({data: data});
         }
 
@@ -31777,11 +31889,13 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
 
     /**
      * Callback for 'selectCell', updating the selected Cell
-     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
-     * @param  {[object]} cellElement [Selected Cell Element]
+     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+     * @param  {object} cellElement [Selected Cell Element]
      */
     handleSelectCell: function (cell, cellElement) {
-        Dispatcher.publish('cellSelected', cell);
+        Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
+        $(React.findDOMNode(this)).first().focus();
+
         this.setState({
             selected: cell,
             selectedElement: cellElement
@@ -31790,11 +31904,11 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
 
     /**
      * Callback for 'cellValueChange', updating the cell data
-     * @param  {[Array: [number: row, number: cell]]} cell [Selected Cell]
-     * @param  {[object]} newValue                         [Value to set]
+     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+     * @param  {object} newValue                         [Value to set]
      */
     handleCellValueChange: function (cell, newValue) {
-        Dispatcher.publish('cellValueChanged', cell, newValue);
+        Dispatcher.publish('cellValueChanged', [cell, newValue], this.spreadsheetId);
 
         var data = this.state.data,
             row = cell[0],
@@ -31805,7 +31919,7 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
             data: data
         });
 
-        Dispatcher.publish('dataChanged', data);
+        Dispatcher.publish('dataChanged', data, this.spreadsheetId);
     },
 
     /**
@@ -31814,6 +31928,20 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
     handleDoubleClickOnCell: function () {
         this.setState({
             editing: true
+        });
+    },
+
+    /**
+     * Callback for 'cellBlur'
+     */
+    handleCellBlur: function (cell) {
+        if (this.state.editing) {
+            Dispatcher.publish('editStopped', this.state.selectedElement);
+        }
+
+        this.setState({ 
+            editing: false,
+            lastBlurred: cell
         });
     }
 });
