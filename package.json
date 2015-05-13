@@ -1,7 +1,9 @@
 {
-  "name": "TinyTimeSheet",
-  "description": "Small timesheet",
-  "version": "0.0.0",
+  "name": "react-spreadsheet-component",
+  "description": "A Spreadsheet Component for ReactJS",
+  "version": "0.1.0",
+  "license" : "MIT",
+  "repository": "felixrieseberg/React-Spreadsheet-Component",
   "maintainers": [
     {
       "name": "Felix Rieseberg",
