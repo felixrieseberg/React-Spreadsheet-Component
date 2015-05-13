@@ -11,7 +11,7 @@ The component is initialized with a configuration object. If desired, initial da
 ```
 var SpreadsheetComponent = require('./src/spreadsheet');
 
-React.render(<TableComponent initialData={initialData} config={config} />, document.getElementsByTagName('body'));
+React.render(<TableComponent initialData={initialData} config={config} spreadsheetId="1" />, document.getElementsByTagName('body'));
 ```
 
 ##### Configuration Object
@@ -73,7 +73,9 @@ var classes = {
 ```
 
 ## Data Lifecycle
-User input is not written to the `initialData` object, as it is merely used in initialization to populate the state. If you want to capture user input, subscribe callbacks to the `cellValueChanged` and `dataChanged` events on the dispatcher. 
+User input is not written to the `initialData` object, as it is merely used in initialization to populate the state. If you want to capture user input, subscribe callbacks to the `cellValueChanged` and `dataChanged` events on the dispatcher.
+
+The last parameter is the `spreadsheetId` of the spreadsheet you want to subscribe to.
 
 ##### Get the full data state after each change
 ```js
@@ -81,7 +83,7 @@ var Dispatcher = require('./src/dispatcher');
 
 Dispatcher.subscribe('dataChanged', function (data) {
     // data: The entire new data state
-})
+}, "spreadsheet-1")
 ```
 ##### Get the data change before state change
 ```js
@@ -90,7 +92,7 @@ var Dispatcher = require('./src/dispatcher');
 Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
     // cell: An array indicating the cell position by row/column, ie: [1,1]
     // newValue: The new value for that cell
-})
+}, "spreadsheet-1")
 ```
 
 ## Other Dispatcher Events

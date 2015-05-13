@@ -28,9 +28,9 @@ var dispatcher = {
 
     /**
      * Subscribe to an event
-     * @param  {string} topic    [The topic subscribing to]
-     * @param  {function} listener [The callback for published events]
-     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
+     * @param  {string} topic         [The topic subscribing to]
+     * @param  {function} listener    [The callback for published events]
+     * @param  {string} spreadsheetId [The reactId (data-spreadsheetId) of the origin element]
      */
     subscribe: function(topic, listener, spreadsheetId) {
         if (!this.topics[spreadsheetId]) {
@@ -46,9 +46,9 @@ var dispatcher = {
 
     /**
      * Publish to an event channel
-     * @param  {string} topic [The topic publishing to]
-     * @param  {object} data  [An object passed to the subscribed callbacks]
-     * @param  {string} reactId [The reactId (data-reactid) of the origin element]
+     * @param  {string} topic         [The topic publishing to]
+     * @param  {object} data          [An object passed to the subscribed callbacks]
+     * @param  {string} spreadsheetId [The reactId (data-spreadsheetId) of the origin element]
      */
     publish: function(topic, data, spreadsheetId) {
         // return if the topic doesn't exist, or there are no listeners
