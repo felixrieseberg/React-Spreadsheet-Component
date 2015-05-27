@@ -96,7 +96,7 @@ Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
 ```
 
 ## Other Dispatcher Events
-The dispatcher is offering more events you can subscribe to:
+The dispatcher offers some other events you can subscribe to:
  * `headCellClicked` A head cell was clicked (returns a cell array `[row, column]`)
  * `cellSelected` A cell was selected (returns a cell array `[row, column]`)
  * `cellBlur` A cell was blurred (returns returns a cell array `[row, column]`)
