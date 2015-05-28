@@ -1,8 +1,8 @@
 {
   "name": "react-spreadsheet-component",
   "description": "A Spreadsheet Component for ReactJS",
-  "version": "0.1.0",
-  "license" : "MIT",
+  "version": "0.1.1",
+  "license": "MIT",
   "repository": "felixrieseberg/React-Spreadsheet-Component",
   "maintainers": [
     {
