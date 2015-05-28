@@ -95,7 +95,7 @@ Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
 }, "spreadsheet-1")
 ```
 
-## Other Dispatcher Events
+### Other Dispatcher Events
 The dispatcher offers some other events you can subscribe to:
  * `headCellClicked` A head cell was clicked (returns a cell array `[row, column]`)
  * `cellSelected` A cell was selected (returns a cell array `[row, column]`)
@@ -104,3 +104,25 @@ The dispatcher offers some other events you can subscribe to:
  * `editStopped` The user stopped editing (returns a cell array `[row, column]`)
  * `newRow` The user created a new row (returns the row index)
  * `newColumn` The user created a new column (returns the row index)
+
+## Running the Example
+Clone the repository from GitHub and open the created folder:
+
+```
+git clone https://github.com/felixrieseberg/React-Spreadsheet-Component.git
+cd React-Spreadsheet-Component
+```
+
+Install npm packages and compile JSX
+```
+npm install
+grunt
+```
+
+If you are using Windows, run the following commands instead:
+```
+npm install --msvs_version=2013
+grunt
+```
+
+Open the example in example/index.html.
