@@ -105,19 +105,19 @@ var CellComponent = React.createClass({
         // Cases
         var headRow = (uid[0] === 0),
             headColumn = (uid[1] === 0),
-            headRowAndEnabled = (config.headRow && uid[0] === 0),
-            headColumnAndEnabled = (config.headColumn && uid[1] === 0)
+            headRowAndEnabled = (config.hasHeadRow && uid[0] === 0),
+            headColumnAndEnabled = (config.hasHeadColumn && uid[1] === 0)
 
         // Head Row enabled, cell is in head row
         // Head Column enabled, cell is in head column
         if (headRowAndEnabled || headColumnAndEnabled) {
-            if (headColumn && config.letterNumberHeads) {
+            if (headColumn && config.hasLetterNumberHeads) {
                 displayValue = uid[0];
-            } else if (headRow && config.letterNumberHeads) {
+            } else if (headRow && config.hasLetterNumberHeads) {
                 displayValue = Helpers.countWithLetters(uid[1]);
             }
 
-            if ((config.headRowIsString && headRow) || (config.headColumnIsString && headColumn)) {
+            if ((config.isHeadRowString && headRow) || (config.isHeadColumnString && headColumn)) {
                 return (
                     <th className={cellClasses} ref={this.props.uid.join('_')}>
                         <div>

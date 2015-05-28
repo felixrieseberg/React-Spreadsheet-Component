@@ -20,14 +20,14 @@ exampleOne.initialData = {
 exampleOne.config = {
     rows: 5,
     columns: 8,
-    headColumn: true,
-    headColumnIsString: true,
-    headRow: true,
-    headRowIsString: true,
+    hasHeadColumn: true,
+    isHeadColumnString: true,
+    hasHeadRow: true,
+    isHeadRowString: true,
     canAddRow: true,
     canAddColumn: true,
     emptyValueSymbol: '-',
-    letterNumberHeads: true
+    hasLetterNumberHeads: true
 };
 
 // Example Two
@@ -31362,19 +31362,19 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         // Cases
         var headRow = (uid[0] === 0),
             headColumn = (uid[1] === 0),
-            headRowAndEnabled = (config.headRow && uid[0] === 0),
-            headColumnAndEnabled = (config.headColumn && uid[1] === 0)
+            headRowAndEnabled = (config.hasHeadRow && uid[0] === 0),
+            headColumnAndEnabled = (config.hasHeadColumn && uid[1] === 0)
 
         // Head Row enabled, cell is in head row
         // Head Column enabled, cell is in head column
         if (headRowAndEnabled || headColumnAndEnabled) {
-            if (headColumn && config.letterNumberHeads) {
+            if (headColumn && config.hasLetterNumberHeads) {
                 displayValue = uid[0];
-            } else if (headRow && config.letterNumberHeads) {
+            } else if (headRow && config.hasLetterNumberHeads) {
                 displayValue = Helpers.countWithLetters(uid[1]);
             }
 
-            if ((config.headRowIsString && headRow) || (config.headColumnIsString && headColumn)) {
+            if ((config.isHeadRowString && headRow) || (config.isHeadColumnString && headColumn)) {
                 return (
                     React.createElement("th", {className: cellClasses, ref: this.props.uid.join('_')}, 
                         React.createElement("div", null, 

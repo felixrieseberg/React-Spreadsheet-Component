@@ -19,14 +19,14 @@ exampleOne.initialData = {
 exampleOne.config = {
     rows: 5,
     columns: 8,
-    headColumn: true,
-    headColumnIsString: true,
-    headRow: true,
-    headRowIsString: true,
+    hasHeadColumn: true,
+    isHeadColumnString: true,
+    hasHeadRow: true,
+    isHeadRowString: true,
     canAddRow: true,
     canAddColumn: true,
     emptyValueSymbol: '-',
-    letterNumberHeads: true
+    hasLetterNumberHeads: true
 };
 
 // Example Two
