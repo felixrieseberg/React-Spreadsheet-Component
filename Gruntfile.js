@@ -25,21 +25,11 @@ module.exports = function (grunt) {
                     ]
                 }
             }
-        },
-
-        connect: {
-            server: {
-                options: {
-                    port: 8000,
-                    base: './example'
-                }
-            }
         }
     })
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-connect');
 
-    grunt.registerTask('default', ['browserify', 'connect', 'watch']);
+    grunt.registerTask('default', ['browserify', 'watch']);
 };
