@@ -89,7 +89,7 @@ Dispatcher.subscribe('dataChanged', function (data) {
 ```js
 var Dispatcher = require('./src/dispatcher');
 
-Dispatcher.subscribe('cellValueChanged', function (cell, newValue) {
+Dispatcher.subscribe('cellValueChanged', function (cell, newValue, oldValue) {
     // cell: An array indicating the cell position by row/column, ie: [1,1]
     // newValue: The new value for that cell
 }, "spreadsheet-1")

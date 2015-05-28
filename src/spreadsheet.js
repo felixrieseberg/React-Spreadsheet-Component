@@ -265,11 +265,12 @@ var SpreadsheetComponent = React.createClass({
      * @param  {object} newValue                         [Value to set]
      */
     handleCellValueChange: function (cell, newValue) {
-        Dispatcher.publish('cellValueChanged', [cell, newValue], this.spreadsheetId);
-
         var data = this.state.data,
             row = cell[0],
-            column = cell[1];
+            column = cell[1],
+            oldValue = data.rows[row][column];
+
+        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
 
         data.rows[row][column] = newValue;
         this.setState({
