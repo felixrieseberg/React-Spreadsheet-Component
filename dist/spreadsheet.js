@@ -3,6 +3,8 @@
  * MIT Licensed
  */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.ReactSpreadsheet=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
 var React = (window.React);
 var $ = require('jQuery');
 
@@ -11,7 +13,6 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent",
-
     spreadsheetId: null,
 
     /**
@@ -311,14 +312,19 @@ var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent
 
 module.exports = SpreadsheetComponent;
 },{"./dispatcher":3,"./helpers":4,"./row":5,"jQuery":6}],2:[function(require,module,exports){
+"use strict";
+
 var React = (window.React);
-var $ = require('jquery');
 
 var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var CellComponent = React.createClass({displayName: "CellComponent",
 
+    /**
+     * React "getInitialState" method, setting whether or not
+     * the cell is being edited and its changing value
+     */
     getInitialState: function() {
         return {
             editing: this.props.editing,
@@ -326,6 +332,9 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         };
     },
 
+    /**
+     * React "render" method, rendering the individual cell
+     */
     render: function() {
         var selected = (this.props.selected) ? 'selected' : '',
             ref = 'input_' + this.props.uid.join('_'),
@@ -363,6 +372,11 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         );
     },
 
+    /**
+     * React "componentDidUpdate" method, ensuring correct input focus
+     * @param  {React previous properties} prevProps
+     * @param  {React previous state} prevState
+     */
     componentDidUpdate: function(prevProps, prevState) {
         if (this.props.editing && this.props.selected) {
             var node = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
@@ -374,21 +388,37 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         }
     },
 
+    /**
+     * Click handler for individual cell, ensuring navigation and selection
+     * @param  {event} e
+     */
     handleClick: function (e) {
         var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
         this.props.handleSelectCell(this.props.uid, cellElement);
     },
 
+    /**
+     * Click handler for individual cell if the cell is a header cell
+     * @param  {event} e
+     */
     handleHeadClick: function (e) {
         var cellElement = React.findDOMNode(this.refs[this.props.uid.join('_')]);
         Dispatcher.publish('headCellClicked', cellElement, this.props.spreadsheetId);
     },
 
+    /**
+     * Double click handler for individual cell, ensuring navigation and selection
+     * @param  {event} e
+     */
     handleDoubleClick: function (e) {
         e.preventDefault();
         this.props.handleDoubleClickOnCell(this.props.uid);
     },
 
+    /**
+     * Blur handler for individual cell
+     * @param  {event} e
+     */
     handleBlur: function (e) {
         var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
@@ -397,6 +427,10 @@ var CellComponent = React.createClass({displayName: "CellComponent",
         Dispatcher.publish('cellBlurred', this.props.uid, this.props.spreadsheetId);
     },
 
+    /**
+     * Change handler for an individual cell, propagating the value change
+     * @param  {event} e
+     */
     handleChange: function (e) {
         var newValue = React.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
 
@@ -454,12 +488,13 @@ var CellComponent = React.createClass({displayName: "CellComponent",
 });
 
 module.exports = CellComponent;
-},{"./dispatcher":3,"./helpers":4,"jquery":7}],3:[function(require,module,exports){
+},{"./dispatcher":3,"./helpers":4}],3:[function(require,module,exports){
+"use strict";
+
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
 
-var dispatcher = {
-
+var dispatcher = {    
     // Event Pub/Sub System
     // 
     // Topics used:
@@ -509,7 +544,9 @@ var dispatcher = {
      */
     publish: function(topic, data, spreadsheetId) {
         // return if the topic doesn't exist, or there are no listeners
-        if(!this.topics[spreadsheetId] || !this.topics[spreadsheetId][topic] || this.topics[spreadsheetId][topic].length < 1) return;
+        if (!this.topics[spreadsheetId] || !this.topics[spreadsheetId][topic] || this.topics[spreadsheetId][topic].length < 1) {
+            return
+        }
 
         this.topics[spreadsheetId][topic].forEach(function(listener) {
             listener(data || {});
@@ -566,6 +603,8 @@ var dispatcher = {
 
 module.exports = dispatcher;
 },{"jquery":7,"mousetrap":8}],4:[function(require,module,exports){
+"use strict";
+
 var Helpers = {
     /**
      * Find the first element in an array matching a boolean
@@ -627,7 +666,7 @@ var Helpers = {
         var mod = num % 26,
             pow = num / 26 | 0,
             out = mod ? String.fromCharCode(64 + mod) : (--pow, 'Z');
-        return pow ? toLetters(pow) + out : out;
+        return pow ? this.countWithLetters(pow) + out : out;
     },
 
     /**
@@ -649,13 +688,14 @@ var Helpers = {
 
 module.exports = Helpers;
 },{}],5:[function(require,module,exports){
+"use strict";
+
 var React = (window.React);
 
 var CellComponent = require('./cell');
 var Helpers = require('./helpers');
 
-var RowComponent = React.createClass({displayName: "RowComponent",
-
+var RowComponent = React.createClass({displayName: "RowComponent",    
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]
