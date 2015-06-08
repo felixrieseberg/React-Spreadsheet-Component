@@ -5,9 +5,7 @@ var React = require('react');
 var CellComponent = require('./cell');
 var Helpers = require('./helpers');
 
-var RowComponent = React.createClass({
-    "use strict";
-    
+var RowComponent = React.createClass({    
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]

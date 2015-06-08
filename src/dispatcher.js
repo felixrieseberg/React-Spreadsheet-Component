@@ -1,9 +1,9 @@
+"use strict";
+
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
 
-var dispatcher = {
-    "use strict";
-    
+var dispatcher = {    
     // Event Pub/Sub System
     // 
     // Topics used:

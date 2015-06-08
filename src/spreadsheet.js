@@ -1,3 +1,5 @@
+"use strict";
+
 var React = require('react');
 var $ = require('jQuery');
 
@@ -6,8 +8,6 @@ var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
 
 var SpreadsheetComponent = React.createClass({
-    "use strict";
-    
     spreadsheetId: null,
 
     /**

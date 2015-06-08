@@ -1,6 +1,6 @@
-var Helpers = {
-    "use strict";
+"use strict";
 
+var Helpers = {
     /**
      * Find the first element in an array matching a boolean
      * @param  {[array]} arr     [Array to test]
