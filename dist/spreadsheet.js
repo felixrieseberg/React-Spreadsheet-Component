@@ -1,11 +1,11 @@
 /*!
- * react-spreadsheet-component 0.2.0 - 
+ * react-spreadsheet-component 0.3.0 - 
  * MIT Licensed
  */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.ReactSpreadsheet=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactSpreadsheet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
-var React = (window.React);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var $ = require('jQuery');
 
 var RowComponent = require('./row');
@@ -314,7 +314,7 @@ module.exports = SpreadsheetComponent;
 },{"./dispatcher":3,"./helpers":4,"./row":5,"jQuery":6}],2:[function(require,module,exports){
 "use strict";
 
-var React = (window.React);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var Dispatcher = require('./dispatcher');
 var Helpers = require('./helpers');
@@ -690,7 +690,7 @@ module.exports = Helpers;
 },{}],5:[function(require,module,exports){
 "use strict";
 
-var React = (window.React);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var CellComponent = require('./cell');
 var Helpers = require('./helpers');
@@ -11091,8 +11091,8 @@ return jQuery;
 }));
 
 },{}],7:[function(require,module,exports){
-module.exports=require(6)
-},{"/Users/felixrieseberg/Code/TinyTimeSheet/node_modules/jQuery/dist/jquery.js":6}],8:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],8:[function(require,module,exports){
 /*global define:false */
 /**
  * Copyright 2015 Craig Campbell
@@ -11112,7 +11112,7 @@ module.exports=require(6)
  * Mousetrap is a simple keyboard shortcut library for Javascript with
  * no external dependencies
  *
- * @version 1.5.2
+ * @version 1.5.3
  * @url craig.is/killing/mice
  */
 (function(window, document, undefined) {
@@ -11505,7 +11505,7 @@ module.exports=require(6)
     }
 
     function _belongsTo(element, ancestor) {
-        if (element === document) {
+        if (element === null || element === document) {
             return false;
         }
 

@@ -44,6 +44,7 @@
   "main": "./lib/spreadsheet.js",
   "standalone": "React-Spreadsheet",
   "dependencies": {
-    "jquery": "^1.11"
+    "jquery": "^1.11",
+    "mousetrap": "^1.5.3"
   }
 }

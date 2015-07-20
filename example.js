@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Spreadsheet = require('./src/spreadsheet');
+var Spreadsheet = require('./lib/spreadsheet');
 
 // Example One
 var exampleOne = {};
