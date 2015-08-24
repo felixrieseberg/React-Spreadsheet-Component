@@ -11,6 +11,13 @@
       "web": "http://www.felixrieseberg.com"
     }
   ],
+  "dependencies": {
+    "jquery": "^1.11",
+    "mousetrap": "^1.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=0.13 || >0.14.0-alpha"
+  },
   "devDependencies": {
     "browserify": "^9.0.3",
     "browserify-shim": "^3.8.3",
@@ -42,9 +49,5 @@
     "react/addons": "global:React"
   },
   "main": "./lib/spreadsheet.js",
-  "standalone": "React-Spreadsheet",
-  "dependencies": {
-    "jquery": "^1.11",
-    "mousetrap": "^1.5.3"
-  }
+  "standalone": "React-Spreadsheet"
 }
