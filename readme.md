@@ -1,16 +1,14 @@
 # React Spreadsheet
-This is a spreadsheet component built in Facebook's React. [You can see a demo here](http://felixrieseberg.github.io/React-Spreadsheet-Component/).
+This is a spreadsheet component built in Facebook's ReactJS. [You can see a demo here](http://felixrieseberg.github.io/React-Spreadsheet-Component/).
 
 ![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/example/.reactspreadsheet.gif)
 ![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/example/.reactspreadsheet2.gif)
 
-
 ## Usage
 The component is initialized with a configuration object. If desired, initial data for the spreadsheet can be passed in as an array of rows. In addition, you can pass in a second array filled with class names for each cell, allowing you to style each cell differently.
 
-```
+```js
 var SpreadsheetComponent = require('./src/spreadsheet');
-
 React.render(<TableComponent initialData={initialData} config={config} spreadsheetId="1" />, document.getElementsByTagName('body'));
 ```
 
@@ -108,21 +106,24 @@ The dispatcher offers some other events you can subscribe to:
 ## Running the Example
 Clone the repository from GitHub and open the created folder:
 
-```
+```bash
 git clone https://github.com/felixrieseberg/React-Spreadsheet-Component.git
 cd React-Spreadsheet-Component
 ```
 
 Install npm packages and compile JSX
-```
+```bash
 npm install
 grunt
 ```
 
 If you are using Windows, run the following commands instead:
-```
+```bash
 npm install --msvs_version=2013
 grunt
 ```
 
 Open the example in example/index.html.
+
+## License
+(C) Copyright 2015 Microsoft Corporation and Felix Rieseberg. Licensed as MIT, please see `LICENSE` for details.
