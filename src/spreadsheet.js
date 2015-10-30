@@ -62,7 +62,7 @@ var SpreadsheetComponent = React.createClass({
             _cellClasses = this.props.cellClasses,
             rows = [], key, i, cellClasses;
 
-        this.spreadsheetId = this.spreadsheetId || Helpers.makeSpreadsheetId();
+        this.spreadsheetId = this.props.spreadsheetId || Helpers.makeSpreadsheetId();
 
         // Sanity checks
         if (!data.rows && !config.rows) {
