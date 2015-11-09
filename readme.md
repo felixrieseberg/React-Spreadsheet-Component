@@ -9,7 +9,7 @@ The component is initialized with a configuration object. If desired, initial da
 
 ```js
 var SpreadsheetComponent = require('./src/spreadsheet');
-React.render(<TableComponent initialData={initialData} config={config} spreadsheetId="1" />, document.getElementsByTagName('body'));
+React.render(<SpreadsheetComponent initialData={initialData} config={config} spreadsheetId="1" />, document.getElementsByTagName('body'));
 ```
 
 ##### Configuration Object
