@@ -23,7 +23,9 @@ var jsSrcPaths = './src/**/*.js*'
 var jsLibPaths = './lib/**/*.js'
 
 gulp.task('clean-lib', function(cb) {
-  del(jsLibPaths, cb)
+  del(jsLibPaths).then(function () {
+    cb()
+  })
 })
 
 gulp.task('transpile-js', ['clean-lib'], function() {
