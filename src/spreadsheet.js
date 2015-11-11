@@ -1,6 +1,7 @@
 "use strict";
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var $ = require('jQuery');
 
 var RowComponent = require('./row');
@@ -75,7 +76,7 @@ var SpreadsheetComponent = React.createClass({
             cellClasses = (_cellClasses && _cellClasses.rows && _cellClasses.rows[i]) ? _cellClasses.rows[i] : null;
 
             rows.push(<RowComponent cells={data.rows[i]}
-                                    cellClasses={cellClasses} 
+                                    cellClasses={cellClasses}
                                     uid={i}
                                     key={key}
                                     config={config}
@@ -102,7 +103,7 @@ var SpreadsheetComponent = React.createClass({
      * Binds the various keyboard events dispatched to table functions
      */
     bindKeyboard: function () {
-        Dispatcher.setupKeyboardShortcuts($(React.findDOMNode(this))[0], this.spreadsheetId);
+        Dispatcher.setupKeyboardShortcuts($(ReactDOM.findDOMNode(this))[0], this.spreadsheetId);
 
         Dispatcher.subscribe('up_keyup', data => {
             this.navigateTable('up', data);
@@ -119,7 +120,7 @@ var SpreadsheetComponent = React.createClass({
         Dispatcher.subscribe('tab_keyup', data => {
             this.navigateTable('right', data, null, true);
         }, this.spreadsheetId);
-        
+
         // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', data => {
             if ($(document.activeElement) && $(document.activeElement)[0].tagName === 'INPUT') {
@@ -128,8 +129,8 @@ var SpreadsheetComponent = React.createClass({
                 } else {
                     // Oh, old IE, you 💩
                     data.returnValue = false;
-                } 
-            } 
+                }
+            }
         }, this.spreadsheetId);
 
         Dispatcher.subscribe('remove_keydown', data => {
@@ -147,7 +148,7 @@ var SpreadsheetComponent = React.createClass({
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
-            $(React.findDOMNode(this)).first().focus();
+            $(ReactDOM.findDOMNode(this)).first().focus();
         }, this.spreadsheetId);
 
         // Go into edit mode when the user starts typing on a field
@@ -190,7 +191,7 @@ var SpreadsheetComponent = React.createClass({
         } else {
             // Oh, old IE, you 💩
             data.returnValue = false;
-        } 
+        }
 
         var $origin = $(originCell),
             cellIndex = $origin.index(),
@@ -252,7 +253,7 @@ var SpreadsheetComponent = React.createClass({
      */
     handleSelectCell: function (cell, cellElement) {
         Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
-        $(React.findDOMNode(this)).first().focus();
+        $(ReactDOM.findDOMNode(this)).first().focus();
 
         this.setState({
             selected: cell,
@@ -298,7 +299,7 @@ var SpreadsheetComponent = React.createClass({
             Dispatcher.publish('editStopped', this.state.selectedElement);
         }
 
-        this.setState({ 
+        this.setState({
             editing: false,
             lastBlurred: cell
         });
