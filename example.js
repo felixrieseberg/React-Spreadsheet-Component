@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Spreadsheet = require('./lib/spreadsheet');
 
 // Example One
@@ -63,5 +64,5 @@ exampleTwo.config = {
 };
 
 // Render
-React.render(<Spreadsheet initialData={exampleOne.initialData} config={exampleOne.config} cellClasses={exampleOne.cellClasses} />, document.getElementById('exampleOne'));
-React.render(<Spreadsheet initialData={exampleTwo.initialData} config={exampleTwo.config} cellClasses={exampleTwo.cellClasses} />, document.getElementById('exampleTwo'));
+ReactDOM.render(<Spreadsheet initialData={exampleOne.initialData} config={exampleOne.config} cellClasses={exampleOne.cellClasses} />, document.getElementById('exampleOne'));
+ReactDOM.render(<Spreadsheet initialData={exampleTwo.initialData} config={exampleTwo.config} cellClasses={exampleTwo.cellClasses} />, document.getElementById('exampleTwo'));

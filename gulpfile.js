@@ -8,6 +8,7 @@ var jshint = require('gulp-jshint')
 var rename = require('gulp-rename')
 var plumber = require('gulp-plumber')
 var react = require('gulp-react')
+var reactify = require('reactify')
 var streamify = require('gulp-streamify')
 var uglify = require('gulp-uglify')
 var gutil = require('gulp-util')
@@ -67,6 +68,14 @@ gulp.task('bundle-js', ['lint-js'], function() {
 
 gulp.task('watch', function() {
   gulp.watch(jsSrcPaths, ['bundle-js'])
+})
+
+gulp.task('example', ['transpile-js'], function() {
+  return browserify('./example.js')
+		.transform(reactify)
+		.bundle()
+		.pipe(source('bundle.js'))
+		.pipe(gulp.dest('./example'));
 })
 
 gulp.task('default', ['bundle-js', 'watch'])
