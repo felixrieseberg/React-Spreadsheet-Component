@@ -1,4 +1,6 @@
-# React Spreadsheet
+## Spreadsheet Component for React
+[![Dependency Status](https://david-dm.org/felixrieseberg/react-spreadsheet-component.svg)](https://david-dm.org/felixrieseberg/react-spreadsheet-component) [![npm version](https://badge.fury.io/js/react-spreadsheet-component.svg)](https://badge.fury.io/js/react-spreadsheet-component) ![Downloads](https://img.shields.io/npm/dm/react-spreadsheet-component.svg)
+
 This is a spreadsheet component built in Facebook's ReactJS. [You can see a demo here](http://felixrieseberg.github.io/React-Spreadsheet-Component/).
 
 ![Screenshot](https://raw.githubusercontent.com/felixrieseberg/React-Spreadsheet-Component/master/example/.reactspreadsheet.gif)
