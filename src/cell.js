@@ -23,11 +23,12 @@ var CellComponent = React.createClass({
      * React "render" method, rendering the individual cell
      */
     render: function() {
-        var selected = (this.props.selected) ? 'selected' : '',
-            ref = 'input_' + this.props.uid.join('_'),
-            emptyValueSymbol = this.props.config.emptyValueSymbol || '',
-            displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
-            cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected,
+        var props = this.props,
+            selected = (props.selected) ? 'selected' : '',
+            ref = 'input_' + props.uid.join('_'),
+            config = props.config || { emptyValueSymbol: ''},
+            displayValue = (props.value === '' || !props.value) ? config.emptyValueSymbol : props.value,
+            cellClasses = (props.cellClasses && props.cellClasses.length > 0) ? props.cellClasses + ' ' + selected : selected,
             cellContent;
 
         // Check if header - if yes, render it
@@ -37,7 +38,7 @@ var CellComponent = React.createClass({
         }
 
         // If not a header, check for editing and return
-        if (this.props.selected && this.props.editing) {
+        if (props.selected && props.editing) {
             cellContent = (
                 <input className="mousetrap"
                        onChange={this.handleChange}
@@ -48,7 +49,7 @@ var CellComponent = React.createClass({
         }
 
         return (
-            <td className={cellClasses} ref={this.props.uid.join('_')}>
+            <td className={cellClasses} ref={props.uid.join('_')}>
                 <div className="reactTableCell">
                     {cellContent}
                     <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>
@@ -129,12 +130,12 @@ var CellComponent = React.createClass({
      * @return {false|react} [Either false if it's not a header cell, a react object if it is]
      */
     renderHeader: function () {
-        var selected = (this.props.selected) ? 'selected' : '',
-            uid = this.props.uid,
-            config = this.props.config,
-            emptyValueSymbol = this.props.config.emptyValueSymbol || '',
-            displayValue = (this.props.value === '' || !this.props.value) ? emptyValueSymbol : this.props.value,
-            cellClasses = (this.props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected;
+        var props = this.props,
+            selected = (props.selected) ? 'selected' : '',
+            uid = props.uid,
+            config = props.config || { emptyValueSymbol: ''},
+            displayValue = (props.value === '' || !props.value) ? config.emptyValueSymbol : props.value,
+            cellClasses = (props.cellClasses && props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected;
 
         // Cases
         var headRow = (uid[0] === 0),

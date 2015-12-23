@@ -36,6 +36,7 @@
     "jest-cli": "^0.8.2",
     "jshint-stylish": "^2.0.1",
     "multer": "^1.1.0",
+    "react": "^0.14.0",
     "react-addons-test-utils": "^0.14.3",
     "react-dom": "^0.14.0",
     "react-tools": "^0.13.3",

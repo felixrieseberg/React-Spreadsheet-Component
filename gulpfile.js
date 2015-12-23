@@ -20,8 +20,8 @@ var distHeader = '/*!\n\
  * <%= pkg.license %> Licensed\n\
  */\n'
 
-var jsSrcPaths = './src/**/*.js*'
-var jsLibPaths = './lib/**/*.js'
+var jsSrcPaths = './src/*.js*'
+var jsLibPaths = './lib/*.js'
 
 gulp.task('clean-lib', function(cb) {
   del(jsLibPaths).then(function () {
