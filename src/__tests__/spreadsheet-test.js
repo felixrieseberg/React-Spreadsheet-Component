@@ -33,8 +33,6 @@ const testVars = {
 };
 
 describe('Spreadsheet', () => {
-  var $ = require('jQuery');
-
   it('Renders a spreadsheet', () => {
     var spreadsheet = TestUtils.renderIntoDocument(
        <SpreadsheetComponent

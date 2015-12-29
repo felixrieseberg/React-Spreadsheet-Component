@@ -2,7 +2,7 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var $ = require('jQuery');
+var $ = require('jquery');
 
 var RowComponent = require('./row');
 var Dispatcher = require('./dispatcher');
