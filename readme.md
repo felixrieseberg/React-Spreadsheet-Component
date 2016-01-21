@@ -10,7 +10,7 @@ This is a spreadsheet component built in Facebook's ReactJS. [You can see a demo
 The component is initialized with a configuration object. If desired, initial data for the spreadsheet can be passed in as an array of rows. In addition, you can pass in a second array filled with class names for each cell, allowing you to style each cell differently.
 
 ```js
-var SpreadsheetComponent = require('./src/spreadsheet');
+var SpreadsheetComponent = require('react-spreadsheet-component');
 React.render(<SpreadsheetComponent initialData={initialData} config={config} spreadsheetId="1" />, document.getElementsByTagName('body'));
 ```
 
