@@ -58,7 +58,13 @@
   },
   "browserify-shim": {
     "react": "global:React",
-    "react/addons": "global:React"
+    "react/addons": "global:React",
+    "react-dom": "global:ReactDOM"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "main": "./lib/spreadsheet.js",
   "standalone": "React-Spreadsheet"
