@@ -15,7 +15,7 @@ var connect    = require('gulp-connect');
 var reactify   = require('reactify');
 
 var pkg = require('./package.json');
-var devBuild = gutil.env.release ? '' : ' (dev build at ' + (new Date()).toUTCString() + ')';
+var devBuild = (process.env.NODE_ENV === 'production') ? '' : ' (dev build at ' + (new Date()).toUTCString() + ')';
 var distHeader = '/*!\n\
  * <%= pkg.name %> <%= pkg.version %><%= devBuild %> - <%= pkg.homepage %>\n\
  * <%= pkg.license %> Licensed\n\
@@ -57,7 +57,7 @@ gulp.task('bundle-js', ['lint-js'], function () {
         .pipe(streamify(header(distHeader, { pkg: pkg, devBuild: devBuild })))
         .pipe(gulp.dest('./dist'));
         
-    if (process.env.NODE_ENV) {
+    if (process.env.NODE_ENV === 'production') {
         stream = stream
             .pipe(rename('spreadsheet.min.js'))
             .pipe(streamify(uglify()))
