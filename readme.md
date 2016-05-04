@@ -116,13 +116,13 @@ cd React-Spreadsheet-Component
 Install npm packages and compile JSX
 ```bash
 npm install
-grunt
+gulp
 ```
 
 If you are using Windows, run the following commands instead:
 ```bash
 npm install --msvs_version=2013
-grunt
+gulp
 ```
 
 Open the example in example/index.html.
