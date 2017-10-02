@@ -1,5 +1,5 @@
 /*!
- * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 14:09:43 GMT) - 
+ * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 14:43:24 GMT) - 
  * MIT Licensed
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactSpreadsheet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -43,6 +43,10 @@ var CellComponent = function (_Component) {
             editing: _this.props.editing,
             changedValue: _this.props.value
         };
+        _this.handleClick = _this.handleClick.bind(_this);
+        _this.handleHeadClick = _this.handleHeadClick.bind(_this);
+        _this.handleBlur = _this.handleBlur.bind(_this);
+        _this.handleChange = _this.handleChange.bind(_this);
         return _this;
     }
 
@@ -541,6 +545,8 @@ var SpreadsheetComponent = function (_Component) {
             editing: false,
             id: _this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId()
         };
+
+        _this.handleSelectCell = _this.handleSelectCell.bind(_this);
         return _this;
     }
 
@@ -773,6 +779,7 @@ var SpreadsheetComponent = function (_Component) {
     }, {
         key: 'handleSelectCell',
         value: function handleSelectCell(cell, cellElement) {
+            console.log(this);
             _dispatcher2.default.publish('cellSelected', cell, this.spreadsheetId);
             $(this.refs["react-spreadsheet-" + this.state.id]).first().focus();
 

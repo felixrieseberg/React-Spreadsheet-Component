@@ -35,8 +35,8 @@ class CellComponent extends Component {
         if (props.selected && props.editing) {
             cellContent = (
                 <input className="mousetrap"
-                       onChange={this.handleChange}
-                       onBlur={this.handleBlur}
+                       onChange={this.handleChange.bind(this)}
+                       onBlur={this.handleBlur.bind(this)}
                        ref={ref}
                        defaultValue={this.props.value} />
             )
@@ -46,7 +46,7 @@ class CellComponent extends Component {
             <td className={cellClasses} ref={props.uid.join('_')}>
                 <div className="reactTableCell">
                     {cellContent}
-                    <span onDoubleClick={this.handleDoubleClick} onClick={this.handleClick}>
+                    <span onDoubleClick={this.handleDoubleClick.bind(this)} onClick={this.handleClick.bind(this)}>
                         {displayValue}
                     </span>
                 </div>
@@ -115,7 +115,6 @@ class CellComponent extends Component {
      */
     handleChange(e) {
         var newValue = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
-
         this.setState({changedValue: newValue});
     }
 
@@ -150,7 +149,7 @@ class CellComponent extends Component {
                 return (
                     <th className={cellClasses} ref={this.props.uid.join('_')}>
                         <div>
-                            <span onClick={this.handleHeadClick}>
+                            <span onClick={this.handleHeadClick.bind(this)}>
                                 {displayValue}
                             </span>
                         </div>

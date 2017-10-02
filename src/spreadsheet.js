@@ -31,7 +31,7 @@ class SpreadsheetComponent extends Component {
             selectedElement: null,
             editing: false,
             id: this.props.spreadsheetId || Helpers.makeSpreadsheetId()
-        };
+        };        
     }
 
     /**
@@ -77,11 +77,11 @@ class SpreadsheetComponent extends Component {
                                     config={config}
                                     selected={this.state.selected}
                                     editing={this.state.editing}
-                                    handleSelectCell={this.handleSelectCell}
-                                    handleDoubleClickOnCell={this.handleDoubleClickOnCell}
-                                    handleCellBlur={this.handleCellBlur}
-                                    onCellValueChange={this.handleCellValueChange}
-                                    spreadsheetId={this.spreadsheetId}
+                                    handleSelectCell={this.handleSelectCell.bind(this)}
+                                    handleDoubleClickOnCell={this.handleDoubleClickOnCell.bind(this)}
+                                    handleCellBlur={this.handleCellBlur.bind(this)}
+                                    onCellValueChange={this.handleCellValueChange.bind(this)}
+                                    spreadsheetId={this.state.id}
                                     className="cellComponent" />);
         }
 
@@ -98,23 +98,23 @@ class SpreadsheetComponent extends Component {
      * Binds the various keyboard events dispatched to table functions
      */
     bindKeyboard() {
-        Dispatcher.setupKeyboardShortcuts($(this.refs["spreadsheet-"+this.spreadsheetId])[0], this.spreadsheetId);
+        Dispatcher.setupKeyboardShortcuts($(this.refs["react-spreadsheet-"+this.state.id])[0], this.state.id);
 
         Dispatcher.subscribe('up_keyup', data => {
             this.navigateTable('up', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('down_keyup', data => {
             this.navigateTable('down', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('left_keyup', data => {
             this.navigateTable('left', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('right_keyup', data => {
             this.navigateTable('right', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('tab_keyup', data => {
             this.navigateTable('right', data, null, true);
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', data => {
@@ -126,7 +126,7 @@ class SpreadsheetComponent extends Component {
                     data.returnValue = false;
                 }
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         Dispatcher.subscribe('remove_keydown', data => {
             if (!$(data.target).is('input, textarea')) {
@@ -137,29 +137,29 @@ class SpreadsheetComponent extends Component {
                     data.returnValue = false;
                 }
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         Dispatcher.subscribe('enter_keyup', () => {
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
             $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keydown', () => {
             if (!this.state.editing && this.state.selectedElement) {
-                Dispatcher.publish('editStarted', this.state.selectedElement, this.spreadsheetId);
+                Dispatcher.publish('editStarted', this.state.selectedElement, this.state.id);
                 this.setState({editing: true});
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         // Delete on backspace and delete
         Dispatcher.subscribe('remove_keyup', () => {
             if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
                 this.handleCellValueChange(this.state.selected, '');
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
     }
 
     /**
@@ -226,7 +226,7 @@ class SpreadsheetComponent extends Component {
             }
 
             data.rows.push(newRow);
-            Dispatcher.publish('rowCreated', data.rows.length, this.spreadsheetId);
+            Dispatcher.publish('rowCreated', data.rows.length, this.state.id);
             return this.setState({data: data});
         }
 
@@ -235,7 +235,7 @@ class SpreadsheetComponent extends Component {
                 data.rows[i].push('');
             }
 
-            Dispatcher.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
+            Dispatcher.publish('columnCreated', data.rows[0].length, this.state.id);
             return this.setState({data: data});
         }
 
@@ -247,7 +247,7 @@ class SpreadsheetComponent extends Component {
      * @param  {object} cellElement [Selected Cell Element]
      */
     handleSelectCell(cell, cellElement) {
-        Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
+        Dispatcher.publish('cellSelected', cell, this.state.id);
         $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
 
         this.setState({
@@ -267,14 +267,14 @@ class SpreadsheetComponent extends Component {
             column = cell[1],
             oldValue = data.rows[row][column];
 
-        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
+        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.state.id);
 
         data.rows[row][column] = newValue;
         this.setState({
             data: data
         });
 
-        Dispatcher.publish('dataChanged', data, this.spreadsheetId);
+        Dispatcher.publish('dataChanged', data, this.state.id);
     }
 
     /**
