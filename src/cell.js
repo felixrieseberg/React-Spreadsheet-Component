@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import Dispatcher from './dispatcher';
 import Helpers from './helpers';
@@ -61,7 +60,7 @@ class CellComponent extends Component {
      */
     componentDidUpdate(prevProps, prevState) {
         if (this.props.editing && this.props.selected) {
-            var node = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
+            var node = this.refs['input_' + this.props.uid.join('_')];
             node.focus();
         }
 
@@ -75,7 +74,7 @@ class CellComponent extends Component {
      * @param  {event} e
      */
     handleClick(e) {
-        var cellElement = ReactDOM.findDOMNode(this.refs[this.props.uid.join('_')]);
+        var cellElement = this.refs[this.props.uid.join('_')];
         this.props.handleSelectCell(this.props.uid, cellElement);
     }
 
@@ -84,7 +83,7 @@ class CellComponent extends Component {
      * @param  {event} e
      */
     handleHeadClick(e) {
-        var cellElement = ReactDOM.findDOMNode(this.refs[this.props.uid.join('_')]);
+        var cellElement = this.refs[this.props.uid.join('_')];
         Dispatcher.publish('headCellClicked', cellElement, this.props.spreadsheetId);
     }
 
@@ -102,7 +101,7 @@ class CellComponent extends Component {
      * @param  {event} e
      */
     handleBlur(e) {
-        var newValue = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+        var newValue = this.refs['input_' + this.props.uid.join('_')].value;
 
         this.props.onCellValueChange(this.props.uid, newValue, e);
         this.props.handleCellBlur(this.props.uid);
@@ -114,7 +113,7 @@ class CellComponent extends Component {
      * @param  {event} e
      */
     handleChange(e) {
-        var newValue = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+        var newValue = this.refs['input_' + this.props.uid.join('_')].value;
         this.setState({changedValue: newValue});
     }
 
