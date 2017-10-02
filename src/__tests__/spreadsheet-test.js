@@ -1,12 +1,11 @@
-'use strict'
+'use strict';
 
 jest.dontMock('../spreadsheet');
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-const SpreadsheetComponent = require('../spreadsheet');
+import SpreadsheetComponent from '../spreadsheet';
 
 const testVars = {
   initialData: {
@@ -34,14 +33,12 @@ const testVars = {
 
 describe('Spreadsheet', () => {
   it('Renders a spreadsheet', () => {
-    var spreadsheet = TestUtils.renderIntoDocument(
+    const spreadsheet = renderer.create(
        <SpreadsheetComponent
           initialData={testVars.initialData}
           config={testVars.config}
           cellClasses={testVars.cellClasses} />
-    );
-
-    var spreadsheetNode = ReactDOM.findDOMNode(spreadsheet);
-    expect(spreadsheetNode).toBeDefined();
+    ).toJSON();    
+    expect(spreadsheet).toMatchSnapshot();
   });
 });

@@ -2,11 +2,10 @@
 
 jest.dontMock('../cell');
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-const CellComponent = require('../cell');
+import CellComponent from '../cell';
 
 const testVars =  {
   key: 'row_0000_cell_1',
@@ -19,7 +18,7 @@ const testVars =  {
 
 describe('Cell', () => {
   it('Renders a cell', () => {
-    var cell = TestUtils.renderIntoDocument(
+    const cell = renderer.create(
       <table>
         <tbody>
           <tr>
@@ -34,8 +33,7 @@ describe('Cell', () => {
           </tr>
         </tbody>
       </table> 
-    );
-
-    var cellNode = ReactDOM.findDOMNode(cell);
+      ).toJSON();
+    expect(cell).toMatchSnapshot()
   });
 });

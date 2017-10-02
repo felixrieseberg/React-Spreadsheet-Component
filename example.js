@@ -62,7 +62,8 @@ exampleTwo.config = {
     emptyValueSymbol: '-',
     letterNumberHeads: false
 };
-
+console.log(React)
+console.log(ReactDOM)
 // Render
 ReactDOM.render(<Spreadsheet initialData={exampleOne.initialData} config={exampleOne.config} cellClasses={exampleOne.cellClasses} />, document.getElementById('exampleOne'));
 ReactDOM.render(<Spreadsheet initialData={exampleTwo.initialData} config={exampleTwo.config} cellClasses={exampleTwo.cellClasses} />, document.getElementById('exampleTwo'));

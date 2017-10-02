@@ -1,20 +1,21 @@
 "use strict";
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
+import RowComponent from './row';
+import Dispatcher from './dispatcher';
+import Helpers from './helpers';
+
 var $ = require('jquery');
 
-var RowComponent = require('./row');
-var Dispatcher = require('./dispatcher');
-var Helpers = require('./helpers');
+class SpreadsheetComponent extends Component {
+    
+    constructor(props) {
+        super(props);
+        
+        this.spreadsheetId = null;
 
-var SpreadsheetComponent = React.createClass({
-    spreadsheetId: null,
-
-    /**
-     * React 'getInitialState' method
-     */
-    getInitialState: function() {
         var initialData = this.props.initialData || {};
 
         if (!initialData.rows) {
@@ -28,19 +29,19 @@ var SpreadsheetComponent = React.createClass({
             }
         }
 
-        return {
+        this.state = {
             data: initialData,
             selected: null,
             lastBlurred: null,
             selectedElement: null,
             editing: false
         };
-    },
+    }
 
     /**
      * React 'componentDidMount' method
      */
-    componentDidMount: function () {
+    componentDidMount() {
         this.bindKeyboard();
 
         $('body').on('focus', 'input', function (e) {
@@ -51,13 +52,13 @@ var SpreadsheetComponent = React.createClass({
                 })
                 .select();
         });
-    },
+    }
 
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]
      */
-    render: function() {
+    render() {
         var data = this.state.data,
             config = this.props.config,
             _cellClasses = this.props.cellClasses,
@@ -97,12 +98,12 @@ var SpreadsheetComponent = React.createClass({
                 </tbody>
             </table>
         );
-    },
+    }
 
     /**
      * Binds the various keyboard events dispatched to table functions
      */
-    bindKeyboard: function () {
+    bindKeyboard() {
         Dispatcher.setupKeyboardShortcuts($(ReactDOM.findDOMNode(this))[0], this.spreadsheetId);
 
         Dispatcher.subscribe('up_keyup', data => {
@@ -165,7 +166,7 @@ var SpreadsheetComponent = React.createClass({
                 this.handleCellValueChange(this.state.selected, '');
             }
         }, this.spreadsheetId);
-    },
+    }
 
     /**
      * Navigates the table and moves selection
@@ -173,7 +174,7 @@ var SpreadsheetComponent = React.createClass({
      * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
      * @param  {boolean} inEdit                                 [Currently editing]
      */
-    navigateTable: function (direction, data, originCell, inEdit) {
+    navigateTable(direction, data, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
         if (!inEdit && this.state.editing) {
@@ -212,13 +213,13 @@ var SpreadsheetComponent = React.createClass({
         } else {
             this.extendTable(direction, originCell);
         }
-    },
+    }
 
     /**
      * Extends the table with an additional row/column, if permitted by config
      * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
      */
-    extendTable: function (direction) {
+    extendTable(direction) {
         var config = this.props.config,
             data = this.state.data,
             newRow, i;
@@ -244,14 +245,14 @@ var SpreadsheetComponent = React.createClass({
             return this.setState({data: data});
         }
 
-    },
+    }
 
     /**
      * Callback for 'selectCell', updating the selected Cell
      * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
      * @param  {object} cellElement [Selected Cell Element]
      */
-    handleSelectCell: function (cell, cellElement) {
+    handleSelectCell(cell, cellElement) {
         Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
         $(ReactDOM.findDOMNode(this)).first().focus();
 
@@ -259,14 +260,14 @@ var SpreadsheetComponent = React.createClass({
             selected: cell,
             selectedElement: cellElement
         });
-    },
+    }
 
     /**
      * Callback for 'cellValueChange', updating the cell data
      * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
      * @param  {object} newValue                         [Value to set]
      */
-    handleCellValueChange: function (cell, newValue) {
+    handleCellValueChange(cell, newValue) {
         var data = this.state.data,
             row = cell[0],
             column = cell[1],
@@ -280,21 +281,21 @@ var SpreadsheetComponent = React.createClass({
         });
 
         Dispatcher.publish('dataChanged', data, this.spreadsheetId);
-    },
+    }
 
     /**
      * Callback for 'doubleClickonCell', enabling 'edit' mode
      */
-    handleDoubleClickOnCell: function () {
+    handleDoubleClickOnCell() {
         this.setState({
             editing: true
         });
-    },
+    }
 
     /**
      * Callback for 'cellBlur'
      */
-    handleCellBlur: function (cell) {
+    handleCellBlur(cell) {
         if (this.state.editing) {
             Dispatcher.publish('editStopped', this.state.selectedElement);
         }
@@ -304,6 +305,6 @@ var SpreadsheetComponent = React.createClass({
             lastBlurred: cell
         });
     }
-});
+}
 
 module.exports = SpreadsheetComponent;
