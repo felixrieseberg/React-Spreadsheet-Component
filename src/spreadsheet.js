@@ -1,7 +1,4 @@
-"use strict";
-
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import RowComponent from './row';
 import Dispatcher from './dispatcher';
@@ -13,8 +10,6 @@ class SpreadsheetComponent extends Component {
     
     constructor(props) {
         super(props);
-        
-        this.spreadsheetId = null;
 
         var initialData = this.props.initialData || {};
 
@@ -34,7 +29,8 @@ class SpreadsheetComponent extends Component {
             selected: null,
             lastBlurred: null,
             selectedElement: null,
-            editing: false
+            editing: false,
+            id: this.props.spreadsheetId || Helpers.makeSpreadsheetId()
         };
     }
 
@@ -64,8 +60,6 @@ class SpreadsheetComponent extends Component {
             _cellClasses = this.props.cellClasses,
             rows = [], key, i, cellClasses;
 
-        this.spreadsheetId = this.props.spreadsheetId || Helpers.makeSpreadsheetId();
-
         // Sanity checks
         if (!data.rows && !config.rows) {
             return console.error('Table Component: Number of colums not defined in both data and config!');
@@ -92,7 +86,7 @@ class SpreadsheetComponent extends Component {
         }
 
         return (
-            <table tabIndex="0" data-spreasheet-id={this.spreadsheetId}>
+            <table tabIndex="0" data-spreasheet-id={this.state.id} ref={"react-spreadsheet-"+this.state.id}>
                 <tbody>
                     {rows}
                 </tbody>
@@ -104,7 +98,7 @@ class SpreadsheetComponent extends Component {
      * Binds the various keyboard events dispatched to table functions
      */
     bindKeyboard() {
-        Dispatcher.setupKeyboardShortcuts($(ReactDOM.findDOMNode(this))[0], this.spreadsheetId);
+        Dispatcher.setupKeyboardShortcuts($(this.refs["spreadsheet-"+this.spreadsheetId])[0], this.spreadsheetId);
 
         Dispatcher.subscribe('up_keyup', data => {
             this.navigateTable('up', data);
@@ -149,7 +143,7 @@ class SpreadsheetComponent extends Component {
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
-            $(ReactDOM.findDOMNode(this)).first().focus();
+            $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
         }, this.spreadsheetId);
 
         // Go into edit mode when the user starts typing on a field
@@ -254,7 +248,7 @@ class SpreadsheetComponent extends Component {
      */
     handleSelectCell(cell, cellElement) {
         Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
-        $(ReactDOM.findDOMNode(this)).first().focus();
+        $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
 
         this.setState({
             selected: cell,

@@ -46,7 +46,6 @@
     "react": "^15.6.0",
     "react-dom": "^15.6.0",
     "react-test-renderer": "^15.6.0",
-    "reactify": "^1.1.1",
     "tape": "^4.2.2",
     "vinyl-source-stream": "^1.1.0"
   },
@@ -66,7 +65,6 @@
   },
   "browserify-shim": {
     "react": "global:React",
-    "react/addons": "global:React",
     "react-dom": "global:ReactDOM"
   },
   "browserify": {

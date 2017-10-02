@@ -1,4 +1,4 @@
-'use strict';
+'use strct';
 
 jest.dontMock('../spreadsheet');
 
@@ -33,12 +33,13 @@ const testVars = {
 
 describe('Spreadsheet', () => {
   it('Renders a spreadsheet', () => {
-    const spreadsheet = renderer.create(
+    let spreadsheet = renderer.create(
        <SpreadsheetComponent
           initialData={testVars.initialData}
           config={testVars.config}
-          cellClasses={testVars.cellClasses} />
+          cellClasses={testVars.cellClasses}
+          spreadsheetId="test-id" />
     ).toJSON();    
-    expect(spreadsheet).toMatchSnapshot();
+    expect(spreadsheet).toMatchSnapshot;
   });
 });

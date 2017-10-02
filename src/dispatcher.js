@@ -1,5 +1,3 @@
-"use strict";
-
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
 

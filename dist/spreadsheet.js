@@ -1,9 +1,9 @@
 /*!
- * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 12:45:18 GMT) - 
+ * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 14:09:43 GMT) - 
  * MIT Licensed
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactSpreadsheet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -70,27 +70,14 @@ var CellComponent = function (_Component) {
 
             // If not a header, check for editing and return
             if (props.selected && props.editing) {
-                cellContent = _react2.default.createElement('input', { className: 'mousetrap',
+                cellContent = _react2.default.createElement("input", { className: "mousetrap",
                     onChange: this.handleChange,
                     onBlur: this.handleBlur,
                     ref: ref,
                     defaultValue: this.props.value });
             }
 
-            return _react2.default.createElement(
-                'td',
-                { className: cellClasses, ref: props.uid.join('_') },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'reactTableCell' },
-                    cellContent,
-                    _react2.default.createElement(
-                        'span',
-                        { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick },
-                        displayValue
-                    )
-                )
-            );
+            return _react2.default.createElement("td", { className: cellClasses, ref: props.uid.join('_') }, _react2.default.createElement("div", { className: "reactTableCell" }, cellContent, _react2.default.createElement("span", { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick }, displayValue)));
         }
 
         /**
@@ -207,25 +194,9 @@ var CellComponent = function (_Component) {
                 }
 
                 if (config.isHeadRowString && headRow || config.isHeadColumnString && headColumn) {
-                    return _react2.default.createElement(
-                        'th',
-                        { className: cellClasses, ref: this.props.uid.join('_') },
-                        _react2.default.createElement(
-                            'div',
-                            null,
-                            _react2.default.createElement(
-                                'span',
-                                { onClick: this.handleHeadClick },
-                                displayValue
-                            )
-                        )
-                    );
+                    return _react2.default.createElement("th", { className: cellClasses, ref: this.props.uid.join('_') }, _react2.default.createElement("div", null, _react2.default.createElement("span", { onClick: this.handleHeadClick }, displayValue)));
                 } else {
-                    return _react2.default.createElement(
-                        'th',
-                        { ref: this.props.uid.join('_') },
-                        displayValue
-                    );
+                    return _react2.default.createElement("th", { ref: this.props.uid.join('_') }, displayValue);
                 }
             } else {
                 return false;
@@ -238,7 +209,7 @@ var CellComponent = function (_Component) {
 
 module.exports = CellComponent;
 },{"./dispatcher":2,"./helpers":3}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
@@ -343,7 +314,7 @@ var dispatcher = {
 
 module.exports = dispatcher;
 },{"jquery":6,"mousetrap":7}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Helpers = {
     /**
@@ -427,7 +398,7 @@ var Helpers = {
 
 module.exports = Helpers;
 },{}],4:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -502,11 +473,7 @@ var RowComponent = function (_Component) {
                     editing: this.props.editing }));
             }
 
-            return _react2.default.createElement(
-                'tr',
-                null,
-                columns
-            );
+            return _react2.default.createElement("tr", null, columns);
         }
     }]);
 
@@ -515,17 +482,13 @@ var RowComponent = function (_Component) {
 
 module.exports = RowComponent;
 },{"./cell":1,"./helpers":3}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _row = require('./row');
 
@@ -557,8 +520,6 @@ var SpreadsheetComponent = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (SpreadsheetComponent.__proto__ || Object.getPrototypeOf(SpreadsheetComponent)).call(this, props));
 
-        _this.spreadsheetId = null;
-
         var initialData = _this.props.initialData || {};
 
         if (!initialData.rows) {
@@ -577,7 +538,8 @@ var SpreadsheetComponent = function (_Component) {
             selected: null,
             lastBlurred: null,
             selectedElement: null,
-            editing: false
+            editing: false,
+            id: _this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId()
         };
         return _this;
     }
@@ -616,8 +578,6 @@ var SpreadsheetComponent = function (_Component) {
                 i,
                 cellClasses;
 
-            this.spreadsheetId = this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId();
-
             // Sanity checks
             if (!data.rows && !config.rows) {
                 return console.error('Table Component: Number of colums not defined in both data and config!');
@@ -640,18 +600,10 @@ var SpreadsheetComponent = function (_Component) {
                     handleCellBlur: this.handleCellBlur,
                     onCellValueChange: this.handleCellValueChange,
                     spreadsheetId: this.spreadsheetId,
-                    className: 'cellComponent' }));
+                    className: "cellComponent" }));
             }
 
-            return _react2.default.createElement(
-                'table',
-                { tabIndex: '0', 'data-spreasheet-id': this.spreadsheetId },
-                _react2.default.createElement(
-                    'tbody',
-                    null,
-                    rows
-                )
-            );
+            return _react2.default.createElement("table", { tabIndex: "0", "data-spreasheet-id": this.state.id, ref: "react-spreadsheet-" + this.state.id }, _react2.default.createElement("tbody", null, rows));
         }
 
         /**
@@ -663,7 +615,7 @@ var SpreadsheetComponent = function (_Component) {
         value: function bindKeyboard() {
             var _this2 = this;
 
-            _dispatcher2.default.setupKeyboardShortcuts($(_reactDom2.default.findDOMNode(this))[0], this.spreadsheetId);
+            _dispatcher2.default.setupKeyboardShortcuts($(this.refs["spreadsheet-" + this.spreadsheetId])[0], this.spreadsheetId);
 
             _dispatcher2.default.subscribe('up_keyup', function (data) {
                 _this2.navigateTable('up', data);
@@ -708,7 +660,7 @@ var SpreadsheetComponent = function (_Component) {
                 if (_this2.state.selectedElement) {
                     _this2.setState({ editing: !_this2.state.editing });
                 }
-                $(_reactDom2.default.findDOMNode(_this2)).first().focus();
+                $(_this2.refs["react-spreadsheet-" + _this2.state.id]).first().focus();
             }, this.spreadsheetId);
 
             // Go into edit mode when the user starts typing on a field
@@ -822,7 +774,7 @@ var SpreadsheetComponent = function (_Component) {
         key: 'handleSelectCell',
         value: function handleSelectCell(cell, cellElement) {
             _dispatcher2.default.publish('cellSelected', cell, this.spreadsheetId);
-            $(_reactDom2.default.findDOMNode(this)).first().focus();
+            $(this.refs["react-spreadsheet-" + this.state.id]).first().focus();
 
             this.setState({
                 selected: cell,

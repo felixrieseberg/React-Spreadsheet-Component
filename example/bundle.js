@@ -2,21 +2,25 @@
 (function (global){
 'use strict';
 
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var ReactDOM = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
-var Spreadsheet = require('./lib/spreadsheet');
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _spreadsheet = require('./lib/spreadsheet');
+
+var _spreadsheet2 = _interopRequireDefault(_spreadsheet);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Example One
 var exampleOne = {};
 
 exampleOne.initialData = {
-    rows: [
-        ['', '', '', '', '', '', '', ''],
-        ['', 1, 2, 3, 4, 5, 6, 7],
-        ['', 1, '', 3, 4, 5, 6, 7],
-        ['', 1, 2, 3, 4, 5, 6, 7],
-        ['', 1, 2, 3, 4, 5, 6, 7]
-    ]
+    rows: [['', '', '', '', '', '', '', ''], ['', 1, 2, 3, 4, 5, 6, 7], ['', 1, '', 3, 4, 5, 6, 7], ['', 1, 2, 3, 4, 5, 6, 7], ['', 1, 2, 3, 4, 5, 6, 7]]
 };
 
 exampleOne.config = {
@@ -35,21 +39,11 @@ exampleOne.config = {
 // Example Two
 var exampleTwo = {};
 exampleTwo.initialData = {
-    rows: [
-        ['Customer', 'Job', 'Contact', 'City', 'Revenue'],
-        ['iDiscovery', 'Build', 'John Doe', 'Boston, MA', '500,000'],
-        ['SxSW', 'Build', 'Tom Fuller', 'San Francisco, CA', '600,000'],
-        ['CapitalTwo', 'Failed', 'Eric Pixel', 'Seattle, WA', '450,000']
-    ]
+    rows: [['Customer', 'Job', 'Contact', 'City', 'Revenue'], ['iDiscovery', 'Build', 'John Doe', 'Boston, MA', '500,000'], ['SxSW', 'Build', 'Tom Fuller', 'San Francisco, CA', '600,000'], ['CapitalTwo', 'Failed', 'Eric Pixel', 'Seattle, WA', '450,000']]
 };
 
 exampleTwo.cellClasses = {
-    rows: [
-        ['', '', '', '', '', '', '', ''],
-        ['green', '', '', '', '', '', '', 'dollar'],
-        ['purple', '', '', '', '', '', '', 'dollar'],
-        ['yellow', 'failed', '', '', '', '', '', 'dollar'],
-    ]
+    rows: [['', '', '', '', '', '', '', ''], ['green', '', '', '', '', '', '', 'dollar'], ['purple', '', '', '', '', '', '', 'dollar'], ['yellow', 'failed', '', '', '', '', '', 'dollar']]
 };
 
 exampleTwo.config = {
@@ -64,18 +58,26 @@ exampleTwo.config = {
     emptyValueSymbol: '-',
     letterNumberHeads: false
 };
-console.log(React)
-console.log(ReactDOM)
 // Render
-ReactDOM.render(React.createElement(Spreadsheet, {initialData: exampleOne.initialData, config: exampleOne.config, cellClasses: exampleOne.cellClasses}), document.getElementById('exampleOne'));
-ReactDOM.render(React.createElement(Spreadsheet, {initialData: exampleTwo.initialData, config: exampleTwo.config, cellClasses: exampleTwo.cellClasses}), document.getElementById('exampleTwo'));
+_reactDom2.default.render(_react2.default.createElement(_spreadsheet2.default, { initialData: exampleOne.initialData, config: exampleOne.config, cellClasses: exampleOne.cellClasses }), document.getElementById('exampleOne'));
+_reactDom2.default.render(_react2.default.createElement(_spreadsheet2.default, { initialData: exampleTwo.initialData, config: exampleTwo.config, cellClasses: exampleTwo.cellClasses }), document.getElementById('exampleTwo'));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./lib/spreadsheet":6}],2:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
@@ -93,13 +95,27 @@ var _helpers = require('./helpers');
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var CellComponent = function (_Component) {
     _inherits(CellComponent, _Component);
@@ -120,7 +136,6 @@ var CellComponent = function (_Component) {
      * React "render" method, rendering the individual cell
      */
 
-
     _createClass(CellComponent, [{
         key: 'render',
         value: function render() {
@@ -140,27 +155,14 @@ var CellComponent = function (_Component) {
 
             // If not a header, check for editing and return
             if (props.selected && props.editing) {
-                cellContent = _react2.default.createElement('input', { className: 'mousetrap',
+                cellContent = _react2.default.createElement("input", { className: "mousetrap",
                     onChange: this.handleChange,
                     onBlur: this.handleBlur,
                     ref: ref,
                     defaultValue: this.props.value });
             }
 
-            return _react2.default.createElement(
-                'td',
-                { className: cellClasses, ref: props.uid.join('_') },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'reactTableCell' },
-                    cellContent,
-                    _react2.default.createElement(
-                        'span',
-                        { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick },
-                        displayValue
-                    )
-                )
-            );
+            return _react2.default.createElement("td", { className: cellClasses, ref: props.uid.join('_') }, _react2.default.createElement("div", { className: "reactTableCell" }, cellContent, _react2.default.createElement("span", { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick }, displayValue)));
         }
 
         /**
@@ -277,25 +279,9 @@ var CellComponent = function (_Component) {
                 }
 
                 if (config.isHeadRowString && headRow || config.isHeadColumnString && headColumn) {
-                    return _react2.default.createElement(
-                        'th',
-                        { className: cellClasses, ref: this.props.uid.join('_') },
-                        _react2.default.createElement(
-                            'div',
-                            null,
-                            _react2.default.createElement(
-                                'span',
-                                { onClick: this.handleHeadClick },
-                                displayValue
-                            )
-                        )
-                    );
+                    return _react2.default.createElement("th", { className: cellClasses, ref: this.props.uid.join('_') }, _react2.default.createElement("div", null, _react2.default.createElement("span", { onClick: this.handleHeadClick }, displayValue)));
                 } else {
-                    return _react2.default.createElement(
-                        'th',
-                        { ref: this.props.uid.join('_') },
-                        displayValue
-                    );
+                    return _react2.default.createElement("th", { ref: this.props.uid.join('_') }, displayValue);
                 }
             } else {
                 return false;
@@ -310,7 +296,7 @@ module.exports = CellComponent;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./dispatcher":3,"./helpers":4}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
@@ -416,7 +402,7 @@ var dispatcher = {
 module.exports = dispatcher;
 
 },{"jquery":7,"mousetrap":8}],4:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Helpers = {
     /**
@@ -502,9 +488,19 @@ module.exports = Helpers;
 
 },{}],5:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
@@ -518,13 +514,27 @@ var _helpers = require('./helpers');
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var RowComponent = function (_Component) {
     _inherits(RowComponent, _Component);
@@ -577,11 +587,7 @@ var RowComponent = function (_Component) {
                     editing: this.props.editing }));
             }
 
-            return _react2.default.createElement(
-                'tr',
-                null,
-                columns
-            );
+            return _react2.default.createElement("tr", null, columns);
         }
     }]);
 
@@ -593,17 +599,23 @@ module.exports = RowComponent;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./cell":2,"./helpers":4}],6:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _row = require('./row');
 
@@ -617,13 +629,27 @@ var _helpers = require('./helpers');
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var $ = require('jquery');
 
@@ -634,8 +660,6 @@ var SpreadsheetComponent = function (_Component) {
         _classCallCheck(this, SpreadsheetComponent);
 
         var _this = _possibleConstructorReturn(this, (SpreadsheetComponent.__proto__ || Object.getPrototypeOf(SpreadsheetComponent)).call(this, props));
-
-        _this.spreadsheetId = null;
 
         var initialData = _this.props.initialData || {};
 
@@ -655,7 +679,8 @@ var SpreadsheetComponent = function (_Component) {
             selected: null,
             lastBlurred: null,
             selectedElement: null,
-            editing: false
+            editing: false,
+            id: _this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId()
         };
         return _this;
     }
@@ -663,7 +688,6 @@ var SpreadsheetComponent = function (_Component) {
     /**
      * React 'componentDidMount' method
      */
-
 
     _createClass(SpreadsheetComponent, [{
         key: 'componentDidMount',
@@ -694,8 +718,6 @@ var SpreadsheetComponent = function (_Component) {
                 i,
                 cellClasses;
 
-            this.spreadsheetId = this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId();
-
             // Sanity checks
             if (!data.rows && !config.rows) {
                 return console.error('Table Component: Number of colums not defined in both data and config!');
@@ -718,18 +740,10 @@ var SpreadsheetComponent = function (_Component) {
                     handleCellBlur: this.handleCellBlur,
                     onCellValueChange: this.handleCellValueChange,
                     spreadsheetId: this.spreadsheetId,
-                    className: 'cellComponent' }));
+                    className: "cellComponent" }));
             }
 
-            return _react2.default.createElement(
-                'table',
-                { tabIndex: '0', 'data-spreasheet-id': this.spreadsheetId },
-                _react2.default.createElement(
-                    'tbody',
-                    null,
-                    rows
-                )
-            );
+            return _react2.default.createElement("table", { tabIndex: "0", "data-spreasheet-id": this.state.id, ref: "react-spreadsheet-" + this.state.id }, _react2.default.createElement("tbody", null, rows));
         }
 
         /**
@@ -741,7 +755,7 @@ var SpreadsheetComponent = function (_Component) {
         value: function bindKeyboard() {
             var _this2 = this;
 
-            _dispatcher2.default.setupKeyboardShortcuts($(_reactDom2.default.findDOMNode(this))[0], this.spreadsheetId);
+            _dispatcher2.default.setupKeyboardShortcuts($(this.refs["spreadsheet-" + this.spreadsheetId])[0], this.spreadsheetId);
 
             _dispatcher2.default.subscribe('up_keyup', function (data) {
                 _this2.navigateTable('up', data);
@@ -786,7 +800,7 @@ var SpreadsheetComponent = function (_Component) {
                 if (_this2.state.selectedElement) {
                     _this2.setState({ editing: !_this2.state.editing });
                 }
-                $(_reactDom2.default.findDOMNode(_this2)).first().focus();
+                $(_this2.refs["react-spreadsheet-" + _this2.state.id]).first().focus();
             }, this.spreadsheetId);
 
             // Go into edit mode when the user starts typing on a field
@@ -900,7 +914,7 @@ var SpreadsheetComponent = function (_Component) {
         key: 'handleSelectCell',
         value: function handleSelectCell(cell, cellElement) {
             _dispatcher2.default.publish('cellSelected', cell, this.spreadsheetId);
-            $(_reactDom2.default.findDOMNode(this)).first().focus();
+            $(this.refs["react-spreadsheet-" + this.state.id]).first().focus();
 
             this.setState({
                 selected: cell,
