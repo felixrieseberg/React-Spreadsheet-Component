@@ -1,194 +1,224 @@
 /*!
- * react-spreadsheet-component 0.5.1 - 
+ * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 14:43:24 GMT) - 
  * MIT Licensed
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactSpreadsheet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var ReactDOM = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var Dispatcher = require('./dispatcher');
-var Helpers = require('./helpers');
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
-var CellComponent = React.createClass({displayName: "CellComponent",
+var _react2 = _interopRequireDefault(_react);
 
-    /**
-     * React "getInitialState" method, setting whether or not
-     * the cell is being edited and its changing value
-     */
-    getInitialState: function() {
-        return {
-            editing: this.props.editing,
-            changedValue: this.props.value
+var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _dispatcher = require('./dispatcher');
+
+var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+var _helpers = require('./helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CellComponent = function (_Component) {
+    _inherits(CellComponent, _Component);
+
+    function CellComponent(props) {
+        _classCallCheck(this, CellComponent);
+
+        var _this = _possibleConstructorReturn(this, (CellComponent.__proto__ || Object.getPrototypeOf(CellComponent)).call(this, props));
+
+        _this.state = {
+            editing: _this.props.editing,
+            changedValue: _this.props.value
         };
-    },
+        _this.handleClick = _this.handleClick.bind(_this);
+        _this.handleHeadClick = _this.handleHeadClick.bind(_this);
+        _this.handleBlur = _this.handleBlur.bind(_this);
+        _this.handleChange = _this.handleChange.bind(_this);
+        return _this;
+    }
 
     /**
      * React "render" method, rendering the individual cell
      */
-    render: function() {
-        var props = this.props,
-            selected = (props.selected) ? 'selected' : '',
-            ref = 'input_' + props.uid.join('_'),
-            config = props.config || { emptyValueSymbol: ''},
-            displayValue = (props.value === '' || !props.value) ? config.emptyValueSymbol : props.value,
-            cellClasses = (props.cellClasses && props.cellClasses.length > 0) ? props.cellClasses + ' ' + selected : selected,
-            cellContent;
 
-        // Check if header - if yes, render it
-        var header = this.renderHeader();
-        if (header) {
-            return header;
-        }
 
-        // If not a header, check for editing and return
-        if (props.selected && props.editing) {
-            cellContent = (
-                React.createElement("input", {className: "mousetrap", 
-                       onChange: this.handleChange, 
-                       onBlur: this.handleBlur, 
-                       ref: ref, 
-                       defaultValue: this.props.value})
-            )
-        }
+    _createClass(CellComponent, [{
+        key: 'render',
+        value: function render() {
+            var props = this.props,
+                selected = props.selected ? 'selected' : '',
+                ref = 'input_' + props.uid.join('_'),
+                config = props.config || { emptyValueSymbol: '' },
+                displayValue = props.value === '' || !props.value ? config.emptyValueSymbol : props.value,
+                cellClasses = props.cellClasses && props.cellClasses.length > 0 ? props.cellClasses + ' ' + selected : selected,
+                cellContent;
 
-        return (
-            React.createElement("td", {className: cellClasses, ref: props.uid.join('_')}, 
-                React.createElement("div", {className: "reactTableCell"}, 
-                    cellContent, 
-                    React.createElement("span", {onDoubleClick: this.handleDoubleClick, onClick: this.handleClick}, 
-                        displayValue
-                    )
-                )
-            )
-        );
-    },
-
-    /**
-     * React "componentDidUpdate" method, ensuring correct input focus
-     * @param  {React previous properties} prevProps
-     * @param  {React previous state} prevState
-     */
-    componentDidUpdate: function(prevProps, prevState) {
-        if (this.props.editing && this.props.selected) {
-            var node = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
-            node.focus();
-        }
-
-        if (prevProps.selected && prevProps.editing && this.state.changedValue !== this.props.value) {
-            this.props.onCellValueChange(this.props.uid, this.state.changedValue);
-        }
-    },
-
-    /**
-     * Click handler for individual cell, ensuring navigation and selection
-     * @param  {event} e
-     */
-    handleClick: function (e) {
-        var cellElement = ReactDOM.findDOMNode(this.refs[this.props.uid.join('_')]);
-        this.props.handleSelectCell(this.props.uid, cellElement);
-    },
-
-    /**
-     * Click handler for individual cell if the cell is a header cell
-     * @param  {event} e
-     */
-    handleHeadClick: function (e) {
-        var cellElement = ReactDOM.findDOMNode(this.refs[this.props.uid.join('_')]);
-        Dispatcher.publish('headCellClicked', cellElement, this.props.spreadsheetId);
-    },
-
-    /**
-     * Double click handler for individual cell, ensuring navigation and selection
-     * @param  {event} e
-     */
-    handleDoubleClick: function (e) {
-        e.preventDefault();
-        this.props.handleDoubleClickOnCell(this.props.uid);
-    },
-
-    /**
-     * Blur handler for individual cell
-     * @param  {event} e
-     */
-    handleBlur: function (e) {
-        var newValue = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
-
-        this.props.onCellValueChange(this.props.uid, newValue, e);
-        this.props.handleCellBlur(this.props.uid);
-        Dispatcher.publish('cellBlurred', this.props.uid, this.props.spreadsheetId);
-    },
-
-    /**
-     * Change handler for an individual cell, propagating the value change
-     * @param  {event} e
-     */
-    handleChange: function (e) {
-        var newValue = ReactDOM.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
-
-        this.setState({changedValue: newValue});
-    },
-
-    /**
-     * Checks if a header exists - if it does, it returns a header object
-     * @return {false|react} [Either false if it's not a header cell, a react object if it is]
-     */
-    renderHeader: function () {
-        var props = this.props,
-            selected = (props.selected) ? 'selected' : '',
-            uid = props.uid,
-            config = props.config || { emptyValueSymbol: ''},
-            displayValue = (props.value === '' || !props.value) ? config.emptyValueSymbol : props.value,
-            cellClasses = (props.cellClasses && props.cellClasses.length > 0) ? this.props.cellClasses + ' ' + selected : selected;
-
-        // Cases
-        var headRow = (uid[0] === 0),
-            headColumn = (uid[1] === 0),
-            headRowAndEnabled = (config.hasHeadRow && uid[0] === 0),
-            headColumnAndEnabled = (config.hasHeadColumn && uid[1] === 0)
-
-        // Head Row enabled, cell is in head row
-        // Head Column enabled, cell is in head column
-        if (headRowAndEnabled || headColumnAndEnabled) {
-            if (headColumn && config.hasLetterNumberHeads) {
-                displayValue = uid[0];
-            } else if (headRow && config.hasLetterNumberHeads) {
-                displayValue = Helpers.countWithLetters(uid[1]);
+            // Check if header - if yes, render it
+            var header = this.renderHeader();
+            if (header) {
+                return header;
             }
 
-            if ((config.isHeadRowString && headRow) || (config.isHeadColumnString && headColumn)) {
-                return (
-                    React.createElement("th", {className: cellClasses, ref: this.props.uid.join('_')}, 
-                        React.createElement("div", null, 
-                            React.createElement("span", {onClick: this.handleHeadClick}, 
-                                displayValue
-                            )
-                        )
-                    )
-                );
+            // If not a header, check for editing and return
+            if (props.selected && props.editing) {
+                cellContent = _react2.default.createElement("input", { className: "mousetrap",
+                    onChange: this.handleChange,
+                    onBlur: this.handleBlur,
+                    ref: ref,
+                    defaultValue: this.props.value });
+            }
+
+            return _react2.default.createElement("td", { className: cellClasses, ref: props.uid.join('_') }, _react2.default.createElement("div", { className: "reactTableCell" }, cellContent, _react2.default.createElement("span", { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick }, displayValue)));
+        }
+
+        /**
+         * React "componentDidUpdate" method, ensuring correct input focus
+         * @param  {React previous properties} prevProps
+         * @param  {React previous state} prevState
+         */
+
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (this.props.editing && this.props.selected) {
+                var node = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
+                node.focus();
+            }
+
+            if (prevProps.selected && prevProps.editing && this.state.changedValue !== this.props.value) {
+                this.props.onCellValueChange(this.props.uid, this.state.changedValue);
+            }
+        }
+
+        /**
+         * Click handler for individual cell, ensuring navigation and selection
+         * @param  {event} e
+         */
+
+    }, {
+        key: 'handleClick',
+        value: function handleClick(e) {
+            var cellElement = _reactDom2.default.findDOMNode(this.refs[this.props.uid.join('_')]);
+            this.props.handleSelectCell(this.props.uid, cellElement);
+        }
+
+        /**
+         * Click handler for individual cell if the cell is a header cell
+         * @param  {event} e
+         */
+
+    }, {
+        key: 'handleHeadClick',
+        value: function handleHeadClick(e) {
+            var cellElement = _reactDom2.default.findDOMNode(this.refs[this.props.uid.join('_')]);
+            _dispatcher2.default.publish('headCellClicked', cellElement, this.props.spreadsheetId);
+        }
+
+        /**
+         * Double click handler for individual cell, ensuring navigation and selection
+         * @param  {event} e
+         */
+
+    }, {
+        key: 'handleDoubleClick',
+        value: function handleDoubleClick(e) {
+            e.preventDefault();
+            this.props.handleDoubleClickOnCell(this.props.uid);
+        }
+
+        /**
+         * Blur handler for individual cell
+         * @param  {event} e
+         */
+
+    }, {
+        key: 'handleBlur',
+        value: function handleBlur(e) {
+            var newValue = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+
+            this.props.onCellValueChange(this.props.uid, newValue, e);
+            this.props.handleCellBlur(this.props.uid);
+            _dispatcher2.default.publish('cellBlurred', this.props.uid, this.props.spreadsheetId);
+        }
+
+        /**
+         * Change handler for an individual cell, propagating the value change
+         * @param  {event} e
+         */
+
+    }, {
+        key: 'handleChange',
+        value: function handleChange(e) {
+            var newValue = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+
+            this.setState({ changedValue: newValue });
+        }
+
+        /**
+         * Checks if a header exists - if it does, it returns a header object
+         * @return {false|react} [Either false if it's not a header cell, a react object if it is]
+         */
+
+    }, {
+        key: 'renderHeader',
+        value: function renderHeader() {
+            var props = this.props,
+                selected = props.selected ? 'selected' : '',
+                uid = props.uid,
+                config = props.config || { emptyValueSymbol: '' },
+                displayValue = props.value === '' || !props.value ? config.emptyValueSymbol : props.value,
+                cellClasses = props.cellClasses && props.cellClasses.length > 0 ? this.props.cellClasses + ' ' + selected : selected;
+
+            // Cases
+            var headRow = uid[0] === 0,
+                headColumn = uid[1] === 0,
+                headRowAndEnabled = config.hasHeadRow && uid[0] === 0,
+                headColumnAndEnabled = config.hasHeadColumn && uid[1] === 0;
+
+            // Head Row enabled, cell is in head row
+            // Head Column enabled, cell is in head column
+            if (headRowAndEnabled || headColumnAndEnabled) {
+                if (headColumn && config.hasLetterNumberHeads) {
+                    displayValue = uid[0];
+                } else if (headRow && config.hasLetterNumberHeads) {
+                    displayValue = _helpers2.default.countWithLetters(uid[1]);
+                }
+
+                if (config.isHeadRowString && headRow || config.isHeadColumnString && headColumn) {
+                    return _react2.default.createElement("th", { className: cellClasses, ref: this.props.uid.join('_') }, _react2.default.createElement("div", null, _react2.default.createElement("span", { onClick: this.handleHeadClick }, displayValue)));
+                } else {
+                    return _react2.default.createElement("th", { ref: this.props.uid.join('_') }, displayValue);
+                }
             } else {
-                return (
-                    React.createElement("th", {ref: this.props.uid.join('_')}, 
-                        displayValue
-                    )
-                );
+                return false;
             }
-        } else {
-            return false;
         }
-    }
-});
+    }]);
+
+    return CellComponent;
+}(_react.Component);
 
 module.exports = CellComponent;
-
 },{"./dispatcher":2,"./helpers":3}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
 
-var dispatcher = {    
+var dispatcher = {
     // Event Pub/Sub System
     // 
     // Topics used:
@@ -218,7 +248,7 @@ var dispatcher = {
      * @param  {function} listener    [The callback for published events]
      * @param  {string} spreadsheetId [The reactId (data-spreadsheetId) of the origin element]
      */
-    subscribe: function(topic, listener, spreadsheetId) {
+    subscribe: function subscribe(topic, listener, spreadsheetId) {
         if (!this.topics[spreadsheetId]) {
             this.topics[spreadsheetId] = [];
         }
@@ -236,36 +266,27 @@ var dispatcher = {
      * @param  {object} data          [An object passed to the subscribed callbacks]
      * @param  {string} spreadsheetId [The reactId (data-spreadsheetId) of the origin element]
      */
-    publish: function(topic, data, spreadsheetId) {
+    publish: function publish(topic, data, spreadsheetId) {
         // return if the topic doesn't exist, or there are no listeners
         if (!this.topics[spreadsheetId] || !this.topics[spreadsheetId][topic] || this.topics[spreadsheetId][topic].length < 1) {
-            return
+            return;
         }
 
-        this.topics[spreadsheetId][topic].forEach(function(listener) {
+        this.topics[spreadsheetId][topic].forEach(function (listener) {
             listener(data || {});
         });
     },
 
     keyboardShortcuts: [
-        // Name, Keys, Events
-        ['down', 'down', ['keyup']],
-        ['up', 'up', ['keyup']],
-        ['left', 'left', ['keyup']],
-        ['right', 'right', ['keyup']],
-        ['tab', 'tab', ['keyup', 'keydown']],
-        ['enter', 'enter', ['keyup']],
-        ['esc', 'esc', ['keyup']],
-        ['remove', ['backspace', 'delete'], ['keyup', 'keydown']],
-        ['letter', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'w', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '.', ',', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'], ['keyup', 'keydown']]
-    ],
-    
+    // Name, Keys, Events
+    ['down', 'down', ['keyup']], ['up', 'up', ['keyup']], ['left', 'left', ['keyup']], ['right', 'right', ['keyup']], ['tab', 'tab', ['keyup', 'keydown']], ['enter', 'enter', ['keyup']], ['esc', 'esc', ['keyup']], ['remove', ['backspace', 'delete'], ['keyup', 'keydown']], ['letter', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'w', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '=', '.', ',', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'W', 'Y', 'Z'], ['keyup', 'keydown']]],
+
     /**
      * Initializes the keyboard bindings
      * @param {object} domNode [The DOM node of the element that should be bound]
      * @param {string} spreadsheetId [The id of the spreadsheet element]
      */
-    setupKeyboardShortcuts: function (domNode, spreadsheetId) {
+    setupKeyboardShortcuts: function setupKeyboardShortcuts(domNode, spreadsheetId) {
         var self = this;
 
         this.keyboardShortcuts.map(function (shortcut) {
@@ -273,15 +294,15 @@ var dispatcher = {
                 shortcutKey = shortcut[1],
                 events = shortcut[2];
 
-            events.map(function(event)  {
+            events.map(function (event) {
                 Mousetrap(domNode).bind(shortcutKey, function (e) {
                     self.publish(shortcutName + '_' + event, e, spreadsheetId);
                 }, event);
-            })
+            });
         });
 
         // Avoid scroll
-        window.addEventListener('keydown', function(e) {
+        window.addEventListener('keydown', function (e) {
             // space and arrow keys
             if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1 && $(document.activeElement)[0].tagName !== 'INPUT') {
                 if (e.preventDefault) {
@@ -289,7 +310,7 @@ var dispatcher = {
                 } else {
                     // Oh, old IE, you 💩
                     e.returnValue = false;
-                } 
+                }
             }
         }, false);
     }
@@ -297,7 +318,7 @@ var dispatcher = {
 
 module.exports = dispatcher;
 },{"jquery":6,"mousetrap":7}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Helpers = {
     /**
@@ -307,11 +328,11 @@ var Helpers = {
      * @param  {[type]} context  [Context]
      * @return {[object]}        [Found element]
      */
-    firstInArray: function (arr, test, context) {
+    firstInArray: function firstInArray(arr, test, context) {
         var result = null;
 
-        arr.some(function(el, i) {
-            return test.call(context, el, i, arr) ? ((result = el), true) : false;
+        arr.some(function (el, i) {
+            return test.call(context, el, i, arr) ? (result = el, true) : false;
         });
 
         return result;
@@ -322,7 +343,7 @@ var Helpers = {
      * @param  {[array]} arr  [Path array containing elements]
      * @return {[object]}     [Found element]
      */
-    firstTDinArray: function (arr) {
+    firstTDinArray: function firstTDinArray(arr) {
         var cell = Helpers.firstInArray(arr, function (element) {
             if (element.nodeName && element.nodeName === 'TD') {
                 return true;
@@ -340,7 +361,7 @@ var Helpers = {
      * @param  {[array]} cell2 [Second cell]
      * @return {[boolean]}    [Boolean indicating if the cells are equal]
      */
-    equalCells: function (cell1, cell2) {
+    equalCells: function equalCells(cell1, cell2) {
         if (!cell1 || !cell2 || cell1.length !== cell2.length) {
             return false;
         }
@@ -356,7 +377,7 @@ var Helpers = {
      * Counts in letters (A, B, C...Z, AA);
      * @return {[string]} [Letter]
      */
-    countWithLetters: function (num) {
+    countWithLetters: function countWithLetters(num) {
         var mod = num % 26,
             pow = num / 26 | 0,
             out = mod ? String.fromCharCode(64 + mod) : (--pow, 'Z');
@@ -367,8 +388,7 @@ var Helpers = {
      * Creates a random 5-character id
      * @return {string} [Somewhat random id]
      */
-    makeSpreadsheetId: function()
-    {
+    makeSpreadsheetId: function makeSpreadsheetId() {
         var text = '',
             possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -378,373 +398,458 @@ var Helpers = {
 
         return text;
     }
-}
+};
 
 module.exports = Helpers;
 },{}],4:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var CellComponent = require('./cell');
-var Helpers = require('./helpers');
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
-var RowComponent = React.createClass({displayName: "RowComponent",    
-    /**
-     * React Render method
-     * @return {[JSX]} [JSX to render]
-     */
-    render: function() {
-        var config = this.props.config,
-            cells = this.props.cells,
-            columns = [],
-            key, uid, selected, cellClasses, i;
+var _react2 = _interopRequireDefault(_react);
 
-        if (!config.columns || cells.length === 0) {
-            return console.error('Table can\'t be initialized without set number of columsn and no data!');
-        }
+var _cell = require('./cell');
 
-        for (i = 0; i < cells.length; i = i + 1) {
-            // If a cell is selected, check if it's this one
-            selected = Helpers.equalCells(this.props.selected, [this.props.uid, i]);
-            cellClasses = (this.props.cellClasses && this.props.cellClasses[i]) ? this.props.cellClasses[i] : '';
+var _cell2 = _interopRequireDefault(_cell);
 
-            key = 'row_' + this.props.uid + '_cell_' + i;
-            uid = [this.props.uid, i];
-            columns.push(React.createElement(CellComponent, {key: key, 
-                                       uid: uid, 
-                                       value: cells[i], 
-                                       config: config, 
-                                       cellClasses: cellClasses, 
-                                       onCellValueChange: this.props.onCellValueChange, 
-                                       handleSelectCell: this.props.handleSelectCell, 
-                                       handleDoubleClickOnCell: this.props.handleDoubleClickOnCell, 
-                                       handleCellBlur: this.props.handleCellBlur, 
-                                       spreadsheetId: this.props.spreadsheetId, 
-                                       selected: selected, 
-                                       editing: this.props.editing})
-            );
-        }
+var _helpers = require('./helpers');
 
-        return React.createElement("tr", null, columns);
+var _helpers2 = _interopRequireDefault(_helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var RowComponent = function (_Component) {
+    _inherits(RowComponent, _Component);
+
+    function RowComponent() {
+        _classCallCheck(this, RowComponent);
+
+        return _possibleConstructorReturn(this, (RowComponent.__proto__ || Object.getPrototypeOf(RowComponent)).apply(this, arguments));
     }
-});
+
+    _createClass(RowComponent, [{
+        key: 'render',
+
+        /**
+         * React Render method
+         * @return {[JSX]} [JSX to render]
+         */
+        value: function render() {
+            var config = this.props.config,
+                cells = this.props.cells,
+                columns = [],
+                key,
+                uid,
+                selected,
+                cellClasses,
+                i;
+
+            if (!config.columns || cells.length === 0) {
+                return console.error('Table can\'t be initialized without set number of columsn and no data!');
+            }
+
+            for (i = 0; i < cells.length; i = i + 1) {
+                // If a cell is selected, check if it's this one
+                selected = _helpers2.default.equalCells(this.props.selected, [this.props.uid, i]);
+                cellClasses = this.props.cellClasses && this.props.cellClasses[i] ? this.props.cellClasses[i] : '';
+
+                key = 'row_' + this.props.uid + '_cell_' + i;
+                uid = [this.props.uid, i];
+                columns.push(_react2.default.createElement(_cell2.default, { key: key,
+                    uid: uid,
+                    value: cells[i],
+                    config: config,
+                    cellClasses: cellClasses,
+                    onCellValueChange: this.props.onCellValueChange,
+                    handleSelectCell: this.props.handleSelectCell,
+                    handleDoubleClickOnCell: this.props.handleDoubleClickOnCell,
+                    handleCellBlur: this.props.handleCellBlur,
+                    spreadsheetId: this.props.spreadsheetId,
+                    selected: selected,
+                    editing: this.props.editing }));
+            }
+
+            return _react2.default.createElement("tr", null, columns);
+        }
+    }]);
+
+    return RowComponent;
+}(_react.Component);
 
 module.exports = RowComponent;
 },{"./cell":1,"./helpers":3}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var ReactDOM = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _row = require('./row');
+
+var _row2 = _interopRequireDefault(_row);
+
+var _dispatcher = require('./dispatcher');
+
+var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+var _helpers = require('./helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var $ = require('jquery');
 
-var RowComponent = require('./row');
-var Dispatcher = require('./dispatcher');
-var Helpers = require('./helpers');
+var SpreadsheetComponent = function (_Component) {
+    _inherits(SpreadsheetComponent, _Component);
 
-var SpreadsheetComponent = React.createClass({displayName: "SpreadsheetComponent",
-    spreadsheetId: null,
+    function SpreadsheetComponent(props) {
+        _classCallCheck(this, SpreadsheetComponent);
 
-    /**
-     * React 'getInitialState' method
-     */
-    getInitialState: function() {
-        var initialData = this.props.initialData || {};
+        var _this = _possibleConstructorReturn(this, (SpreadsheetComponent.__proto__ || Object.getPrototypeOf(SpreadsheetComponent)).call(this, props));
+
+        var initialData = _this.props.initialData || {};
 
         if (!initialData.rows) {
             initialData.rows = [];
 
-            for (var i = 0; i < this.props.config.rows; i = i + 1) {
+            for (var i = 0; i < _this.props.config.rows; i = i + 1) {
                 initialData.rows[i] = [];
-                for (var ci = 0; ci < this.props.config.columns; ci = ci + 1) {
+                for (var ci = 0; ci < _this.props.config.columns; ci = ci + 1) {
                     initialData.rows[i][ci] = '';
                 }
             }
         }
 
-        return {
+        _this.state = {
             data: initialData,
             selected: null,
             lastBlurred: null,
             selectedElement: null,
-            editing: false
+            editing: false,
+            id: _this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId()
         };
-    },
+
+        _this.handleSelectCell = _this.handleSelectCell.bind(_this);
+        return _this;
+    }
 
     /**
      * React 'componentDidMount' method
      */
-    componentDidMount: function () {
-        this.bindKeyboard();
 
-        $('body').on('focus', 'input', function (e) {
-            $(this)
-                .one('mouseup', function () {
+
+    _createClass(SpreadsheetComponent, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.bindKeyboard();
+
+            $('body').on('focus', 'input', function (e) {
+                $(this).one('mouseup', function () {
                     $(this).select();
                     return false;
-                })
-                .select();
-        });
-    },
-
-    /**
-     * React Render method
-     * @return {[JSX]} [JSX to render]
-     */
-    render: function() {
-        var data = this.state.data,
-            config = this.props.config,
-            _cellClasses = this.props.cellClasses,
-            rows = [], key, i, cellClasses;
-
-        this.spreadsheetId = this.props.spreadsheetId || Helpers.makeSpreadsheetId();
-
-        // Sanity checks
-        if (!data.rows && !config.rows) {
-            return console.error('Table Component: Number of colums not defined in both data and config!');
+                }).select();
+            });
         }
 
-        // Create Rows
-        for (i = 0; i < data.rows.length; i = i + 1) {
-            key = 'row_' + i;
-            cellClasses = (_cellClasses && _cellClasses.rows && _cellClasses.rows[i]) ? _cellClasses.rows[i] : null;
+        /**
+         * React Render method
+         * @return {[JSX]} [JSX to render]
+         */
 
-            rows.push(React.createElement(RowComponent, {cells: data.rows[i], 
-                                    cellClasses: cellClasses, 
-                                    uid: i, 
-                                    key: key, 
-                                    config: config, 
-                                    selected: this.state.selected, 
-                                    editing: this.state.editing, 
-                                    handleSelectCell: this.handleSelectCell, 
-                                    handleDoubleClickOnCell: this.handleDoubleClickOnCell, 
-                                    handleCellBlur: this.handleCellBlur, 
-                                    onCellValueChange: this.handleCellValueChange, 
-                                    spreadsheetId: this.spreadsheetId, 
-                                    className: "cellComponent"}));
-        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var data = this.state.data,
+                config = this.props.config,
+                _cellClasses = this.props.cellClasses,
+                rows = [],
+                key,
+                i,
+                cellClasses;
 
-        return (
-            React.createElement("table", {tabIndex: "0", "data-spreasheet-id": this.spreadsheetId}, 
-                React.createElement("tbody", null, 
-                    rows
-                )
-            )
-        );
-    },
-
-    /**
-     * Binds the various keyboard events dispatched to table functions
-     */
-    bindKeyboard: function () {
-        Dispatcher.setupKeyboardShortcuts($(ReactDOM.findDOMNode(this))[0], this.spreadsheetId);
-
-        Dispatcher.subscribe('up_keyup', function(data)  {
-            this.navigateTable('up', data);
-        }.bind(this), this.spreadsheetId);
-        Dispatcher.subscribe('down_keyup', function(data)  {
-            this.navigateTable('down', data);
-        }.bind(this), this.spreadsheetId);
-        Dispatcher.subscribe('left_keyup', function(data)  {
-            this.navigateTable('left', data);
-        }.bind(this), this.spreadsheetId);
-        Dispatcher.subscribe('right_keyup', function(data)  {
-            this.navigateTable('right', data);
-        }.bind(this), this.spreadsheetId);
-        Dispatcher.subscribe('tab_keyup', function(data)  {
-            this.navigateTable('right', data, null, true);
-        }.bind(this), this.spreadsheetId);
-
-        // Prevent brower's from jumping to URL bar
-        Dispatcher.subscribe('tab_keydown', function(data)  {
-            if ($(document.activeElement) && $(document.activeElement)[0].tagName === 'INPUT') {
-                if (data.preventDefault) {
-                    data.preventDefault();
-                } else {
-                    // Oh, old IE, you 💩
-                    data.returnValue = false;
-                }
-            }
-        }, this.spreadsheetId);
-
-        Dispatcher.subscribe('remove_keydown', function(data)  {
-            if (!$(data.target).is('input, textarea')) {
-                if (data.preventDefault) {
-                    data.preventDefault();
-                } else {
-                    // Oh, old IE, you 💩
-                    data.returnValue = false;
-                }
-            }
-        }, this.spreadsheetId);
-
-        Dispatcher.subscribe('enter_keyup', function()  {
-            if (this.state.selectedElement) {
-                this.setState({editing: !this.state.editing});
-            }
-            $(ReactDOM.findDOMNode(this)).first().focus();
-        }.bind(this), this.spreadsheetId);
-
-        // Go into edit mode when the user starts typing on a field
-        Dispatcher.subscribe('letter_keydown', function()  {
-            if (!this.state.editing && this.state.selectedElement) {
-                Dispatcher.publish('editStarted', this.state.selectedElement, this.spreadsheetId);
-                this.setState({editing: true});
-            }
-        }.bind(this), this.spreadsheetId);
-
-        // Delete on backspace and delete
-        Dispatcher.subscribe('remove_keyup', function()  {
-            if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
-                this.handleCellValueChange(this.state.selected, '');
-            }
-        }.bind(this), this.spreadsheetId);
-    },
-
-    /**
-     * Navigates the table and moves selection
-     * @param  {string} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
-     * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
-     * @param  {boolean} inEdit                                 [Currently editing]
-     */
-    navigateTable: function (direction, data, originCell, inEdit) {
-        // Only traverse the table if the user isn't editing a cell,
-        // unless override is given
-        if (!inEdit && this.state.editing) {
-            return false;
-        }
-
-        // Use the curently active cell if one isn't passed
-        if (!originCell) {
-            originCell = this.state.selectedElement;
-        }
-
-        // Prevent default
-        if (data.preventDefault) {
-            data.preventDefault();
-        } else {
-            // Oh, old IE, you 💩
-            data.returnValue = false;
-        }
-
-        var $origin = $(originCell),
-            cellIndex = $origin.index(),
-            target;
-
-        if (direction === 'up') {
-            target = $origin.closest('tr').prev().children().eq(cellIndex).find('span');
-        } else if (direction === 'down') {
-            target = $origin.closest('tr').next().children().eq(cellIndex).find('span');
-        } else if (direction === 'left') {
-            target = $origin.closest('td').prev().find('span');
-        } else if (direction === 'right') {
-            target = $origin.closest('td').next().find('span');
-        }
-
-        if (target.length > 0) {
-            target.click();
-        } else {
-            this.extendTable(direction, originCell);
-        }
-    },
-
-    /**
-     * Extends the table with an additional row/column, if permitted by config
-     * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
-     */
-    extendTable: function (direction) {
-        var config = this.props.config,
-            data = this.state.data,
-            newRow, i;
-
-        if (direction === 'down' && config.canAddRow) {
-            newRow = [];
-
-            for (i = 0; i < this.state.data.rows[0].length; i = i + 1) {
-                newRow[i] = '';
+            // Sanity checks
+            if (!data.rows && !config.rows) {
+                return console.error('Table Component: Number of colums not defined in both data and config!');
             }
 
-            data.rows.push(newRow);
-            Dispatcher.publish('rowCreated', data.rows.length, this.spreadsheetId);
-            return this.setState({data: data});
-        }
-
-        if (direction === 'right' && config.canAddColumn) {
+            // Create Rows
             for (i = 0; i < data.rows.length; i = i + 1) {
-                data.rows[i].push('');
+                key = 'row_' + i;
+                cellClasses = _cellClasses && _cellClasses.rows && _cellClasses.rows[i] ? _cellClasses.rows[i] : null;
+
+                rows.push(_react2.default.createElement(_row2.default, { cells: data.rows[i],
+                    cellClasses: cellClasses,
+                    uid: i,
+                    key: key,
+                    config: config,
+                    selected: this.state.selected,
+                    editing: this.state.editing,
+                    handleSelectCell: this.handleSelectCell,
+                    handleDoubleClickOnCell: this.handleDoubleClickOnCell,
+                    handleCellBlur: this.handleCellBlur,
+                    onCellValueChange: this.handleCellValueChange,
+                    spreadsheetId: this.spreadsheetId,
+                    className: "cellComponent" }));
             }
 
-            Dispatcher.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
-            return this.setState({data: data});
+            return _react2.default.createElement("table", { tabIndex: "0", "data-spreasheet-id": this.state.id, ref: "react-spreadsheet-" + this.state.id }, _react2.default.createElement("tbody", null, rows));
         }
 
-    },
+        /**
+         * Binds the various keyboard events dispatched to table functions
+         */
 
-    /**
-     * Callback for 'selectCell', updating the selected Cell
-     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
-     * @param  {object} cellElement [Selected Cell Element]
-     */
-    handleSelectCell: function (cell, cellElement) {
-        Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
-        $(ReactDOM.findDOMNode(this)).first().focus();
+    }, {
+        key: 'bindKeyboard',
+        value: function bindKeyboard() {
+            var _this2 = this;
 
-        this.setState({
-            selected: cell,
-            selectedElement: cellElement
-        });
-    },
+            _dispatcher2.default.setupKeyboardShortcuts($(this.refs["spreadsheet-" + this.spreadsheetId])[0], this.spreadsheetId);
 
-    /**
-     * Callback for 'cellValueChange', updating the cell data
-     * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
-     * @param  {object} newValue                         [Value to set]
-     */
-    handleCellValueChange: function (cell, newValue) {
-        var data = this.state.data,
-            row = cell[0],
-            column = cell[1],
-            oldValue = data.rows[row][column];
+            _dispatcher2.default.subscribe('up_keyup', function (data) {
+                _this2.navigateTable('up', data);
+            }, this.spreadsheetId);
+            _dispatcher2.default.subscribe('down_keyup', function (data) {
+                _this2.navigateTable('down', data);
+            }, this.spreadsheetId);
+            _dispatcher2.default.subscribe('left_keyup', function (data) {
+                _this2.navigateTable('left', data);
+            }, this.spreadsheetId);
+            _dispatcher2.default.subscribe('right_keyup', function (data) {
+                _this2.navigateTable('right', data);
+            }, this.spreadsheetId);
+            _dispatcher2.default.subscribe('tab_keyup', function (data) {
+                _this2.navigateTable('right', data, null, true);
+            }, this.spreadsheetId);
 
-        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
+            // Prevent brower's from jumping to URL bar
+            _dispatcher2.default.subscribe('tab_keydown', function (data) {
+                if ($(document.activeElement) && $(document.activeElement)[0].tagName === 'INPUT') {
+                    if (data.preventDefault) {
+                        data.preventDefault();
+                    } else {
+                        // Oh, old IE, you 💩
+                        data.returnValue = false;
+                    }
+                }
+            }, this.spreadsheetId);
 
-        data.rows[row][column] = newValue;
-        this.setState({
-            data: data
-        });
+            _dispatcher2.default.subscribe('remove_keydown', function (data) {
+                if (!$(data.target).is('input, textarea')) {
+                    if (data.preventDefault) {
+                        data.preventDefault();
+                    } else {
+                        // Oh, old IE, you 💩
+                        data.returnValue = false;
+                    }
+                }
+            }, this.spreadsheetId);
 
-        Dispatcher.publish('dataChanged', data, this.spreadsheetId);
-    },
+            _dispatcher2.default.subscribe('enter_keyup', function () {
+                if (_this2.state.selectedElement) {
+                    _this2.setState({ editing: !_this2.state.editing });
+                }
+                $(_this2.refs["react-spreadsheet-" + _this2.state.id]).first().focus();
+            }, this.spreadsheetId);
 
-    /**
-     * Callback for 'doubleClickonCell', enabling 'edit' mode
-     */
-    handleDoubleClickOnCell: function () {
-        this.setState({
-            editing: true
-        });
-    },
+            // Go into edit mode when the user starts typing on a field
+            _dispatcher2.default.subscribe('letter_keydown', function () {
+                if (!_this2.state.editing && _this2.state.selectedElement) {
+                    _dispatcher2.default.publish('editStarted', _this2.state.selectedElement, _this2.spreadsheetId);
+                    _this2.setState({ editing: true });
+                }
+            }, this.spreadsheetId);
 
-    /**
-     * Callback for 'cellBlur'
-     */
-    handleCellBlur: function (cell) {
-        if (this.state.editing) {
-            Dispatcher.publish('editStopped', this.state.selectedElement);
+            // Delete on backspace and delete
+            _dispatcher2.default.subscribe('remove_keyup', function () {
+                if (_this2.state.selected && !_helpers2.default.equalCells(_this2.state.selected, _this2.state.lastBlurred)) {
+                    _this2.handleCellValueChange(_this2.state.selected, '');
+                }
+            }, this.spreadsheetId);
         }
 
-        this.setState({
-            editing: false,
-            lastBlurred: cell
-        });
-    }
-});
+        /**
+         * Navigates the table and moves selection
+         * @param  {string} direction                               [Direction ('up' || 'down' || 'left' || 'right')]
+         * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
+         * @param  {boolean} inEdit                                 [Currently editing]
+         */
+
+    }, {
+        key: 'navigateTable',
+        value: function navigateTable(direction, data, originCell, inEdit) {
+            // Only traverse the table if the user isn't editing a cell,
+            // unless override is given
+            if (!inEdit && this.state.editing) {
+                return false;
+            }
+
+            // Use the curently active cell if one isn't passed
+            if (!originCell) {
+                originCell = this.state.selectedElement;
+            }
+
+            // Prevent default
+            if (data.preventDefault) {
+                data.preventDefault();
+            } else {
+                // Oh, old IE, you 💩
+                data.returnValue = false;
+            }
+
+            var $origin = $(originCell),
+                cellIndex = $origin.index(),
+                target;
+
+            if (direction === 'up') {
+                target = $origin.closest('tr').prev().children().eq(cellIndex).find('span');
+            } else if (direction === 'down') {
+                target = $origin.closest('tr').next().children().eq(cellIndex).find('span');
+            } else if (direction === 'left') {
+                target = $origin.closest('td').prev().find('span');
+            } else if (direction === 'right') {
+                target = $origin.closest('td').next().find('span');
+            }
+
+            if (target.length > 0) {
+                target.click();
+            } else {
+                this.extendTable(direction, originCell);
+            }
+        }
+
+        /**
+         * Extends the table with an additional row/column, if permitted by config
+         * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
+         */
+
+    }, {
+        key: 'extendTable',
+        value: function extendTable(direction) {
+            var config = this.props.config,
+                data = this.state.data,
+                newRow,
+                i;
+
+            if (direction === 'down' && config.canAddRow) {
+                newRow = [];
+
+                for (i = 0; i < this.state.data.rows[0].length; i = i + 1) {
+                    newRow[i] = '';
+                }
+
+                data.rows.push(newRow);
+                _dispatcher2.default.publish('rowCreated', data.rows.length, this.spreadsheetId);
+                return this.setState({ data: data });
+            }
+
+            if (direction === 'right' && config.canAddColumn) {
+                for (i = 0; i < data.rows.length; i = i + 1) {
+                    data.rows[i].push('');
+                }
+
+                _dispatcher2.default.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
+                return this.setState({ data: data });
+            }
+        }
+
+        /**
+         * Callback for 'selectCell', updating the selected Cell
+         * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+         * @param  {object} cellElement [Selected Cell Element]
+         */
+
+    }, {
+        key: 'handleSelectCell',
+        value: function handleSelectCell(cell, cellElement) {
+            console.log(this);
+            _dispatcher2.default.publish('cellSelected', cell, this.spreadsheetId);
+            $(this.refs["react-spreadsheet-" + this.state.id]).first().focus();
+
+            this.setState({
+                selected: cell,
+                selectedElement: cellElement
+            });
+        }
+
+        /**
+         * Callback for 'cellValueChange', updating the cell data
+         * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
+         * @param  {object} newValue                         [Value to set]
+         */
+
+    }, {
+        key: 'handleCellValueChange',
+        value: function handleCellValueChange(cell, newValue) {
+            var data = this.state.data,
+                row = cell[0],
+                column = cell[1],
+                oldValue = data.rows[row][column];
+
+            _dispatcher2.default.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
+
+            data.rows[row][column] = newValue;
+            this.setState({
+                data: data
+            });
+
+            _dispatcher2.default.publish('dataChanged', data, this.spreadsheetId);
+        }
+
+        /**
+         * Callback for 'doubleClickonCell', enabling 'edit' mode
+         */
+
+    }, {
+        key: 'handleDoubleClickOnCell',
+        value: function handleDoubleClickOnCell() {
+            this.setState({
+                editing: true
+            });
+        }
+
+        /**
+         * Callback for 'cellBlur'
+         */
+
+    }, {
+        key: 'handleCellBlur',
+        value: function handleCellBlur(cell) {
+            if (this.state.editing) {
+                _dispatcher2.default.publish('editStopped', this.state.selectedElement);
+            }
+
+            this.setState({
+                editing: false,
+                lastBlurred: cell
+            });
+        }
+    }]);
+
+    return SpreadsheetComponent;
+}(_react.Component);
 
 module.exports = SpreadsheetComponent;
-
 },{"./dispatcher":2,"./helpers":3,"./row":4,"jquery":6}],6:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.3
+ * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -754,7 +859,7 @@ module.exports = SpreadsheetComponent;
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-04-05T19:26Z
+ * Date: 2016-05-20T17:23Z
  */
 
 (function( global, factory ) {
@@ -810,7 +915,7 @@ var support = {};
 
 
 var
-	version = "2.2.3",
+	version = "2.2.4",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -5751,13 +5856,14 @@ jQuery.Event.prototype = {
 	isDefaultPrevented: returnFalse,
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
+	isSimulated: false,
 
 	preventDefault: function() {
 		var e = this.originalEvent;
 
 		this.isDefaultPrevented = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.preventDefault();
 		}
 	},
@@ -5766,7 +5872,7 @@ jQuery.Event.prototype = {
 
 		this.isPropagationStopped = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.stopPropagation();
 		}
 	},
@@ -5775,7 +5881,7 @@ jQuery.Event.prototype = {
 
 		this.isImmediatePropagationStopped = returnTrue;
 
-		if ( e ) {
+		if ( e && !this.isSimulated ) {
 			e.stopImmediatePropagation();
 		}
 
@@ -6705,19 +6811,6 @@ function getWidthOrHeight( elem, name, extra ) {
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
-
-	// Support: IE11 only
-	// In IE 11 fullscreen elements inside of an iframe have
-	// 100x too small dimensions (gh-1764).
-	if ( document.msFullscreenElement && window.top !== window ) {
-
-		// Support: IE11 only
-		// Running getBoundingClientRect on a disconnected node
-		// in IE throws an error.
-		if ( elem.getClientRects().length ) {
-			val = Math.round( elem.getBoundingClientRect()[ name ] * 100 );
-		}
-	}
 
 	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
@@ -8609,6 +8702,7 @@ jQuery.extend( jQuery.event, {
 	},
 
 	// Piggyback on a donor event to simulate a different one
+	// Used only for `focus(in | out)` events
 	simulate: function( type, elem, event ) {
 		var e = jQuery.extend(
 			new jQuery.Event(),
@@ -8616,27 +8710,10 @@ jQuery.extend( jQuery.event, {
 			{
 				type: type,
 				isSimulated: true
-
-				// Previously, `originalEvent: {}` was set here, so stopPropagation call
-				// would not be triggered on donor event, since in our own
-				// jQuery.event.stopPropagation function we had a check for existence of
-				// originalEvent.stopPropagation method, so, consequently it would be a noop.
-				//
-				// But now, this "simulate" function is used only for events
-				// for which stopPropagation() is noop, so there is no need for that anymore.
-				//
-				// For the 1.x branch though, guard for "click" and "submit"
-				// events is still used, but was moved to jQuery.event.stopPropagation function
-				// because `originalEvent` should point to the original event for the constancy
-				// with other events and for more focused logic
 			}
 		);
 
 		jQuery.event.trigger( e, null, elem );
-
-		if ( e.isDefaultPrevented() ) {
-			event.preventDefault();
-		}
 	}
 
 } );
@@ -10589,7 +10666,7 @@ return jQuery;
 },{}],7:[function(require,module,exports){
 /*global define:false */
 /**
- * Copyright 2015 Craig Campbell
+ * Copyright 2012-2017 Craig Campbell
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -10606,10 +10683,15 @@ return jQuery;
  * Mousetrap is a simple keyboard shortcut library for Javascript with
  * no external dependencies
  *
- * @version 1.5.3
+ * @version 1.6.1
  * @url craig.is/killing/mice
  */
 (function(window, document, undefined) {
+
+    // Check if mousetrap is used inside browser, if not, return
+    if (!window) {
+        return;
+    }
 
     /**
      * mapping of special keycodes to their corresponding keys
@@ -10740,7 +10822,13 @@ return jQuery;
      * loop through to map numbers on the numeric keypad
      */
     for (i = 0; i <= 9; ++i) {
-        _MAP[i + 96] = i;
+
+        // This needs to use a string cause otherwise since 0 is falsey
+        // mousetrap will never fire for numpad 0 pressed as part of a keydown
+        // event.
+        //
+        // @see https://github.com/ccampbell/mousetrap/pull/258
+        _MAP[i + 96] = i.toString();
     }
 
     /**
@@ -11573,6 +11661,18 @@ return jQuery;
     };
 
     /**
+     * allow custom key mappings
+     */
+    Mousetrap.addKeycodes = function(object) {
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                _MAP[key] = object[key];
+            }
+        }
+        _REVERSE_MAP = null;
+    };
+
+    /**
      * Init the global mousetrap functions
      *
      * This method is needed to allow the global mousetrap functions to work
@@ -11607,7 +11707,7 @@ return jQuery;
             return Mousetrap;
         });
     }
-}) (window, document);
+}) (typeof window !== 'undefined' ? window : null, typeof  window !== 'undefined' ? document : null);
 
 },{}]},{},[5])(5)
 });

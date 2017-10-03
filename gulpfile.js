@@ -12,7 +12,8 @@ var streamify  = require('gulp-streamify');
 var uglify     = require('gulp-uglify');
 var gutil      = require('gulp-util');
 var connect    = require('gulp-connect');
-var reactify   = require('reactify');
+var babel      = require('gulp-babel');
+var babelify   = require('babelify');
 
 var pkg = require('./package.json');
 var devBuild = (process.env.NODE_ENV === 'production') ? '' : ' (dev build at ' + (new Date()).toUTCString() + ')';
@@ -33,7 +34,8 @@ gulp.task('clean-lib', function (cb) {
 gulp.task('transpile-js', ['clean-lib'], function () {
     return gulp.src(jsSrcPaths)
         .pipe(plumber())
-        .pipe(react({ harmony: true }))
+        .pipe(react({harmony: false, es6module: true}))
+        .pipe(babel())
         .pipe(gulp.dest('./lib'));
 });
 
@@ -51,7 +53,7 @@ gulp.task('bundle-js', ['lint-js'], function () {
     });
     
     b.transform('browserify-shim')
-
+    
     var stream = b.bundle()
         .pipe(source('spreadsheet.js'))
         .pipe(streamify(header(distHeader, { pkg: pkg, devBuild: devBuild })))
@@ -83,7 +85,7 @@ gulp.task('connect', function () {
 
 gulp.task('example', ['transpile-js'], function () {
     return browserify('./example.js')
-        .transform(reactify)
+        .transform("babelify", {presets: ["es2015", "react"]})
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('./example'));

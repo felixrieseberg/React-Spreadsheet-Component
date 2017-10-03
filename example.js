@@ -1,11 +1,9 @@
-'use strict';
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Spreadsheet = require('./lib/spreadsheet');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Spreadsheet from './lib/spreadsheet';
 
 // Example One
-var exampleOne = {};
+let exampleOne = {};
 
 exampleOne.initialData = {
     rows: [
@@ -31,7 +29,7 @@ exampleOne.config = {
 };
 
 // Example Two
-var exampleTwo = {};
+let exampleTwo = {};
 exampleTwo.initialData = {
     rows: [
         ['Customer', 'Job', 'Contact', 'City', 'Revenue'],
@@ -62,7 +60,6 @@ exampleTwo.config = {
     emptyValueSymbol: '-',
     letterNumberHeads: false
 };
-
 // Render
 ReactDOM.render(<Spreadsheet initialData={exampleOne.initialData} config={exampleOne.config} cellClasses={exampleOne.cellClasses} />, document.getElementById('exampleOne'));
 ReactDOM.render(<Spreadsheet initialData={exampleTwo.initialData} config={exampleTwo.config} cellClasses={exampleTwo.cellClasses} />, document.getElementById('exampleTwo'));

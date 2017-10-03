@@ -1,20 +1,16 @@
-"use strict";
+import React, { Component } from 'react';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+import RowComponent from './row';
+import Dispatcher from './dispatcher';
+import Helpers from './helpers';
+
 var $ = require('jquery');
 
-var RowComponent = require('./row');
-var Dispatcher = require('./dispatcher');
-var Helpers = require('./helpers');
+class SpreadsheetComponent extends Component {
+    
+    constructor(props) {
+        super(props);
 
-var SpreadsheetComponent = React.createClass({
-    spreadsheetId: null,
-
-    /**
-     * React 'getInitialState' method
-     */
-    getInitialState: function() {
         var initialData = this.props.initialData || {};
 
         if (!initialData.rows) {
@@ -28,19 +24,20 @@ var SpreadsheetComponent = React.createClass({
             }
         }
 
-        return {
+        this.state = {
             data: initialData,
             selected: null,
             lastBlurred: null,
             selectedElement: null,
-            editing: false
-        };
-    },
+            editing: false,
+            id: this.props.spreadsheetId || Helpers.makeSpreadsheetId()
+        };        
+    }
 
     /**
      * React 'componentDidMount' method
      */
-    componentDidMount: function () {
+    componentDidMount() {
         this.bindKeyboard();
 
         $('body').on('focus', 'input', function (e) {
@@ -51,19 +48,17 @@ var SpreadsheetComponent = React.createClass({
                 })
                 .select();
         });
-    },
+    }
 
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]
      */
-    render: function() {
+    render() {
         var data = this.state.data,
             config = this.props.config,
             _cellClasses = this.props.cellClasses,
             rows = [], key, i, cellClasses;
-
-        this.spreadsheetId = this.props.spreadsheetId || Helpers.makeSpreadsheetId();
 
         // Sanity checks
         if (!data.rows && !config.rows) {
@@ -82,44 +77,44 @@ var SpreadsheetComponent = React.createClass({
                                     config={config}
                                     selected={this.state.selected}
                                     editing={this.state.editing}
-                                    handleSelectCell={this.handleSelectCell}
-                                    handleDoubleClickOnCell={this.handleDoubleClickOnCell}
-                                    handleCellBlur={this.handleCellBlur}
-                                    onCellValueChange={this.handleCellValueChange}
-                                    spreadsheetId={this.spreadsheetId}
+                                    handleSelectCell={this.handleSelectCell.bind(this)}
+                                    handleDoubleClickOnCell={this.handleDoubleClickOnCell.bind(this)}
+                                    handleCellBlur={this.handleCellBlur.bind(this)}
+                                    onCellValueChange={this.handleCellValueChange.bind(this)}
+                                    spreadsheetId={this.state.id}
                                     className="cellComponent" />);
         }
 
         return (
-            <table tabIndex="0" data-spreasheet-id={this.spreadsheetId}>
+            <table tabIndex="0" data-spreasheet-id={this.state.id} ref={"react-spreadsheet-"+this.state.id}>
                 <tbody>
                     {rows}
                 </tbody>
             </table>
         );
-    },
+    }
 
     /**
      * Binds the various keyboard events dispatched to table functions
      */
-    bindKeyboard: function () {
-        Dispatcher.setupKeyboardShortcuts($(ReactDOM.findDOMNode(this))[0], this.spreadsheetId);
+    bindKeyboard() {
+        Dispatcher.setupKeyboardShortcuts($(this.refs["react-spreadsheet-"+this.state.id])[0], this.state.id);
 
         Dispatcher.subscribe('up_keyup', data => {
             this.navigateTable('up', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('down_keyup', data => {
             this.navigateTable('down', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('left_keyup', data => {
             this.navigateTable('left', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('right_keyup', data => {
             this.navigateTable('right', data);
-        }, this.spreadsheetId);
+        }, this.state.id);
         Dispatcher.subscribe('tab_keyup', data => {
             this.navigateTable('right', data, null, true);
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         // Prevent brower's from jumping to URL bar
         Dispatcher.subscribe('tab_keydown', data => {
@@ -131,7 +126,7 @@ var SpreadsheetComponent = React.createClass({
                     data.returnValue = false;
                 }
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         Dispatcher.subscribe('remove_keydown', data => {
             if (!$(data.target).is('input, textarea')) {
@@ -142,30 +137,30 @@ var SpreadsheetComponent = React.createClass({
                     data.returnValue = false;
                 }
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         Dispatcher.subscribe('enter_keyup', () => {
             if (this.state.selectedElement) {
                 this.setState({editing: !this.state.editing});
             }
-            $(ReactDOM.findDOMNode(this)).first().focus();
-        }, this.spreadsheetId);
+            $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
+        }, this.state.id);
 
         // Go into edit mode when the user starts typing on a field
         Dispatcher.subscribe('letter_keydown', () => {
             if (!this.state.editing && this.state.selectedElement) {
-                Dispatcher.publish('editStarted', this.state.selectedElement, this.spreadsheetId);
+                Dispatcher.publish('editStarted', this.state.selectedElement, this.state.id);
                 this.setState({editing: true});
             }
-        }, this.spreadsheetId);
+        }, this.state.id);
 
         // Delete on backspace and delete
         Dispatcher.subscribe('remove_keyup', () => {
             if (this.state.selected && !Helpers.equalCells(this.state.selected, this.state.lastBlurred)) {
                 this.handleCellValueChange(this.state.selected, '');
             }
-        }, this.spreadsheetId);
-    },
+        }, this.state.id);
+    }
 
     /**
      * Navigates the table and moves selection
@@ -173,7 +168,7 @@ var SpreadsheetComponent = React.createClass({
      * @param  {Array: [number: row, number: cell]} originCell  [Origin Cell]
      * @param  {boolean} inEdit                                 [Currently editing]
      */
-    navigateTable: function (direction, data, originCell, inEdit) {
+    navigateTable(direction, data, originCell, inEdit) {
         // Only traverse the table if the user isn't editing a cell,
         // unless override is given
         if (!inEdit && this.state.editing) {
@@ -212,13 +207,13 @@ var SpreadsheetComponent = React.createClass({
         } else {
             this.extendTable(direction, originCell);
         }
-    },
+    }
 
     /**
      * Extends the table with an additional row/column, if permitted by config
      * @param  {string} direction [Direction ('up' || 'down' || 'left' || 'right')]
      */
-    extendTable: function (direction) {
+    extendTable(direction) {
         var config = this.props.config,
             data = this.state.data,
             newRow, i;
@@ -231,7 +226,7 @@ var SpreadsheetComponent = React.createClass({
             }
 
             data.rows.push(newRow);
-            Dispatcher.publish('rowCreated', data.rows.length, this.spreadsheetId);
+            Dispatcher.publish('rowCreated', data.rows.length, this.state.id);
             return this.setState({data: data});
         }
 
@@ -240,61 +235,61 @@ var SpreadsheetComponent = React.createClass({
                 data.rows[i].push('');
             }
 
-            Dispatcher.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
+            Dispatcher.publish('columnCreated', data.rows[0].length, this.state.id);
             return this.setState({data: data});
         }
 
-    },
+    }
 
     /**
      * Callback for 'selectCell', updating the selected Cell
      * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
      * @param  {object} cellElement [Selected Cell Element]
      */
-    handleSelectCell: function (cell, cellElement) {
-        Dispatcher.publish('cellSelected', cell, this.spreadsheetId);
-        $(ReactDOM.findDOMNode(this)).first().focus();
+    handleSelectCell(cell, cellElement) {
+        Dispatcher.publish('cellSelected', cell, this.state.id);
+        $(this.refs["react-spreadsheet-"+this.state.id]).first().focus();
 
         this.setState({
             selected: cell,
             selectedElement: cellElement
         });
-    },
+    }
 
     /**
      * Callback for 'cellValueChange', updating the cell data
      * @param  {Array: [number: row, number: cell]} cell [Selected Cell]
      * @param  {object} newValue                         [Value to set]
      */
-    handleCellValueChange: function (cell, newValue) {
+    handleCellValueChange(cell, newValue) {
         var data = this.state.data,
             row = cell[0],
             column = cell[1],
             oldValue = data.rows[row][column];
 
-        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
+        Dispatcher.publish('cellValueChanged', [cell, newValue, oldValue], this.state.id);
 
         data.rows[row][column] = newValue;
         this.setState({
             data: data
         });
 
-        Dispatcher.publish('dataChanged', data, this.spreadsheetId);
-    },
+        Dispatcher.publish('dataChanged', data, this.state.id);
+    }
 
     /**
      * Callback for 'doubleClickonCell', enabling 'edit' mode
      */
-    handleDoubleClickOnCell: function () {
+    handleDoubleClickOnCell() {
         this.setState({
             editing: true
         });
-    },
+    }
 
     /**
      * Callback for 'cellBlur'
      */
-    handleCellBlur: function (cell) {
+    handleCellBlur(cell) {
         if (this.state.editing) {
             Dispatcher.publish('editStopped', this.state.selectedElement);
         }
@@ -304,6 +299,6 @@ var SpreadsheetComponent = React.createClass({
             lastBlurred: cell
         });
     }
-});
+}
 
 module.exports = SpreadsheetComponent;

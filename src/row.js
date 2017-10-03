@@ -1,16 +1,13 @@
-"use strict";
+import React, { Component } from 'react';
+import CellComponent from './cell';
+import Helpers from './helpers';
 
-var React = require('react');
-
-var CellComponent = require('./cell');
-var Helpers = require('./helpers');
-
-var RowComponent = React.createClass({    
+class RowComponent extends Component {    
     /**
      * React Render method
      * @return {[JSX]} [JSX to render]
      */
-    render: function() {
+    render() {
         var config = this.props.config,
             cells = this.props.cells,
             columns = [],
@@ -44,6 +41,6 @@ var RowComponent = React.createClass({
 
         return <tr>{columns}</tr>;
     }
-});
+}
 
 module.exports = RowComponent;

@@ -2,16 +2,15 @@
 
 jest.dontMock('../row');
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-const RowComponent = require('../cell');
+import RowComponent from '../cell';
 
 const testVars = {
   cells: [],
   cellClasses: [],
-  uid: 0,
+  uid: [0],
   key: 'testkey',
   spreadsheetId: '0',
   className: 'cellComponent'
@@ -19,7 +18,7 @@ const testVars = {
 
 describe('Row', () => {
   it('Renders a row', () => {
-    var row = TestUtils.renderIntoDocument(
+    const row = renderer.create(
       <table>
         <tbody>
             <RowComponent
@@ -32,9 +31,7 @@ describe('Row', () => {
             />
         </tbody>
       </table> 
-    );
-
-    var rowNode = ReactDOM.findDOMNode(row);
-    expect(rowNode).toBeDefined();
+    ).toJSON();
+    expect(row).toMatchSnapshot();
   });
 });

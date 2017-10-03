@@ -1,5 +1,3 @@
-"use strict";
-
 var Helpers = {
     /**
      * Find the first element in an array matching a boolean

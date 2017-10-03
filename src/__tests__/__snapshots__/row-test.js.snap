@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Row Renders a row 1`] = `
+<table>
+  <tbody>
+    <td
+      className=""
+    >
+      <div
+        className="reactTableCell"
+      >
+        <span
+          onClick={[Function]}
+          onDoubleClick={[Function]}
+        >
+          
+        </span>
+      </div>
+    </td>
+  </tbody>
+</table>
+`;

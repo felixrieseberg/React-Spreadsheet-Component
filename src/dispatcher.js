@@ -1,5 +1,3 @@
-"use strict";
-
 var Mousetrap = require('mousetrap');
 var $ = require('jquery');
 
@@ -82,7 +80,6 @@ var dispatcher = {
      */
     setupKeyboardShortcuts: function (domNode, spreadsheetId) {
         var self = this;
-
         this.keyboardShortcuts.map(function (shortcut) {
             var shortcutName = shortcut[0],
                 shortcutKey = shortcut[1],
