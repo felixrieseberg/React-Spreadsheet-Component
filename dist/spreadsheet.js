@@ -1,5 +1,5 @@
 /*!
- * react-spreadsheet-component 0.6.0 (dev build at Mon, 02 Oct 2017 14:43:24 GMT) - 
+ * react-spreadsheet-component 0.6.0 (dev build at Tue, 03 Oct 2017 13:50:26 GMT) - 
  * MIT Licensed
  */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactSpreadsheet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -10,10 +10,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _dispatcher = require('./dispatcher');
 
@@ -43,10 +39,6 @@ var CellComponent = function (_Component) {
             editing: _this.props.editing,
             changedValue: _this.props.value
         };
-        _this.handleClick = _this.handleClick.bind(_this);
-        _this.handleHeadClick = _this.handleHeadClick.bind(_this);
-        _this.handleBlur = _this.handleBlur.bind(_this);
-        _this.handleChange = _this.handleChange.bind(_this);
         return _this;
     }
 
@@ -75,13 +67,13 @@ var CellComponent = function (_Component) {
             // If not a header, check for editing and return
             if (props.selected && props.editing) {
                 cellContent = _react2.default.createElement("input", { className: "mousetrap",
-                    onChange: this.handleChange,
-                    onBlur: this.handleBlur,
+                    onChange: this.handleChange.bind(this),
+                    onBlur: this.handleBlur.bind(this),
                     ref: ref,
                     defaultValue: this.props.value });
             }
 
-            return _react2.default.createElement("td", { className: cellClasses, ref: props.uid.join('_') }, _react2.default.createElement("div", { className: "reactTableCell" }, cellContent, _react2.default.createElement("span", { onDoubleClick: this.handleDoubleClick, onClick: this.handleClick }, displayValue)));
+            return _react2.default.createElement("td", { className: cellClasses, ref: props.uid.join('_') }, _react2.default.createElement("div", { className: "reactTableCell" }, cellContent, _react2.default.createElement("span", { onDoubleClick: this.handleDoubleClick.bind(this), onClick: this.handleClick.bind(this) }, displayValue)));
         }
 
         /**
@@ -94,7 +86,7 @@ var CellComponent = function (_Component) {
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps, prevState) {
             if (this.props.editing && this.props.selected) {
-                var node = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]);
+                var node = this.refs['input_' + this.props.uid.join('_')];
                 node.focus();
             }
 
@@ -111,7 +103,7 @@ var CellComponent = function (_Component) {
     }, {
         key: 'handleClick',
         value: function handleClick(e) {
-            var cellElement = _reactDom2.default.findDOMNode(this.refs[this.props.uid.join('_')]);
+            var cellElement = this.refs[this.props.uid.join('_')];
             this.props.handleSelectCell(this.props.uid, cellElement);
         }
 
@@ -123,7 +115,7 @@ var CellComponent = function (_Component) {
     }, {
         key: 'handleHeadClick',
         value: function handleHeadClick(e) {
-            var cellElement = _reactDom2.default.findDOMNode(this.refs[this.props.uid.join('_')]);
+            var cellElement = this.refs[this.props.uid.join('_')];
             _dispatcher2.default.publish('headCellClicked', cellElement, this.props.spreadsheetId);
         }
 
@@ -147,7 +139,7 @@ var CellComponent = function (_Component) {
     }, {
         key: 'handleBlur',
         value: function handleBlur(e) {
-            var newValue = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
+            var newValue = this.refs['input_' + this.props.uid.join('_')].value;
 
             this.props.onCellValueChange(this.props.uid, newValue, e);
             this.props.handleCellBlur(this.props.uid);
@@ -162,8 +154,7 @@ var CellComponent = function (_Component) {
     }, {
         key: 'handleChange',
         value: function handleChange(e) {
-            var newValue = _reactDom2.default.findDOMNode(this.refs['input_' + this.props.uid.join('_')]).value;
-
+            var newValue = this.refs['input_' + this.props.uid.join('_')].value;
             this.setState({ changedValue: newValue });
         }
 
@@ -198,7 +189,7 @@ var CellComponent = function (_Component) {
                 }
 
                 if (config.isHeadRowString && headRow || config.isHeadColumnString && headColumn) {
-                    return _react2.default.createElement("th", { className: cellClasses, ref: this.props.uid.join('_') }, _react2.default.createElement("div", null, _react2.default.createElement("span", { onClick: this.handleHeadClick }, displayValue)));
+                    return _react2.default.createElement("th", { className: cellClasses, ref: this.props.uid.join('_') }, _react2.default.createElement("div", null, _react2.default.createElement("span", { onClick: this.handleHeadClick.bind(this) }, displayValue)));
                 } else {
                     return _react2.default.createElement("th", { ref: this.props.uid.join('_') }, displayValue);
                 }
@@ -288,7 +279,6 @@ var dispatcher = {
      */
     setupKeyboardShortcuts: function setupKeyboardShortcuts(domNode, spreadsheetId) {
         var self = this;
-
         this.keyboardShortcuts.map(function (shortcut) {
             var shortcutName = shortcut[0],
                 shortcutKey = shortcut[1],
@@ -545,8 +535,6 @@ var SpreadsheetComponent = function (_Component) {
             editing: false,
             id: _this.props.spreadsheetId || _helpers2.default.makeSpreadsheetId()
         };
-
-        _this.handleSelectCell = _this.handleSelectCell.bind(_this);
         return _this;
     }
 
@@ -601,11 +589,11 @@ var SpreadsheetComponent = function (_Component) {
                     config: config,
                     selected: this.state.selected,
                     editing: this.state.editing,
-                    handleSelectCell: this.handleSelectCell,
-                    handleDoubleClickOnCell: this.handleDoubleClickOnCell,
-                    handleCellBlur: this.handleCellBlur,
-                    onCellValueChange: this.handleCellValueChange,
-                    spreadsheetId: this.spreadsheetId,
+                    handleSelectCell: this.handleSelectCell.bind(this),
+                    handleDoubleClickOnCell: this.handleDoubleClickOnCell.bind(this),
+                    handleCellBlur: this.handleCellBlur.bind(this),
+                    onCellValueChange: this.handleCellValueChange.bind(this),
+                    spreadsheetId: this.state.id,
                     className: "cellComponent" }));
             }
 
@@ -621,23 +609,23 @@ var SpreadsheetComponent = function (_Component) {
         value: function bindKeyboard() {
             var _this2 = this;
 
-            _dispatcher2.default.setupKeyboardShortcuts($(this.refs["spreadsheet-" + this.spreadsheetId])[0], this.spreadsheetId);
+            _dispatcher2.default.setupKeyboardShortcuts($(this.refs["react-spreadsheet-" + this.state.id])[0], this.state.id);
 
             _dispatcher2.default.subscribe('up_keyup', function (data) {
                 _this2.navigateTable('up', data);
-            }, this.spreadsheetId);
+            }, this.state.id);
             _dispatcher2.default.subscribe('down_keyup', function (data) {
                 _this2.navigateTable('down', data);
-            }, this.spreadsheetId);
+            }, this.state.id);
             _dispatcher2.default.subscribe('left_keyup', function (data) {
                 _this2.navigateTable('left', data);
-            }, this.spreadsheetId);
+            }, this.state.id);
             _dispatcher2.default.subscribe('right_keyup', function (data) {
                 _this2.navigateTable('right', data);
-            }, this.spreadsheetId);
+            }, this.state.id);
             _dispatcher2.default.subscribe('tab_keyup', function (data) {
                 _this2.navigateTable('right', data, null, true);
-            }, this.spreadsheetId);
+            }, this.state.id);
 
             // Prevent brower's from jumping to URL bar
             _dispatcher2.default.subscribe('tab_keydown', function (data) {
@@ -649,7 +637,7 @@ var SpreadsheetComponent = function (_Component) {
                         data.returnValue = false;
                     }
                 }
-            }, this.spreadsheetId);
+            }, this.state.id);
 
             _dispatcher2.default.subscribe('remove_keydown', function (data) {
                 if (!$(data.target).is('input, textarea')) {
@@ -660,29 +648,29 @@ var SpreadsheetComponent = function (_Component) {
                         data.returnValue = false;
                     }
                 }
-            }, this.spreadsheetId);
+            }, this.state.id);
 
             _dispatcher2.default.subscribe('enter_keyup', function () {
                 if (_this2.state.selectedElement) {
                     _this2.setState({ editing: !_this2.state.editing });
                 }
                 $(_this2.refs["react-spreadsheet-" + _this2.state.id]).first().focus();
-            }, this.spreadsheetId);
+            }, this.state.id);
 
             // Go into edit mode when the user starts typing on a field
             _dispatcher2.default.subscribe('letter_keydown', function () {
                 if (!_this2.state.editing && _this2.state.selectedElement) {
-                    _dispatcher2.default.publish('editStarted', _this2.state.selectedElement, _this2.spreadsheetId);
+                    _dispatcher2.default.publish('editStarted', _this2.state.selectedElement, _this2.state.id);
                     _this2.setState({ editing: true });
                 }
-            }, this.spreadsheetId);
+            }, this.state.id);
 
             // Delete on backspace and delete
             _dispatcher2.default.subscribe('remove_keyup', function () {
                 if (_this2.state.selected && !_helpers2.default.equalCells(_this2.state.selected, _this2.state.lastBlurred)) {
                     _this2.handleCellValueChange(_this2.state.selected, '');
                 }
-            }, this.spreadsheetId);
+            }, this.state.id);
         }
 
         /**
@@ -756,7 +744,7 @@ var SpreadsheetComponent = function (_Component) {
                 }
 
                 data.rows.push(newRow);
-                _dispatcher2.default.publish('rowCreated', data.rows.length, this.spreadsheetId);
+                _dispatcher2.default.publish('rowCreated', data.rows.length, this.state.id);
                 return this.setState({ data: data });
             }
 
@@ -765,7 +753,7 @@ var SpreadsheetComponent = function (_Component) {
                     data.rows[i].push('');
                 }
 
-                _dispatcher2.default.publish('columnCreated', data.rows[0].length, this.spreadsheetId);
+                _dispatcher2.default.publish('columnCreated', data.rows[0].length, this.state.id);
                 return this.setState({ data: data });
             }
         }
@@ -779,8 +767,7 @@ var SpreadsheetComponent = function (_Component) {
     }, {
         key: 'handleSelectCell',
         value: function handleSelectCell(cell, cellElement) {
-            console.log(this);
-            _dispatcher2.default.publish('cellSelected', cell, this.spreadsheetId);
+            _dispatcher2.default.publish('cellSelected', cell, this.state.id);
             $(this.refs["react-spreadsheet-" + this.state.id]).first().focus();
 
             this.setState({
@@ -803,14 +790,14 @@ var SpreadsheetComponent = function (_Component) {
                 column = cell[1],
                 oldValue = data.rows[row][column];
 
-            _dispatcher2.default.publish('cellValueChanged', [cell, newValue, oldValue], this.spreadsheetId);
+            _dispatcher2.default.publish('cellValueChanged', [cell, newValue, oldValue], this.state.id);
 
             data.rows[row][column] = newValue;
             this.setState({
                 data: data
             });
 
-            _dispatcher2.default.publish('dataChanged', data, this.spreadsheetId);
+            _dispatcher2.default.publish('dataChanged', data, this.state.id);
         }
 
         /**
