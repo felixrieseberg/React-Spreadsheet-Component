@@ -1,4 +1,4 @@
-'use strct';
+'use strict';
 
 jest.dontMock('../spreadsheet');
 
