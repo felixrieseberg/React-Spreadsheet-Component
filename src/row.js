@@ -13,7 +13,7 @@ class RowComponent extends Component {
             columns = [],
             key, uid, selected, cellClasses, i;
 
-        if (!config.columns || cells.length === 0) {
+        if (!config.columns && cells.length === 0) {
             return console.error('Table can\'t be initialized without set number of columsn and no data!');
         }
 
