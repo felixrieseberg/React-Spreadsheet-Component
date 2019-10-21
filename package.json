@@ -12,7 +12,7 @@
     }
   ],
   "dependencies": {
-    "jquery": "^2.1",
+    "jquery": "^3.4",
     "mousetrap": "^1.5.3"
   },
   "peerDependencies": {
